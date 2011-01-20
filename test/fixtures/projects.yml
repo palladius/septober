@@ -1,0 +1,13 @@
+one:
+  name: MyString
+  description: MyText
+  xolor: MyString
+  active: false
+  user_id: 1
+
+two:
+  name: MyString
+  description: MyText
+  xolor: MyString
+  active: false
+  user_id: 1
