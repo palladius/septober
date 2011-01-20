@@ -5,7 +5,7 @@ class CreateTodos < ActiveRecord::Migration
       t.text    :description
       t.boolean :active, :default => true
       t.date    :due
-      t.integer :priority, :default => 3
+      t.integer :priority, :default => 3   # 1=LOWEST,2,3,4,5=HIGHEST , like iTunees stars
       t.integer :user_id
       t.integer :project_id
       t.timestamps
