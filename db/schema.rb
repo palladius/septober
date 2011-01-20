@@ -15,8 +15,8 @@ ActiveRecord::Schema.define(:version => 20110120193417) do
   create_table "projects", :force => true do |t|
     t.string   "name"
     t.text     "description"
-    t.string   "color"
-    t.boolean  "active"
+    t.string   "color",       :default => "grey"
+    t.boolean  "active",      :default => true
     t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -25,8 +25,9 @@ ActiveRecord::Schema.define(:version => 20110120193417) do
   create_table "todos", :force => true do |t|
     t.string   "name"
     t.text     "description"
-    t.boolean  "active"
+    t.boolean  "active",      :default => true
     t.date     "due"
+    t.integer  "priority",    :default => 3
     t.integer  "user_id"
     t.integer  "project_id"
     t.datetime "created_at"
@@ -41,7 +42,7 @@ ActiveRecord::Schema.define(:version => 20110120193417) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "facebook_id"
-    t.boolean  "admin"
+    t.boolean  "admin",         :default => false
   end
 
 end

@@ -1,7 +1,7 @@
 class AddFacebookIdAndAdminToUsers < ActiveRecord::Migration
   def self.up
     add_column :users, :facebook_id, :string
-    add_column :users, :admin, :boolean
+    add_column :users, :admin, :boolean,       :default => false
   end
 
   def self.down
