@@ -1,4 +1,6 @@
 Septober314::Application.routes.draw do
+  resources :projects
+
   resources :todos
 
   # The priority is based upon order of creation:

@@ -1,0 +1,27 @@
+<% title "Todos" %>
+
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Description</th>
+    <th>Active</th>
+    <th>Due</th>
+    <th>User</th>
+    <th>Project</th>
+  </tr>
+  <% for todo in @todos %>
+    <tr>
+      <td><%= todo.name %></td>
+      <td><%= todo.description %></td>
+      <td><%= todo.active %></td>
+      <td><%= todo.due %></td>
+      <td><%= todo.user_id %></td>
+      <td><%= todo.project_id %></td>
+      <td><%= link_to "Show", todo %></td>
+      <td><%= link_to "Edit", edit_todo_path(todo) %></td>
+      <td><%= link_to "Destroy", todo, :confirm => 'Are you sure?', :method => :delete %></td>
+    </tr>
+  <% end %>
+</table>
+
+<p><%= link_to "New Todo", new_todo_path(todo) %></p>
