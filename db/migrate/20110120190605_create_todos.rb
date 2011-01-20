@@ -3,7 +3,7 @@ class CreateTodos < ActiveRecord::Migration
     create_table :todos do |t|
       t.string :name
       t.text :description
-      t.bool :active
+      t.bool :active,          :default => true
       t.date :due
       t.integer :user_id
       t.integer :project_id
