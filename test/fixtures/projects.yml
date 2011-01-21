@@ -1,13 +1,20 @@
 one:
-  name: MyString
-  description: MyText
-  color: MyString
-  active: false
+  name: Personal
+  description: root personal things
+  color: yellow
+  active: true
   user_id: 1
 
 two:
-  name: MyString
-  description: MyText
-  color: MyString
-  active: false
+  name: Work
+  description: root work stuff
+  color: green
+  active: true
   user_id: 1
+
+three:
+    name: Shopping
+    description: MyText
+    color: green
+    active: true
+    user_id: 1

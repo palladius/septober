@@ -1,12 +1,16 @@
 # password: "secret"
-foo:
-  username: foo
-  email: foo@example.com
+root:
+  username: root
+  email: root@example.com
   password_hash: 3488f5f7efecab14b91eb96169e5e1ee518a569f
   password_salt: bef65e058905c379436d80d1a32e7374b139e7b0
+  facebook_id: riccardo_id
+  admin: true
 
-bar:
-  username: bar
-  email: bar@example.com
+guest:
+  username: guest
+  email: guest@example.com
   password_hash: 3488f5f7efecab14b91eb96169e5e1ee518a569f
   password_salt: bef65e058905c379436d80d1a32e7374b139e7b0
+  facebook_id: riccardo_test
+  admin: false

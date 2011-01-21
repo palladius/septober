@@ -1,15 +1,17 @@
 one:
-  name: MyString
-  description: MyText
-  active: false
-  due: 2011-01-20
+  name: "Buy milk and coffee ASAP!!"
+  description: A sample todo with two exclamatives
+  active: true
+  due: 2011-01-25
   user_id: 1
   project_id: 1
+  priority: 4
 
 two:
-  name: MyString
-  description: MyText
-  active: false
-  due: 2011-01-20
-  user_id: 1
-  project_id: 1
+  name: Buy christms present for mum by xmas
+  description: Ive seen a lot of stuff. Probably the new ACME product is the best.
+  active: true
+  due: 2011-12-25
+  priority: 2
+  user_id: 2
+  project_id: 2
