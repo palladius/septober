@@ -2,15 +2,17 @@
 root:
   username: root
   email: root@example.com
-  password_hash: 3488f5f7efecab14b91eb96169e5e1ee518a569f
-  password_salt: bef65e058905c379436d80d1a32e7374b139e7b0
+  password: testfixture_root
+#  password_hash: 3488f5f7efecab14b91eb96169e5e1ee518a569f
+#  password_salt: bef65e058905c379436d80d1a32e7374b139e7b0
   facebook_id: riccardo_id
   admin: true
 
 guest:
   username: guest
   email: guest@example.com
-  password_hash: 3488f5f7efecab14b91eb96169e5e1ee518a569f
-  password_salt: bef65e058905c379436d80d1a32e7374b139e7b0
+  password: testfixture_guest
+#  password_hash: 3488f5f7efecab14b91eb96169e5e1ee518a569f
+#  password_salt: bef65e058905c379436d80d1a32e7374b139e7b0
   facebook_id: riccardo_test
   admin: false

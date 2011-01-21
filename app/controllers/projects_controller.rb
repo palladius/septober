@@ -1,4 +1,5 @@
 class ProjectsController < ApplicationController
+  before_filter :login_required #, :except => [:index, :show]
   def index
     @projects = Project.all
   end

@@ -1,4 +1,6 @@
 class TodosController < ApplicationController
+  before_filter :login_required 
+  
   def index
     @todos = Todo.all
   end
