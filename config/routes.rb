@@ -1,4 +1,5 @@
 Septober::Application.routes.draw do
+
   match 'user/edit' => 'users#edit', :as => :edit_current_user
   match 'signup' => 'users#new', :as => :signup
   match 'logout' => 'sessions#destroy', :as => :logout
@@ -8,6 +9,12 @@ Septober::Application.routes.draw do
   resources :users
   resources :projects
   resources :todos
+  
+  # TODO move
+  #resources :ric_addons
+  get "ric_addons/index"
+  get "ric_addons/search"
+  #get "ric_addons/about"
 
   # The priority is based upon order of creation:
   # first created -> highest priority.
