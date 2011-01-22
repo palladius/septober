@@ -2,16 +2,14 @@
 
 <table>
   <tr>
-    <th>Due</th>
-    <th>Name</th>
+    <th>Todos</th>
     <th>User</th>
     <th>Project</th>
   </tr>
   <% for todo in @todos %>
     <tr>
-      <td><%= todo.due %></td>
       <td><%= render_name(todo) %></td>
-      <td><%= todo.user_id %></td>
+      <td><%= todo.user %></td>
       <td><%= todo.project %></td>
       <td><%= link_to "Show", todo %></td>
       <td><%= link_to "Edit", edit_todo_path(todo) %></td>

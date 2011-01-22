@@ -1,7 +1,7 @@
 class ProjectsController < ApplicationController
   before_filter :login_required #, :except => [:index, :show]
   def index
-    @projects = Project.all
+    @projects = Project.find_all_by_user_id(current_user.id)
   end
 
   def show

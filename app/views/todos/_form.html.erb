@@ -6,7 +6,7 @@
   </p>
   <p>
     <%= f.label :description %><br />
-    <%= f.text_area :description %>
+    TODO<%#= f.text_area :description %>
   </p>
   <p>
     <%= f.label :active %><br />
@@ -18,11 +18,11 @@
   </p>
   <p>
     <%= f.label :user_id %><br />
-    <%= f.text_field :user_id %>
+    <%= collection_select("todo", :user_id , [User.find(current_user.id)], :id, :username , :include_blank => false ) %>
   </p>
   <p>
     <%= f.label :project_id %><br />
-    <%= f.text_field :project_id %>
+    <%= collection_select("todo", :project_id , Project.find_all_by_user_id_and_active(current_user.id,true, :order => "name") , :id, :name , :include_blank => false ) %>
   </p>
   <p><%= f.submit %></p>
 <% end %>

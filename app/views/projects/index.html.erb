@@ -4,17 +4,13 @@
   <tr>
     <th>Name</th>
     <th>Description</th>
-    <th>Color</th>
-    <th>Active</th>
     <th>User</th>
   </tr>
   <% for project in @projects %>
     <tr>
-      <td><%= project.name %></td>
+      <td><b><%= render_project(project) %></b></td>
       <td><%= project.description %></td>
-      <td><%= project.color %></td>
-      <td><%= project.active %></td>
-      <td><%= project.user_id %></td>
+      <td><%= project.user %></td>
       <td><%= link_to "Show", project %></td>
       <td><%= link_to "Edit", edit_project_path(project) %></td>
       <td><%= link_to "Destroy", project, :confirm => 'Are you sure?', :method => :delete %></td>
