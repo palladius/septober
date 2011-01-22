@@ -2,11 +2,7 @@
 
 <p>
   <strong>Name:</strong>
-  <%= @todo.name %>
-</p>
-<p>
-  <strong>Description:</strong>
-  <%= @todo.description %>
+  <%= render_name(@todo) %>
 </p>
 <p>
   <strong>Active:</strong>
@@ -26,7 +22,7 @@
 </p>
 
 <p>
-  <%= link_to "Edit", edit_todo_path(@todo) %> |
-  <%= link_to "Destroy", @todo, :confirm => 'Are you sure?', :method => :delete %> |
-  <%= link_to "View All", todos_path %>
+  <%= iconed_link_to "Edit", edit_todo_path(@todo) %> |
+  <%= iconed_link_to "Destroy", @todo, :confirm => 'Are you sure?', :method => :delete %> |
+  <%= iconed_link_to "View All", todos_path %>
 </p>

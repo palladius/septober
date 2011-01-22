@@ -1,0 +1,1 @@
+../../vendor/plugins/ric_addons/lib/app/controllers/ric_addons_controller.rb

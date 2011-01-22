@@ -1,0 +1,1 @@
+../../vendor/plugins/ric_addons/lib/app/helpers/riccardo_helper.rb
