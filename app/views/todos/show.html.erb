@@ -13,7 +13,6 @@
   <strong>Project:</strong>
   <%= link_to( render_project(@todo.project), @todo.project ) %>
 </p>
-
 <p>
   <%= iconed_link_to "Edit", edit_todo_path(@todo) %> |
   <%= iconed_link_to "Destroy", @todo, :confirm => 'Are you sure?', :method => :delete %> |
