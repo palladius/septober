@@ -1,1 +1,0 @@
-../../vendor/plugins/ric_addons/skel/lib/tasks/setup.thor
