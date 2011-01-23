@@ -1,7 +1,16 @@
 <%
   @base_models = %w{todos projects ric_addons#index }
 %>
-<table border='0' width='100%' class='header_table' >
+<!--
+<img src='/images/logo-banner.png' width='100%' alt='alt' 
+	style="opacity:0.4;filter:alpha(opacity=40)"
+	title='banner title for APP_NAME_TODO' 
+>
+-->
+<table border='0' width='100%' class='header_table' 
+	BACKGROUND="/images/logo-banner.png"
+	style="opacity:0.6;filter:alpha(opacity=40)"
+>
 	<tr>
 		<td align='center' width='80%' >
 			<%= link_to( '<b>Home</b>'.html_safe ,"/") %> 
@@ -15,7 +24,7 @@
 	</tr>
 	<tr>
 		<td colspan=''>
-			<a href='/'><img src='/images/logo-banner.png' width='100%' alt='alt' title='banner title for APP_NAME_TODO' ></a>
+			<h2>Welcome to <a href='/'>APP_NAME</a> </h2>
 		</td>
 		<td valign='top' >
 			<%= render :partial => 'ric_addons/nifty_login' rescue "NiftyLoginErr: #{$!}" %>

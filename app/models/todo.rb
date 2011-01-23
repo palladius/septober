@@ -7,6 +7,7 @@ class Todo < ActiveRecord::Base
     belongs_to :project
     validates_associated :project, :user
     validates_presence_of :project, :user
+    validates_inclusion_of :priority, :in => 1..5 ## , :message => "number must be in 1..5!"
 
     def to_s
       name
