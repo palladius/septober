@@ -10,12 +10,19 @@ Septober::Application.routes.draw do
   resources :projects
   resources :todos
   
-  # TODO move
-  #resources :ric_addons
+  #####################################
+  ### RicAddons::Routes
+  # TODO move to some magic function.. sth like
+  # ric_addons_set_routes()
+  # Routes version 1.0.1
+  get "ric_addons"        => "ric_addons#index"
+  get "ric_addons/about"
   get "ric_addons/index"
   get "ric_addons/search"
-  #get "ric_addons/about"
-
+  get "ric_addons/tests"
+  ### /RicAddons::Routes
+  ####################################
+  
   # The priority is based upon order of creation:
   # first created -> highest priority.
 

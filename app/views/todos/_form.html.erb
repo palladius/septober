@@ -18,6 +18,9 @@
   </p>
   <p>
     <%= f.label :user_id %><br />
+	<!-- Should be here hidden -->
+    <%= f.hidden_field(:user_id)  %>
+	<!-- .. but it isnt so this does the trick (TODO its injectable!) -->
     <%= collection_select("todo", :user_id , [User.find(current_user.id)], :id, :username , :include_blank => false ) %>
   </p>
   <p>
