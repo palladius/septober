@@ -19,7 +19,7 @@ class User < ActiveRecord::Base
   
   # to be called after create!
   def provision_projects()
-    Project.provision_for_user(self)
+    Project.provision_for_user(self) # create normal projects for user.
   end
   
   

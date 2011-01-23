@@ -8,7 +8,7 @@
   
   #cities = City.create([{ :name => 'Chicago' }, { :name => 'Copenhagen' }])
   #   Mayor.create(:name => 'Daley', :city => cities.first)
-
+  
   # TODO load from fixtures..
-  Fixtures.create_fixtures("db/seeds","projects")
+  #Fixtures.create_fixtures("db/seeds","projects")
   

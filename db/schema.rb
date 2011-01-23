@@ -43,6 +43,7 @@ ActiveRecord::Schema.define(:version => 20110120193417) do
     t.datetime "updated_at"
     t.string   "facebook_id"
     t.boolean  "admin",         :default => false
+    t.text     "description"
   end
 
 end
