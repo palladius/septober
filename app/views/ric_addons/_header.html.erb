@@ -9,7 +9,7 @@
 -->
 <table border='0' width='100%' class='header_table' 
 	BACKGROUND="/images/logo-banner.png"
-	style="opacity:0.6;filter:alpha(opacity=40)"
+	style="opacity:0.7;filter:alpha(opacity=50);background-repeat:no-repeat;"
 >
 	<tr>
 		<td align='center' width='80%' >
@@ -24,7 +24,8 @@
 	</tr>
 	<tr>
 		<td colspan=''>
-			<h2>Welcome to <a href='/'>APP_NAME</a> </h2>
+			<h2><a href='/'><%=$APP_NAME%></a> </h2>
+			"<i><%= $APP_HEADLINE %></i>"
 		</td>
 		<td valign='top' >
 			<%= render :partial => 'ric_addons/nifty_login' rescue "NiftyLoginErr: #{$!}" %>
