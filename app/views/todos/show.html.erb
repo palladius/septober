@@ -1,24 +1,17 @@
-<% title "Todo" %>
-
-<p>
-  <strong>Name:</strong>
-  <%= render_name(@todo) %>
-</p>
-<p>
-  <strong>Active:</strong>
-  <%= @todo.active %>
-</p>
+<% #title "Todo" %>
+<h1><%= render_name(@todo).capitalize %></h1>
 <p>
   <strong>Due:</strong>
   <%= @todo.due %>
 </p>
 <p>
-  <strong>User:</strong>
-  <%= @todo.user_id %>
+  <strong>description:</strong>
+  <%= @todo.description %>
 </p>
+
 <p>
   <strong>Project:</strong>
-  <%= @todo.project_id %>
+  <%= link_to( render_project(@todo.project), @todo.project ) %>
 </p>
 
 <p>

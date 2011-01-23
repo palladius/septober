@@ -16,4 +16,22 @@ class Todo < ActiveRecord::Base
     def to_html
       
     end
+    
+    # autodeducts the projects, and other... :)
+    def self.magic_create(str)
+      # autodetect stuff!
+    end
+    
+    def self.provision_for_user(user)
+      ver = '0.1.0'
+      tail = "--\nAutoProvisioned Todos v.#{ver}"
+      Todo.create([
+        { :name => 'personal' , :description => "Your personal stuff"+tail,                   :color => :orange, :user_id => user.id },
+        { :name => 'work'     , :description => "Your work or school stuff"+tail,             :color => :green,  :user_id => user.id },
+        { :name => 'septober' , :description => "Personal (family, love, hobbies, ...)"+tail, :color => :gray,   :user_id => user.id },
+      #  { :name => 'family'   , :description => "AutoProvisioned Projects v.#{ver}", :color => :purple, :user_id => user.id },
+      #  { :name => 'love'     , :description => "AutoProvisioned Projects v.#{ver}", :color => :pink,   :user_id => user.id },
+      ])
+      
+    end
 end

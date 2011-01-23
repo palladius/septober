@@ -20,8 +20,10 @@ class User < ActiveRecord::Base
   
   # to be called after create!
   def provision_projects_on_create()
-    puts "Creating projects for new user '#{self}'.."
+    puts "+ Creating projects for new user '#{self}'.."
     Project.provision_for_user(self) # create normal projects for user.
+    puts "+ Creating projects for new user '#{self}'.."
+    Todo.provision_for_user(self) # create normal projects for user.
   end
   
   

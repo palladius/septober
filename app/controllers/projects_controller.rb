@@ -13,6 +13,8 @@ class ProjectsController < ApplicationController
   end
 
   def create
+    params[:project][:user_id] = current_user.id
+    #params[:project][:description] = 'ovverridden by ctrler!'
     @project = Project.new(params[:project])
     if @project.save
       flash[:notice] = "Successfully created project."

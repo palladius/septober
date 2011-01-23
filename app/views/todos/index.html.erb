@@ -1,4 +1,9 @@
-<% title "Todos" %>
+<%
+ #Todo.with_scope(:find => {:conditions => "user_id = #{current_user.id}"},
+ #                :create => {:user_id => current_user.id}) do
+ # user_posts = Post.find(:all)
+%>
+<%# title "Todos" %>
 
 <table>
   <tr>
