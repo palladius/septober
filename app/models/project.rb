@@ -12,13 +12,14 @@ class Project < ActiveRecord::Base
     end
     
     def self.provision_for_user(user)
-      ver = '0.2'
+      ver = '0.2.1'
+      tail = "--\nAutoProvisioned Projects v.#{ver}"
       Project.create([
-        { :name => 'personal' , :description => "AutoProvisioned Projects v.#{ver}", :color => :orange, :user_id => user.id },
-        { :name => 'work'     , :description => "AutoProvisioned Projects v.#{ver}", :color => :green,  :user_id => user.id }, 
-        { :name => 'septober' , :description => "AutoProvisioned Projects v.#{ver}", :color => :gray,   :user_id => user.id },
-        { :name => 'family'   , :description => "AutoProvisioned Projects v.#{ver}", :color => :purple, :user_id => user.id },
-        { :name => 'love'     , :description => "AutoProvisioned Projects v.#{ver}", :color => :pink,   :user_id => user.id },
+        { :name => 'personal' , :description => "Your personal stuff"+tail,                   :color => :orange, :user_id => user.id },
+        { :name => 'work'     , :description => "Your work or school stuff"+tail,             :color => :green,  :user_id => user.id },
+        { :name => 'septober' , :description => "Personal (family, love, hobbies, ...)"+tail, :color => :gray,   :user_id => user.id },
+      #  { :name => 'family'   , :description => "AutoProvisioned Projects v.#{ver}", :color => :purple, :user_id => user.id },
+      #  { :name => 'love'     , :description => "AutoProvisioned Projects v.#{ver}", :color => :pink,   :user_id => user.id },
       ])
       
     end

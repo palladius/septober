@@ -4,7 +4,8 @@ class User < ActiveRecord::Base
 
   attr_accessor :password
   before_save :prepare_password
-
+  before_create :provision_projects_on_create
+  
   validates_presence_of :username
   validates_uniqueness_of :username, :email, :allow_blank => true
   validates_format_of :username, :with => /^[-\w\._@]+$/i, :allow_blank => true, :message => "should only contain letters, numbers, or .-_@"
@@ -18,7 +19,8 @@ class User < ActiveRecord::Base
   end
   
   # to be called after create!
-  def provision_projects()
+  def provision_projects_on_create()
+    puts "Creating projects for new user '#{self}'.."
     Project.provision_for_user(self) # create normal projects for user.
   end
   
