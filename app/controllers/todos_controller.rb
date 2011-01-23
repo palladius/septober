@@ -2,7 +2,11 @@ class TodosController < ApplicationController
   before_filter :login_required 
   
   def index
-    @todos = Todo.all
+    #  Project.with_scope(
+    #    :find => {:conditions => "user_id = #{user.id}"},
+    #    :create => {:user_id => user.id}
+    #  )
+    @todos = Todo.find(:all, :conditions => "user_id = #{current_user.id}", :order => 'updated_at DESC')
   end
 
   def show
@@ -18,7 +22,8 @@ class TodosController < ApplicationController
     @todo = Todo.new(params[:todo])
     if @todo.save
       flash[:notice] = "Successfully created todo."
-      redirect_to @todo
+      #      redirect_to @todo
+      redirect_to :action => 'index'
     else
       render :action => 'new'
     end

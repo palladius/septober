@@ -1,12 +1,16 @@
 <% #title "Todo" %>
-<h1><%= render_name(@todo).capitalize %></h1>
+<h1><%= render_todo_name(@todo) %></h1>
 <p>
   <strong>Due:</strong>
   <%= @todo.due %>
 </p>
 <p>
-  <strong>description:</strong>
+  <strong>Description:</strong>
   <%= @todo.description %>
+</p>
+<p>
+  <strong>Priority:</strong>
+  <%= render_priority(@todo) %>
 </p>
 
 <p>

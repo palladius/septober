@@ -5,8 +5,8 @@
     <%= f.text_field :name %>
   </p>
   <p>
-    <%= f.label :description %><br />
-    TODO<%#= f.text_area :description %>
+    <%= f.label :where %><br />
+    <%= f.text_field :where %>
   </p>
   <p>
     <%= f.label :active %><br />
@@ -17,15 +17,12 @@
     <%= f.date_select :due %>
   </p>
   <p>
-    <%= f.label :user_id %><br />
-	<!-- Should be here hidden -->
-    <%= f.hidden_field(:user_id)  %>
-	<!-- .. but it isnt so this does the trick (TODO its injectable!) -->
-    <%= collection_select("todo", :user_id , [User.find(current_user.id)], :id, :username , :include_blank => false ) %>
+    <%= f.label :project_id %><br />
+    <%= collection_select("todo", :project_id , Project.find_all_by_user_id_and_active(current_user.id,true, :order => "id") , :id, :name , :include_blank => false ) %>
   </p>
   <p>
-    <%= f.label :project_id %><br />
-    <%= collection_select("todo", :project_id , Project.find_all_by_user_id_and_active(current_user.id,true, :order => "name") , :id, :name , :include_blank => false ) %>
+    <%= f.label :description %><br />
+    <%= f.text_area :description %>
   </p>
   <p><%= f.submit %></p>
 <% end %>

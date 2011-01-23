@@ -8,17 +8,16 @@
 <table>
   <tr>
     <th>Todos</th>
-    <th>User</th>
     <th>Project</th>
   </tr>
   <% for todo in @todos %>
     <tr>
-      <td><%= render_name(todo) %></td>
-      <td><%= todo.user %></td>
-      <td><%= todo.project %></td>
+      <td><%= render_todo_name(todo) %></td>
+      <td><%= render_project(todo.project) %></td>
       <td><%= link_to "Show", todo %></td>
       <td><%= link_to "Edit", edit_todo_path(todo) %></td>
       <td><%= link_to "Destroy", todo, :confirm => 'Are you sure?', :method => :delete %></td>
+      <td><%#= link_to "Toggle (TODO)", todo, :method => :toggle %></td>
     </tr>
   <% end %>
 </table>

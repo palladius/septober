@@ -21,6 +21,5 @@ class Project < ActiveRecord::Base
       #  { :name => 'family'   , :description => "AutoProvisioned Projects v.#{ver}", :color => :purple, :user_id => user.id },
       #  { :name => 'love'     , :description => "AutoProvisioned Projects v.#{ver}", :color => :pink,   :user_id => user.id },
       ])
-      
     end
 end
