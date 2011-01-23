@@ -1,1 +1,30 @@
-../../../vendor/plugins/ric_addons/lib/app/views/layout/ric_addons_app.html.erb
+###
+### DONT TOUCH THIS FILE!! It was included automatically. Rather run this again: thor ric_addons:copy_files
+### RicAddons version: 0.4.1
+### @tags: thor, auto, cool, ric_addons
+###
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= content_for?(:title) ? yield(:title) : "Untitled" %></title>
+    <%= stylesheet_link_tag "application" %>
+    <%= javascript_include_tag :defaults %>
+    <%= csrf_meta_tag %>
+    <%= yield(:head) %>
+  </head>
+  <body>
+    <div id='header' >
+      <%= render :partial => 'ric_addons/header' %>
+    </div>
+    <div id="container" >
+      <% flash.each do |name, msg| %>
+        <%= content_tag :div, msg, :id => "flash_#{name}" %>
+      <% end %>
+      <%= content_tag :h1, yield(:title) if show_title? %>
+      <%= yield %>
+    </div>
+    <div id='footer' >
+       <%= render :partial => 'ric_addons/footer' %>
+    </div>
+  </body>
+</html>
