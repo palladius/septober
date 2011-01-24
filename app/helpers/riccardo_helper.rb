@@ -13,7 +13,7 @@ module RiccardoHelper
   
   def icon(name,opts={})
     opts[:height] ||= 15
-    image_tag("icons/#{name}.png", opts)
+    image_tag("ric_addons/icons/#{name}.png", opts)
   end
   
   def htmlRescueError(theme, err) 

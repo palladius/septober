@@ -17,11 +17,11 @@
 			
       <td><%= render_priority_icon(todo.priority) %></td>
       <td><%= link_to(render_todo_name(todo) , (todo) ) %></td>
-      <td><%= render_project(todo.project) %></td>
+<%#= render_project(todo.project) %>
       <td>
           <%#= link_to "Show", todo %>
-          <%= link_to "Edit", edit_todo_path(todo) %>
-          <%= link_to "Destroy", todo, :confirm => 'Are you sure?', :method => :delete %>
+          <%= iconed_link_to "Edit", edit_todo_path(todo) %>
+          <%= iconed_link_to "Destroy", todo, :confirm => 'Are you sure?', :method => :delete %>
       </td>
       <td><%#= link_to "Toggle (TODO)", todo, :method => :toggle %></td>
     </tr>
