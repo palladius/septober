@@ -11,6 +11,14 @@ module TodosHelper
     #(todo.active ? "<b>#{coloured_todo}</b>" : "<s>#{coloured_todo}</s>").html_safe
   end
   
+  def priority_name(num)
+    $priorities_names[num]
+  end
+
+  def render_priority_icon(todo,opts={})
+    image_tag("icons/priorities/#{todo.priority}.png" )
+  end
+  
   def render_priority(todo)
     priority = todo.priority
     prio_name = $priorities_names[priority]

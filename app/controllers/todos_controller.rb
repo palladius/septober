@@ -22,8 +22,9 @@ class TodosController < ApplicationController
     @todo = Todo.new(params[:todo])
     if @todo.save
       flash[:notice] = "Successfully created todo."
-      #      redirect_to @todo
-      redirect_to :action => 'index'
+      #redirect_to @todo
+      #redirect_to :action => 'index'
+      redirect_to todos_url
     else
       render :action => 'new'
     end
@@ -37,7 +38,8 @@ class TodosController < ApplicationController
     @todo = Todo.find(params[:id])
     if @todo.update_attributes(params[:todo])
       flash[:notice] = "Successfully updated todo."
-      redirect_to todo_url
+      #redirect_to todo_url
+      redirect_to :action => 'index'
     else
       render :action => 'edit'
     end

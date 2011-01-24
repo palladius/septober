@@ -13,6 +13,15 @@
     <%= f.check_box :active %>
   </p>
   <p>
+    <%= f.label :priority %><br />
+		DFLT=<%= @todo.priority  %>
+		<% [1,2,3,4,5].each do |prio| %>
+			<%= priority_name(prio) %>
+    	<%= f.radio_button("priority", prio ) %>
+    <% end %>
+    <%= f.range_field :priority %>
+  </p>
+  <p>
     <%= f.label :due %><br />
     <%= f.date_select :due %>
   </p>
