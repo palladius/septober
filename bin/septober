@@ -1,0 +1,82 @@
+#!/usr/bin/env ruby -wKU
+
+=begin
+  ############################################################
+	# $Id: script.rb 5582 2011-01-18 15:18:36Z rcarlesso $
+  ##########################################################
+  @author:    Riccardo Carlesso
+  @email:     riccardo.carlesso@heanet.ie
+  @maturity:  development
+  @language:  Ruby
+  @synopsis:  Brief Description here
+	@tags:      development, rcarlesso
+  @description:
+   Put your longer description here: 
+   Generic script in RUBY...
+ ############################################################
+
+	 @template_history:
+	  2011-01-10 1.5.1: Created $TEMPLATE_VER which my lib_autoinit() can parse!
+	  2011-01-10 1.5.0: Indented and rimanegged :)
+	  2011-01-10 1.5.0: Better Header!!
+    1970-01-01 1.4.3: Automain and Autoinit ffrom lib!
+	  1970-01-01 1.4.1: Adding comment for IRB
+	  1970-01-01 1.4:   Adding jabber, and DEBUG by dflt
+	  1970-01-01 1.3:   Using OptParse for arguments
+	  1970-01-01 1.2:   mangled thru header and confs
+	  1970-01-01 1.1:   added -d support for debug_on e -h usage 
+	  1970-01-01 1.0:   base script
+=end
+
+  require 'optparse'       # http://ruby.about.com/od/advancedruby/a/optionparser.htm
+  #require '~/lib/ric.rb'
+  require 'rubygems'
+  require 'ric'
+  $PROG_VER = '0.1'
+  $DEBUG    = true
+  $TEMPLATE_VER = '1.5.1'
+  
+  $myconf = {
+    :app_name            => 'changeme',
+    :foo_arr             => %w{ bar baz },
+    :hello               => 'Welcome to this terrific application',
+    :max_penis_length    => 22, # except John Holmes
+  }
+
+  def usage(comment=nil)
+    puts "#{$0} v.#{$PROG_VER}"
+    puts "Usage2: #{File.basename $0} [-dhjv] [-l LOGFILE] <FOO> <BAR>"
+    puts $opts
+    pred comment if comment
+    exit 11
+  end
+
+
+  def real_program
+    #$DEBUG = true
+    debug_on 'Just created script, presuming u need some debug. TODO REMOVE ME when everything works!' #if $DEBUG
+      # Maybe you may want to check on ARGV
+    # unless ARGV.size == 2
+    #   usage "Give me 2 arguments!" 
+    # end
+    deb("Hello world from a templated '#{yellow $0 }'")
+    deb "+ Options are:  #{gray $opts}"
+    deb "+ Depured args: #{azure ARGV}"
+    deb "+ Your configuration: #{purple $myconf}"
+    
+    deb "PS Please find me in " + yellow("#{__FILE__}")
+    deb "Maybe you forgot to do:
+      svn add #{__FILE__}       # add to SVN
+      mate #{__FILE__}          # edit file
+      always -- #{__FILE__} -d  # to see what happens..."
+    # Your code goes here...
+  end
+
+  def main()
+    #init
+    #lib_autoinit # if u dont like the autoinit, uncomment init :)
+    real_program 
+  end
+
+  #lib_automain(__FILE__)
+  main
