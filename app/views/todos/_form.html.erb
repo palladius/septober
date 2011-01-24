@@ -14,12 +14,13 @@
   </p>
   <p>
     <%= f.label :priority %><br />
-		DFLT=<%= @todo.priority  %>
 		<% [1,2,3,4,5].each do |prio| %>
-			<%= priority_name(prio) %>
+		  <%= render_priority_icon(prio) %>
     	<%= f.radio_button("priority", prio ) %>
+			<%= priority_name(prio) %>
+			<br/>
     <% end %>
-    <%= f.range_field :priority %>
+    <%#= f.range_field :priority %>
   </p>
   <p>
     <%= f.label :due %><br />

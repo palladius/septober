@@ -1,11 +1,10 @@
 class Todo < ActiveRecord::Base
-    attr_accessible :name, :description, :active, :due, :user_id, :project_id
-    validates_uniqueness_of :name, :scope => :user_id, 
-      :message => "for this user is already created! (Cant have duplicate Todos)"
+    attr_accessible :name, :description, :active, :due, :user_id, :where, :priority, :project_id
       
     belongs_to :user
     belongs_to :project
     
+    validates_uniqueness_of :name, :scope => :user_id, :message => "for this user is already created! (Cant have duplicate Todos)"
     validates_associated :project, :user
     validates_presence_of :project, :user, :name
     validates_inclusion_of :priority, :in => 1..5 ## , :message => "number must be in 1..5!"

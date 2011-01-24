@@ -1,0 +1,6 @@
+<div class='project_synoptic' align='right' style='font-size:x-small' >
+	<% (Project.find_all_by_user_id(current_user.id) rescue [] ).each do |proj| %>
+  	<%= link_to(render_project(proj),proj) %>
+	<% end %>
+	<%= link_to "+", new_project_path() %>
+</div>

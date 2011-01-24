@@ -4,10 +4,10 @@ module TodosHelper
   $priorities_names = %w{ ZERO very_low low    normal  high     very_high }
   $priorities_colors= %w{ ZERO grey     green  black   orange   red       }
   
-
   def render_todo_name(todo, opts={} )
+    title = "Description: '#{todo.description}'\n (Prio=#{$priorities_names[todo.priority]})"
     coloured_todo = render_within_project(todo.project,todo.to_s.capitalize) rescue "TodoErr('#{$!}')"
-    content_tag( (todo.active ? :i : :s) , coloured_todo , :title => todo.description , :alt => :alt )
+    content_tag( (todo.active ? :i : :s) , coloured_todo , :title => title , :alt => :alt )
     #(todo.active ? "<b>#{coloured_todo}</b>" : "<s>#{coloured_todo}</s>").html_safe
   end
   
@@ -15,8 +15,8 @@ module TodosHelper
     $priorities_names[num]
   end
 
-  def render_priority_icon(todo,opts={})
-    image_tag("icons/priorities/#{todo.priority}.png" )
+  def render_priority_icon(priority,opts={})
+    image_tag("icons/priorities/#{priority}.png" , :height => 12)
   end
   
   def render_priority(todo)
