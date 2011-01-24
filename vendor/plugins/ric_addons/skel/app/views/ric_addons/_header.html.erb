@@ -1,0 +1,24 @@
+<%
+  @base_models = %w{todos projects ric_addons#index }
+%>
+<table border='0' width='100%' class='header_table' >
+	<tr>
+		<td align='center' width='80%' >
+			<%= link_to( '<b>Home</b>'.html_safe ,"/") %> 
+			<% @base_models.each do |model| %> 
+				<%= link_to(model,"/#{model.gsub(/#/,'/')}") %>
+			<% end %> 
+		</td>
+		<td align='right' >
+			<%= render :partial => 'ric_addons/minimal_search_form' %>
+		</td>
+	</tr>
+	<tr>
+		<td colspan=''>
+			<a href='/'><img src='/images/logo-banner.png' width='100%' alt='alt' title='banner title for APP_NAME_TODO' ></a>
+		</td>
+		<td valign='top' >
+			<%= render :partial => 'ric_addons/nifty_login' rescue "NiftyLoginErr: #{$!}" %>
+		</td>
+	</tr>
+</table>

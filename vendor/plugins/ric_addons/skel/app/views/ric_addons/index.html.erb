@@ -1,0 +1,14 @@
+<% 
+	#@index_subpages  = %w{ index search tests} 
+%>
+<% title "RicAddons :: Index" %>
+
+<h2>Pages</h2>
+	[ <% @index_subpages.each do |subpage| %>
+  <%= link_to(subpage, "/ric_addons/#{subpage}") %>
+	<% end %> ]
+Here you can find some info..
+
+<h1>Models</h1>
+
+TODO

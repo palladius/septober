@@ -1,0 +1,56 @@
+RicAddons
+=========
+
+This is Riccardo Carlesso second plugin (first to be on a project on its own).
+
+RicAddons v. 0.2.2 I think. This is not DRY. To be sure look at [VERSION] file.
+
+INSTALL
+=======
+
+* Rails 2:  script/plugin install git@github.com:palladius/ric_addons.git
+* Rails 3:   rails plugin install git@github.com:palladius/ric_addons.git
+
+To take advantage of it (until I dont understand how it works u have to manually symlink, sigh!)
+
+- copy the layout from vendor/plugins/ric_addons/lib/app/views/layout/application.html.erb
+- ln -s:  app/views/ric_addons/ to vendor/plugins/ric_addons/lib/app/views/ric_addons/ 
+
+* Routes:
+
+  See config/routes.rb here..
+ 
+* application_controller.rb:
+
+ include Searchable
+ 
+* Inject stuff into your projects:
+ $ ln -s /path/to/ric_addons/skel/lib/tasks/ric_addons.thor /your_app/lib/tasks/
+ $ thor list 
+ $ thor ric_addons:copy_files  # should do the trick
+ 
+ Why didnt I use a generator? Maybe it was too overwhelming.. maybe Ive just seen the RB nice tutorial on Thor ;)
+
+TODO
+====
+
+Here more stuff: http://www.themodestrubyist.com/2010/03/05/rails-3-plugins---part-2---writing-an-engine/
+You can create a ric_admin/ page with lots of auto stuff (like graphs E/R and stuff).
+
+* Naive Search Page and naive search partial..!
+
+
+app/views/ric_addons/
+  about_ric_addons:
+     roadmap: take roadmap.yml
+     docs:    rake docs?!?
+     about:   
+     license:  copy ~/*LICENSE
+
+Example
+=======
+
+Example goes here.
+
+
+Copyright (c) 2011 Riccardo Carlesso, released under the MIT license

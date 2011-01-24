@@ -1,0 +1,6 @@
+<% form_tag( '/ric_addons/search', :method => 'get' ) do %>
+  <%= text_field_tag 'q', "Search RicLife", :onfocus => "document.getElementById('q').value = ''" %>
+  <script type="text/javascript">
+    document.getElementById('q').focus();
+  </script>
+<% end %>

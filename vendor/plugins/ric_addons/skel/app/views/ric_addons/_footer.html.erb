@@ -1,0 +1,22 @@
+<%
+	ric_websites_ring =   {
+		'RAB' => 'http://ricaddressbook.heroku.com/',
+		'lo' => 'http://localhost:3000',
+		'SeptOber' => 'http://septober.heroku.com',
+		'FsDB' => 'http://fsdb.dev.palladius.eu/',
+		'RicLife' => 'https://riclife.palladius.eu/',
+	}
+
+%><div class='footer' align='center' >
+	<hr width='50%' />
+	<p>
+		RicApp v.<%=$RIC_PLUGIN_VER rescue 'VER_ERR' %> APPNAME_TODO Copyright &copyright; &tm; 2010-11 Some rights reserved
+	</p>
+	<p>
+		[
+		<%= ric_websites_ring.map{|appname,url| link_to(appname,url)}.join(' :: ').html_safe %>
+		]
+	<%#= RicPlugin.ric_websites_ring rescue "Problems to include ric_websites_ring" %>
+	</p>
+
+</div>
