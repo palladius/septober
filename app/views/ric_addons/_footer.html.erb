@@ -10,7 +10,7 @@
 %><div class='footer' align='center' >
 	<hr width='50%' />
 	<p>
-		RicApp v.<%=$RIC_PLUGIN_VER rescue 'VER_ERR' %> <b><%=$APP_NAME%></b> Copyright 2010-11 Some rights reserved
+		<b class='ric_app' ><%=$APP[:name] rescue "Unknown RicApp" %></b> v.<%=$APP[:version] rescue 'VER_ERR' %> - <%=$APP.fetch :copyright, 'All rights reserved (TM)'%>
 	</p>
 	<p>
 		[

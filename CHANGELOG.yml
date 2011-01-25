@@ -1,0 +1,10 @@
+# CHANGELOG in YML style :)
+
+
+1.0.2:
+- Added this changelog
+- 'added users list to riccardo_helper an RicAddons#index'
+- Overdue implemented
+- Refactored footer with app name, version and copyright
+1.0.1:
+- BOH
