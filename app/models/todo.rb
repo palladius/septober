@@ -6,7 +6,10 @@ class Todo < ActiveRecord::Base
     
     named_scope :recent, lambda { { :conditions => ['created_at > ?', 1.week.ago] } }
     named_scope :super_recent, lambda { { :conditions => ['created_at > ?', 1.day.ago] } }
-    named_scope :overdue, lambda { { :conditions => ['due > ?', Time.now ] } }
+    named_scope :overdue,  lambda { { :conditions => ['due > ?', Time.now ] } }
+    # More here: http://railscasts.com/episodes/15-fun-with-find-conditions
+    # Task.find_all_by_priority(1..3)
+    named_scope :relevant, lambda { { :conditions => ['priority in ?', 1..3 ] } }
     
     validates_uniqueness_of :name, :scope => :user_id, :message => "for this user is already created! (Cant have duplicate Todos)"
     validates_associated :project, :user
@@ -15,6 +18,11 @@ class Todo < ActiveRecord::Base
 
     def to_s
       name
+    end
+    
+    # TODO put a link of interesting queries top left
+    def self.interesting_queries
+      [:recent, :super_recent, :overdue, :relevant ]
     end
     
     def to_html

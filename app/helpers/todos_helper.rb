@@ -7,8 +7,7 @@ module TodosHelper
   def render_todo_name(todo, opts={} )
     title = "Description: '#{todo.description}'\n (Prio=#{$priorities_names[todo.priority]})\nWhere: #{todo.where}"
     coloured_todo = render_within_project(todo.project,todo.to_s.capitalize) rescue "TodoErr('#{$!}')"
-    content_tag( (todo.active ? :i : :s) , coloured_todo , :title => title , :alt => :alt )
-    #(todo.active ? "<b>#{coloured_todo}</b>" : "<s>#{coloured_todo}</s>").html_safe
+    content_tag( (todo.active ? :b : :s) , coloured_todo , :title => title , :alt => :alt , :class => "todo") # , :id => "todo_#{todo.id}")
   end
   
   def priority_name(num)

@@ -11,7 +11,7 @@ class TodosController < ApplicationController
     @todos = Todo.find(:all, 
       #:conditions => "user_id = #{current_user.id}", 
       :conditions => filter_conditions, 
-      :order => 'priority DESC, updated_at DESC')
+      :order => 'active DESC, priority DESC, updated_at DESC')
   end
 
   def show
