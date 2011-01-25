@@ -8,7 +8,22 @@ Septober::Application.routes.draw do
   resources :sessions
   resources :users
   resources :projects
+  resources :projects do
+    resources :todos
+  end
   resources :todos
+  
+  #resources :todos do
+  # #member do
+  #   #get 'short'
+  #   post 'done'
+  #   post 'undone'
+  #   post 'toggle'
+  #end
+  
+  match "/todos/:id/toggle" => 'todos#toggle'
+  match "/todos/:id/done"   => 'todos#done'
+  match "/todos/:id/undone" => 'todos#undone'
   
   #####################################
   ### RicAddons::Routes

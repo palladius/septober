@@ -26,7 +26,11 @@ class Todo < ActiveRecord::Base
     end
     
     def to_html
-      
+      'TODO_HTML'
+    end
+    
+    def done?
+      ! active
     end
     
     def self.ids
@@ -42,7 +46,7 @@ class Todo < ActiveRecord::Base
     end
     
     def overdue?
-      due > Date.today rescue false
+      due < Date.today rescue false
     end
     
     def self.provision_for_user(user)

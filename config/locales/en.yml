@@ -18,6 +18,11 @@ en:
   ## Todo
   Due: Due
   Active: Done
+  Toggle: Toggle
+  Done: Done
+  Undone: Reactivate
+  View All: View All
+  mark_as_done: Mark as Done
   ## Project
 it:
     hello: "Ciao a tutti"
@@ -36,5 +41,8 @@ it:
     # Attributes
     ## Todo
     Due: Scade
-    Active: Fatto
+    Active: Attivo
+    Done: Fatto
+    Undone: Attivo
+    mark_as_done: Segna come fatto
     ## Project

@@ -53,11 +53,29 @@ class TodosController < ApplicationController
       render :action => 'edit'
     end
   end
+  
+  def toggle; _update_active(:toggled) ; end 
+  def done;   _update_active(:deactivated,false) ; end
+  def undone; _update_active(:reactivated,true) ; end
 
   def destroy
     @todo = Todo.find(params[:id])
     @todo.destroy
     flash[:notice] = "Successfully destroyed todo."
     redirect_to todos_url
+  end
+  
+private
+  def _update_active(participle,new_active=nil)
+    # nil = toggle
+    new_active ||= false # should be the REVERSE... TODO!
+    # copy the data from edit
+    @todo = Todo.find(params[:id])
+    if @todo.update_attributes( :active => new_active )
+      flash[:notice] = "Successfully '#{participle}' todo ##{params[:id]}"
+      redirect_to todos_url
+    else
+      render :action => 'edit'
+    end
   end
 end
