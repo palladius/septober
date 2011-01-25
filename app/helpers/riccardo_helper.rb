@@ -11,6 +11,10 @@ module RiccardoHelper
       #h "</table>"
   #end
   
+  def render_user(u)
+    content_tag :span, link_to(u,u), :class => :user
+  end
+  
   def icon(name,opts={})
     opts[:height] ||= 15
     image_tag("ric_addons/icons/#{name}.png", opts)

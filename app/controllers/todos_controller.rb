@@ -6,7 +6,7 @@ class TodosController < ApplicationController
     #    :find => {:conditions => "user_id = #{user.id}"},
     #    :create => {:user_id => user.id}
     #  )
-    @todos = Todo.find(:all, :conditions => "user_id = #{current_user.id}", :order => 'updated_at DESC')
+    @todos = Todo.find(:all, :conditions => "user_id = #{current_user.id}", :order => 'priority DESC, updated_at DESC')
   end
 
   def show

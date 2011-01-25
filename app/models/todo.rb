@@ -4,6 +4,10 @@ class Todo < ActiveRecord::Base
     belongs_to :user
     belongs_to :project
     
+    named_scope :recent, lambda { { :conditions => ['created_at > ?', 1.week.ago] } }
+    named_scope :super_recent, lambda { { :conditions => ['created_at > ?', 1.day.ago] } }
+    named_scope :overdue, lambda { { :conditions => ['due > ?', Time.now ] } }
+    
     validates_uniqueness_of :name, :scope => :user_id, :message => "for this user is already created! (Cant have duplicate Todos)"
     validates_associated :project, :user
     validates_presence_of :project, :user, :name
@@ -27,6 +31,10 @@ class Todo < ActiveRecord::Base
     # autodeducts the projects, and other... :)
     def self.magic_create(str)
       # autodetect stuff!
+    end
+    
+    def overdue?
+      due > Date.today
     end
     
     def self.provision_for_user(user)

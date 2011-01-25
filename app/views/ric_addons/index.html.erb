@@ -12,3 +12,9 @@ Here you can find some info..
 <h1>Models</h1>
 
 TODO
+
+<h1>Users</h1>
+
+<div class='users_list'>
+	Users: <%= User.all.map{|u| render_user(u) }.join(', ').html_safe %>
+</div>

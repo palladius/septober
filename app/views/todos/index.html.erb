@@ -15,9 +15,8 @@
   <% for todo in @todos %>
     <tr>
 			
-      <td><%= render_priority_icon(todo.priority) %></td>
+      <td><%= render_todo_icons(todo) %></td>
       <td><%= link_to(render_todo_name(todo) , (todo) ) %></td>
-<%#= render_project(todo.project) %>
       <td>
           <%#= link_to "Show", todo %>
           <%= iconed_link_to "Edit", edit_todo_path(todo) %>
