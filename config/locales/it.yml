@@ -2,16 +2,16 @@
 # See http://github.com/svenfuchs/rails-i18n/tree/master/rails%2Flocale for starting points.
 
 en:
-  hello: "Hello"
+  hello: "Ciao a tutti"
   hello_world: "Hello world"
   # Options
-  Destroy: Destroy
-  Edit: Edit
+  Destroy: Distruggi
+  Edit: Modifica
   # Models
-  Project: Project
-  Projects: Projects
-  Todo: Task
-  Todos: Tasks
-  User: User
-  Users: Users
+  Project: Progetto
+  Projects: Progetti
+  Todo: Coso
+  Todos: Cosi
+  User: Utente
+  Users: Utenti
     
