@@ -1,5 +1,10 @@
 # CHANGELOG in YML style :)
+# PS TODO make this DRY, now youve to remember to update as well the following files:
+# - ./VERSION
+# - app/helpers/application_helper
 
+1.0.4:
+  - SubProjects Todo view bug corrected (now corectly visualizes corretcly)
 1.0.3:
  - More internationalization. A few plau
  - ripristined English as dflt locale. Some nasty err in oneline_create with trnslation
