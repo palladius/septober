@@ -15,7 +15,10 @@ en:
   User: User
   Users: Users
   # Attributes
+  ## Todo
   Due: Due
+  Active: Done
+  ## Project
 it:
     hello: "Ciao a tutti"
     hello_world: "Hello world"
@@ -31,4 +34,7 @@ it:
     User: Utente
     Users: Utenti
     # Attributes
+    ## Todo
     Due: Scade
+    Active: Fatto
+    ## Project
