@@ -11,6 +11,10 @@ class Project < ActiveRecord::Base
       name
     end
     
+    def name_and_activity() # For Todo creation form
+      active ? name : "#{name} (unactive!)"
+    end
+    
     def self.provision_for_user(user)
       ver = '0.2.1'
       tail = "--\nAutoProvisioned Projects v.#{ver}"
