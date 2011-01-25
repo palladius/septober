@@ -1,7 +1,9 @@
  Put here stuff for github ;-)
  
- Test image:
-   <img src='http://www.palladius.it/palladius.jpg' height='100' />
+ A screenshot:
+ <img src='http://www.palladius.it/palladius.jpg' height='100' />
+ <img src='https://github.com/palladius/septober/blob/master/doc/screenshot.png' height='100' />
+
    
  Author: Riccardo Carlesso <rusko@palladius.it>
     
