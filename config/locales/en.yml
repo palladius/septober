@@ -14,4 +14,21 @@ en:
   Todos: Tasks
   User: User
   Users: Users
-    
+  # Attributes
+  Due: Due
+it:
+    hello: "Ciao a tutti"
+    hello_world: "Hello world"
+    # Options
+    Destroy: Distruggi
+    Edit: Modifica
+    Options: Opzioni
+    # Models
+    Project: Progetto
+    Projects: Progetti
+    Todo: Coso
+    Todos: Cosi
+    User: Utente
+    Users: Utenti
+    # Attributes
+    Due: Scade

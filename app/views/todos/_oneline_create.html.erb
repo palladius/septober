@@ -1,11 +1,13 @@
 <%
 	@todo = Todo.new
 %>
+<div class='todo_oneline' >
 <%= form_for @todo do |f| %>
   <%= f.error_messages %>
   <p>
     <%= f.text_field :name %>
-    <%= f.date_select :due %>
-    <%= collection_select("todo", :project_id , Project.find_all_by_user_id_and_active(current_user.id,true, :order => "id") , :id, :name , :include_blank => false ) %>
+    <%= f.date_select(:due) rescue "((DueErr: #{$!}))" %>
+    <%= collection_select("todo", :project_id , Project.find_all_by_user_id_and_active(current_user.id,true, :order => "id") , :id, :name , :include_blank => false ) rescue "((ProjErr: #{$!}))" %>
 <%= f.submit %></p>
 <% end %>
+</div>
