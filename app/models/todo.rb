@@ -34,7 +34,7 @@ class Todo < ActiveRecord::Base
     end
     
     def overdue?
-      due > Date.today
+      due > Date.today rescue false
     end
     
     def self.provision_for_user(user)

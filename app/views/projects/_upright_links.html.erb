@@ -1,5 +1,5 @@
 <div class='project_synoptic' align='right' style='font-size:x-small' >
-	<%= link_to(image_tag('icons/models/project.ong'),projects_url) %>
+	<%= link_to(image_tag('icons/models/project.png' , :title => 'All projects', :height => 12),projects_url) %>
 	<% (Project.find_all_by_user_id(current_user.id) rescue [] ).each do |proj| %>
 	<%= link_to(render_project(proj),"/todos?add_project=#{proj.name}") %>
 	<% end %>

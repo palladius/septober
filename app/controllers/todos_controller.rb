@@ -6,7 +6,12 @@ class TodosController < ApplicationController
     #    :find => {:conditions => "user_id = #{user.id}"},
     #    :create => {:user_id => user.id}
     #  )
-    @todos = Todo.find(:all, :conditions => "user_id = #{current_user.id}", :order => 'priority DESC, updated_at DESC')
+    filter_conditions = { :user_id => current_user.id }
+    filter_conditions[:project_id] = Project.find_by_name(params[:add_project]) if params[:add_project]
+    @todos = Todo.find(:all, 
+      #:conditions => "user_id = #{current_user.id}", 
+      :conditions => filter_conditions, 
+      :order => 'priority DESC, updated_at DESC')
   end
 
   def show
@@ -23,7 +28,6 @@ class TodosController < ApplicationController
     if @todo.save
       flash[:notice] = "Successfully created todo."
       #redirect_to @todo
-      #redirect_to :action => 'index'
       redirect_to todos_url
     else
       render :action => 'new'
@@ -39,7 +43,7 @@ class TodosController < ApplicationController
     if @todo.update_attributes(params[:todo])
       flash[:notice] = "Successfully updated todo."
       #redirect_to todo_url
-      redirect_to :action => 'index'
+      redirect_to todos_url
     else
       render :action => 'edit'
     end

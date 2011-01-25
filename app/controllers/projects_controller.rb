@@ -18,7 +18,8 @@ class ProjectsController < ApplicationController
     @project = Project.new(params[:project])
     if @project.save
       flash[:notice] = "Successfully created project."
-      redirect_to @project
+      #redirect_to @project
+      redirect_to todos_url
     else
       render :action => 'new'
     end
@@ -32,7 +33,8 @@ class ProjectsController < ApplicationController
     @project = Project.find(params[:id])
     if @project.update_attributes(params[:project])
       flash[:notice] = "Successfully updated project."
-      redirect_to project_url
+      #redirect_to project_url
+      redirect_to todos_url
     else
       render :action => 'edit'
     end
