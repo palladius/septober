@@ -6,6 +6,9 @@ class User < ActiveRecord::Base
   before_save :prepare_password
   before_create :provision_projects_on_create
   
+  has_many :projects # , :class_name => "object", :foreign_key => "reference_id"
+  has_many :todos # , :class_name => "object", :foreign_key => "reference_id"
+  
   validates_presence_of :username
   validates_uniqueness_of :username, :email, :allow_blank => true
   validates_format_of :username, :with => /^[-\w\._@]+$/i, :allow_blank => true, :message => "should only contain letters, numbers, or .-_@"
