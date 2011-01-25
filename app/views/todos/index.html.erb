@@ -4,27 +4,26 @@
  # user_posts = Post.find(:all)
 %>
 <%# title "Todos" %>
-
 <%=render :partial => "projects/upright_links" %>
 
 <table>
   <tr>
     <th>Todos</th>
     <th>Project</th>
+    <th>Options</th>
   </tr>
   <% for todo in @todos %>
     <tr>
-			
       <td><%= render_todo_icons(todo) %></td>
       <td><%= link_to(render_todo_name(todo) , (todo) ) %></td>
       <td>
           <%#= link_to "Show", todo %>
           <%= iconed_link_to "Edit", edit_todo_path(todo) %>
           <%= iconed_link_to "Destroy", todo, :confirm => 'Are you sure?', :method => :delete %>
+          <%#= link_to "Toggle (TODO)", todo, :method => :toggle %>
       </td>
-      <td><%#= link_to "Toggle (TODO)", todo, :method => :toggle %></td>
     </tr>
   <% end %>
 </table>
 
-<p><%= link_to "New Todo", new_todo_path(todo) %></p>
+<p><%= iconed_link_to "Todo", new_todo_path(todo) %></p>
