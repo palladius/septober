@@ -1,6 +1,9 @@
 # CHANGELOG in YML style :)
 
-
+1.0.3:
+ - More internationalization. A few plau
+ - ripristined English as dflt locale. Some nasty err in oneline_create with trnslation
+ - put italian as default locale
 1.0.2:
 - Added this changelog
 - 'added users list to riccardo_helper an RicAddons#index'
