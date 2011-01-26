@@ -1,4 +1,7 @@
 class Todo < ActiveRecord::Base
+  
+  require 'socket'
+  
     attr_accessible :name, :description, :active, :due, :user_id, :where, :priority, :project_id
       
     belongs_to :user
@@ -15,6 +18,9 @@ class Todo < ActiveRecord::Base
     validates_associated :project, :user
     validates_presence_of :project, :user, :name
     validates_inclusion_of :priority, :in => 1..5 ## , :message => "number must be in 1..5!"
+    
+    #  before_save :apply_todo_regex_magic #    RIGHT NOW... TO BECOME => BeforeCreate
+    before_create :apply_todo_regex_magic
 
     def to_s
       name
@@ -46,7 +52,25 @@ class Todo < ActiveRecord::Base
     end
     
     def overdue?
-      due < Date.today rescue false
+      due < Date.today && active == true rescue false
+    end
+    
+  # This should do some magic stuff like adding the due to tomorrow if string matches 'by tomorrow' or 'entro domani' and so on..  
+    def apply_todo_regex_magic
+      str = self.name rescue ''
+      @due ||= Date.today if str.match /today/i
+      @due ||= Date.tomorrow if str.match /tomorrow|domani/i # TODO \<string\>
+      @priority = 1 if str.match /^\-\-|\.\.\.$/ # TODO remove the ++
+      @priority = 2 if str.match /^\-|\.\.$/ # TODO remove the ++
+      @priority = 4 if str.match /^\+|!$/ # TODO remove the ++
+      @priority = 5 if str.match /^\+\+|!!$/ # TODO remove the ++
+      @description = I18n.t(:quick_created) unless @description.to_s.length > 0 # alredy created
+      #raise 'cazzo vuoi'
+    end
+    
+    def self.public_apply_todo_regex_magic(todo)
+      todo.description = 'public test'
+      todo.priority = 5
     end
     
     def self.provision_for_user(user)
@@ -68,8 +92,11 @@ class Todo < ActiveRecord::Base
       septober = Project.find_by_name_and_user_id('septober',user.id)
       tail = "--\nAutoProvisioned Todos v.#{ver}"
       Todo.create([
-        {:user_id => user.id, :project_id => personal.id, :name => 'Buy milk and condoms' , :description => tail, :where => Socket.gethostname },
-        {:user_id => user.id, :project_id => work.id,     :name => 'Organize meeting to your boss' , :description => tail  },
+        {:user_id => user.id, :project_id => personal.id, :name => 'Buy milk and condoms' , 
+          :description => tail, :where => "Host: #{Socket.gethostname rescue 'Boh'}" },
+        {:user_id => user.id, :project_id => work.id,     :name => 'Organize meeting to your boss by tomorrow!' , 
+          :priority => 4, 
+          :description => tail  },
         {:user_id => user.id, :project_id => septober.id, :name => 'Eventually cleanup the room' , :description => "Something to be done in 1yr time"+tail },
         {:user_id => user.id, :project_id => septober.id, :name => 'Thank Riccardo for this wonderful application' , :description => "His email is "+ $APP[:email] },
       ])

@@ -5,8 +5,11 @@ en:
   hello: "Hello"
   hello_world: "Hello world"
   # Options
+  New: New
+  new: new
   Destroy: Destroy
   Edit: Edit
+  Show: Show
   # Models
   Project: Project
   Projects: Projects
@@ -16,21 +19,30 @@ en:
   Users: Users
   # Attributes
   ## Todo
+  Todo: Task
+  Todos: Tasks
   Due: Due
   Active: Done
   Toggle: Toggle
   Done: Done
+  new_todo: New Task
   Undone: Reactivate
   View All: View All
+  quick_create: Quick Creation
+  quick_created: Created though quick creation mask
   mark_as_done: Mark as Done
   ## Project
+
 it:
     hello: "Ciao a tutti"
     hello_world: "Hello world"
     # Options
     Destroy: Distruggi
     Edit: Modifica
+    New: Nuovo
+    new: nuovo
     Options: Opzioni
+    Show: Mostra
     # Models
     Project: Progetto
     Projects: Progetti
@@ -45,4 +57,9 @@ it:
     Done: Fatto
     Undone: Attivo
     mark_as_done: Segna come fatto
+    quick_created: Creato con la mascherina di Crezione Veloce
+    quick_create: Crezione Veloce
+    Todo: Voce
+    Todos: Voci
+    new_todo: Nuova Voce
     ## Project

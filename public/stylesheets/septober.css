@@ -1,0 +1,10 @@
+
+.overdue {
+  color: red;
+}
+
+.small_overdue {
+  color: red;
+  font: 65% "Lucida Grande", "Trebuchet MS", Verdana, sans-serif;
+  font-style: oblique;
+}

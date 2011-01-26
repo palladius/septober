@@ -5,9 +5,16 @@ module TodosHelper
   $priorities_colors= %w{ ZERO grey     green  black   orange   red       }
   
   def render_todo_name(todo, opts={} )
-    title = "Description: '#{todo.description}'\n (Prio=#{$priorities_names[todo.priority]})\nWhere: #{todo.where}"
+    # (Prio=#{$priorities_names[todo.priority]})
+    title = [
+      todo.where ? "Where: #{todo.where}" : '-'  ,
+      "Due: #{todo.due}",
+      "Description: '#{todo.description}'",
+      ].join("\n")
     coloured_todo = render_within_project(todo.project,todo.to_s.capitalize) rescue "TodoErr('#{$!}')"
-    content_tag( (todo.active ? :b : :s) , coloured_todo , :title => title , :alt => :alt , :class => "todo") # , :id => "todo_#{todo.id}")
+    ret = content_tag( (todo.active ? :b : :s) , coloured_todo , :title => title , :alt => :alt , :class => "todo") # , :id => "todo_#{todo.id}")
+    ret += content_tag(:span, "Due: #{todo.due}", :class => :small_overdue ) if todo.overdue?
+    return ret
   end
   
   def priority_name(num)
