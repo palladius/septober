@@ -21,7 +21,7 @@ class TodosController < ApplicationController
   end
 
   def show
-    @todo = Todo.find(params[:id])
+    @todo = Todo.find_securely(current_user,params[:id])
   end
 
   def new
@@ -41,7 +41,7 @@ class TodosController < ApplicationController
   end
 
   def edit
-    @todo = Todo.find(params[:id])
+    @todo = Todo.find_securely(current_user,params[:id])
   end
 
   def update

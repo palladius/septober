@@ -1,5 +1,6 @@
 <%= form_for @todo do |f| %>
   <%= f.error_messages %>
+    (by <b class='user' ><%= @todo.user rescue '?!?' %></b>)
   <p>
     <%= f.label :name %><br />
     <%= f.text_field :name %>

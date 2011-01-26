@@ -51,4 +51,9 @@ class TodosControllerTest < ActionController::TestCase
     assert_redirected_to todos_url
     assert !Todo.exists?(todo.id)
   end
+  
+  def test_cannot_see_someone_elses_todo
+    puts "Serena asked me to do this.."
+    assert false
+  end
 end

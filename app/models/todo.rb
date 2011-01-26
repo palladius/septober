@@ -106,4 +106,13 @@ class Todo < ActiveRecord::Base
     
     def search_tbd(q)
     end
+    
+    def self.find_securely(user,whatever)
+      Todo.with_scope(
+        :find => {:conditions => "user_id = #{user.id}"},
+        :create => {:user_id => user.id}
+      ) do
+        find(whatever)
+      end
+    end
 end
