@@ -7,6 +7,7 @@
   -  Also the oneline fast create for todos now is subdued to login
   - new CSS
   - post create hook
+  - TODO index interface now rocks!
 1.0.4:
   - SubProjects Todo view bug corrected (now corectly visualizes corretcly)
 1.0.3:
