@@ -4,12 +4,12 @@ class Todo < ActiveRecord::Base
     belongs_to :user
     belongs_to :project
     
-    named_scope :recent, lambda { { :conditions => ['created_at > ?', 1.week.ago] } }
-    named_scope :super_recent, lambda { { :conditions => ['created_at > ?', 1.day.ago] } }
-    named_scope :overdue,  lambda { { :conditions => ['due > ?', Time.now ] } }
+    scope :recent, lambda { { :conditions => ['created_at > ?', 1.week.ago] } }
+    scope :super_recent, lambda { { :conditions => ['created_at > ?', 1.day.ago] } }
+    scope :overdue,  lambda { { :conditions => ['due > ?', Time.now ] } }
     # More here: http://railscasts.com/episodes/15-fun-with-find-conditions
     # Task.find_all_by_priority(1..3)
-    named_scope :relevant, lambda { { :conditions => ['priority in ?', 1..3 ] } }
+    scope :relevant, lambda { { :conditions => ['priority in ?', 1..3 ] } }
     
     validates_uniqueness_of :name, :scope => :user_id, :message => "for this user is already created! (Cant have duplicate Todos)"
     validates_associated :project, :user
@@ -64,13 +64,14 @@ class Todo < ActiveRecord::Base
       #  }
       #end
       personal = Project.find_by_name_and_user_id('personal',user.id)
-      work     = Project.find_by_name_and_user_id('work',user.id)
+      work     = Project.find_by_name_and_user_id('work',    user.id)
       septober = Project.find_by_name_and_user_id('septober',user.id)
       tail = "--\nAutoProvisioned Todos v.#{ver}"
       Todo.create([
         {:user_id => user.id, :project_id => personal.id, :name => 'Buy milk and condoms' , :description => tail, :where => Socket.gethostname },
         {:user_id => user.id, :project_id => work.id,     :name => 'Organize meeting to your boss' , :description => tail  },
         {:user_id => user.id, :project_id => septober.id, :name => 'Eventually cleanup the room' , :description => "Something to be done in 1yr time"+tail },
+        {:user_id => user.id, :project_id => septober.id, :name => 'Thank Riccardo for this wonderful application' , :description => "His email is "+ $APP[:email] },
       ])
     end
 end

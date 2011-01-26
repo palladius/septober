@@ -2,7 +2,9 @@
 # PS TODO make this DRY, now youve to remember to update as well the following files:
 # - ./VERSION
 # - app/helpers/application_helper
-
+1.0.5:
+  - Removed the creation of projects/todos for new user AFTER save not before. Lets hope this fixes.
+  -  Also the oneline fast create for todos now is subdued to login
 1.0.4:
   - SubProjects Todo view bug corrected (now corectly visualizes corretcly)
 1.0.3:
