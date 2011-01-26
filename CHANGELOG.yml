@@ -2,16 +2,18 @@
 # PS TODO make this DRY, now youve to remember to update as well the following files:
 # - ./VERSION
 # - app/helpers/application_helper
+1.1.1:
+  - 20110126 Search on TODOs fixed
 1.1.0:
-  - Migrated Projects with 2 more tiny bools (to be implemented yet but theyre funcitonal inside the project edit.)
+  - 20110126 Migrated Projects with 2 more tiny bools (to be implemented yet but theyre funcitonal inside the project edit.)
 1.0.5:
-  - Removed the creation of projects/todos for new user AFTER save not before. Lets hope this fixes.
+  -20110126  Removed the creation of projects/todos for new user AFTER save not before. Lets hope this fixes.
   -  Also the oneline fast create for todos now is subdued to login
   - new CSS
   - post create hook
   - TODO index interface now rocks!
 1.0.4:
-  - SubProjects Todo view bug corrected (now corectly visualizes corretcly)
+  - 20110125 SubProjects Todo view bug corrected (now corectly visualizes corretcly)
 1.0.3:
  - More internationalization. A few plau
  - ripristined English as dflt locale. Some nasty err in oneline_create with trnslation
