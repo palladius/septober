@@ -1,6 +1,6 @@
 <%
- #include Searchable
- @searchable_models = ApplicationHelper::HEADER_MODELS rescue [ Project,Todo,User] 
+ #@searchable_models = ApplicationHelper::HEADER_MODELS rescue [ Project,Todo,User ] 
+ @searchable_models = [ Project,Todo ] 
 %>
 <% title "RicAddon::Search for #{@query_string}" %>
 
@@ -15,14 +15,14 @@
 	<p>
 		<b><%= link_to( pluralize( @entries.size, model.to_s) , "/#{model.to_s.pluralize}/" )%> with  '<%= @query_string %>':</b>
 	<% @entries.each { |entry|	%>
-		<%= link_to( entry.to_s, entry) %>,
+		<%= link_to( (entry.to_html.html_safe rescue entry.to_s), entry) %>,
 	<%	} %>
 	.</p>
 <%
    end
 	rescue Exception => e
-		%>
-	<h5>Exception for <%= model %>: <span class='debug'><%= $! %></span> </h5>
+	 %>
+	 <h5>Exception for <%= model %>: <span class='debug'><%=  $! %></span> </h5>
 	<%
 end
 

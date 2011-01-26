@@ -6,6 +6,7 @@ class Project < ActiveRecord::Base
       :message => "for this user is already taken! (Cant have duplicate Projects)"
     belongs_to :user
     has_many :todos
+    searchable_by :name, :description
     
     def to_s
       name
