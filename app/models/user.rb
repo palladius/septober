@@ -4,7 +4,7 @@ class User < ActiveRecord::Base
 
   attr_accessor :password
   before_save :prepare_password
-  before_create :provision_projects_on_create
+  after_create :provision_projects_after_create
   
   has_many :projects # , :class_name => "object", :foreign_key => "reference_id"
   has_many :todos # , :class_name => "object", :foreign_key => "reference_id"
@@ -22,13 +22,12 @@ class User < ActiveRecord::Base
   end
   
   # to be called after create!
-  def provision_projects_on_create()
+  def provision_projects_after_create()
     puts "+ Creating projects for new user '#{self}'.."
     Project.provision_for_user(self) # create normal projects for user.
     puts "+ Creating projects for new user '#{self}'.."
     Todo.provision_for_user(self) # create normal projects for user.
   end
-  
   
   # login can be either username or email address
   def self.authenticate(login, pass)
