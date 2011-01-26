@@ -10,6 +10,9 @@ module ProjectsHelper
       content_tag(:font, string,  :color => project.color)
   end
   
+  # Try this instead: #
+  # <span style="background:#FF0000">&nbsp;&nbsp;&nbsp;&nbsp;</span>
+  
   def render_colored_square(opts={})
     height = opts.fetch(:height, 30)
     width  = opts.fetch(:height, height)
