@@ -45,7 +45,7 @@ module TodosHelper
   def render_todo_icons(todo,opts={})
     icons = []
     icons << render_priority_icon(todo.priority)
-    icons << image_tag("icons/overdue.png", :title => 'Overdue!', :height => 12) if todo.overdue?
+    icons << image_tag("icons/todo/overdue.png", :title => 'Overdue!', :height => 12) if todo.overdue?
     # Add more icons here...
     icons.join(' ').html_safe
   end

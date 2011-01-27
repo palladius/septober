@@ -14,10 +14,10 @@ class TodosController < ApplicationController
     
     #filter_conditions[:project_id] = Project.find_by_name(params[:add_project] rescue nil )        # TODO_IMP Try this!!!
     #filter_conditions[:project_id] = Project.find_all_by_name(params.fetch(:add_project, nil) ) # if params[:add_project]
-    @todos = Todo.find(:all, 
-      #:conditions => "user_id = #{current_user.id}", 
+    @todos = Todo.find :all, 
       :conditions => filter_conditions, 
-      :order => 'active DESC, priority DESC, updated_at DESC')
+      :order => 'active DESC, priority DESC, updated_at DESC',
+      :limit => 20
   end
 
   def show

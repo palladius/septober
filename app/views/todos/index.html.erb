@@ -27,19 +27,18 @@
           <%= iconed_link_to( "Done", "/todos/#{todo.id}/done") rescue "ToggleRoutigErr (#{$!})" unless todo.done? %>
           <%= iconed_link_to( "Undone", "/todos/#{todo.id}/undone") rescue "ToggleRoutigErr (#{$!})" if todo.done?  %>
           <%= iconed_link_to "Show", (todo) %>
-          <%= link_to "AJAX-Detail1", # was link_to_remote in rails 2
+          <%= link_to "Ajax", # was link_to_remote in rails 2
 				:update => "todo-#{todo.id}-detail",
 				:method => :get,
-				:url    => "/todos/#{todo.id}",
+				:url    => "/todos/#{todo.id}.txt",
+				#:confirm => "Populating todo.##{todo.id}?!?",
 				:remote => true
 				
 			%>
           <%#= iconed_link_to "Destroy", todo, :confirm => 'Are you sure?', :method => :delete %>
           <%#= link_to "Toggle (TODO)", todo, :method => :toggle %>
         </small>
-      </td>
-      <td class='seymour'>
-        <div id='todo-<%=todo.id%>-detail' >Ajax</div>
+        <div id='todo-<%=todo.id%>-detail' ></div>
       </td>
     </tr>
   <% end %>
