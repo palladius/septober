@@ -2,7 +2,7 @@ class Todo < ActiveRecord::Base
   
   require 'socket'
   
-    attr_accessible :name, :description, :active, :due, :user_id, :where, :priority, :project_id
+    attr_accessible :name, :description, :active, :due, :user_id, :where, :priority, :project_id, :url
     searchable_by :name, :description
     acts_as_carlesso
     
@@ -56,6 +56,10 @@ class Todo < ActiveRecord::Base
     
     def overdue?
       due < Date.today && active == true rescue false
+    end
+    
+    def url?
+      url.to_s.length > 4 # spannometrically
     end
     
   # This should do some magic stuff like adding the due to tomorrow if string matches 'by tomorrow' or 'entro domani' and so on..  

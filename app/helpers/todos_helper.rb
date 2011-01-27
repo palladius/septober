@@ -30,8 +30,14 @@ module TodosHelper
       ].join("\n")
     coloured_todo = render_within_project(todo.project,todo.to_s.capitalize) rescue "TodoErr('#{$!}')"
     ret = content_tag( (todo.active ? :b : :s) , coloured_todo , :title => title , :alt => :alt , :class => "todo") # , :id => "todo_#{todo.id}")
-    ret += content_tag(:span, "Due: #{todo.due}", :class => :small_overdue ) if todo.overdue?
     return ret
+  end
+  
+  def render_todo_second_row(todo,opts={})
+    ret = ''
+    ret += content_tag(:span, "OverDue: #{time_ago_in_words(Time.now - todo.due)  rescue todo.due}", :class => :small_overdue ) if todo.overdue?
+    
+    ret.html_safe
   end
   
   def priority_name(num)
@@ -48,11 +54,12 @@ module TodosHelper
     new_priority = raise_or_lower ? todo.priority+1 : todo.priority-1
     exception_priority = raise_or_lower ? 5 : 1
     action = raise_or_lower ? 'raise' : 'lower'
+    updown = raise_or_lower ? 'up' : 'down'
     icon_gray = 'white.png'
     # LOWER/RAISE link
     return link_to( 
-      image_tag("icons/priorities/icon_priority#{icon1}.png",
-        :mouseover => "icons/priorities/icon_priority#{icon2}.png"  ,
+      image_tag("icons/priorities/#{updown}-grey.png",
+        :mouseover => "icons/priorities/#{updown}.png"  ,
         :height => 20
       ),
       "/todos/#{todo.id}/set_priority?new_priority=#{new_priority}", :title => "#{action} priority from #{todo.priority} to #{new_priority}" 
@@ -82,7 +89,7 @@ module TodosHelper
     icons = []
     icons << render_priority_icon(todo.priority)
     icons << image_tag("icons/todo/overdue.png", :title => 'Overdue!', :height => 12) if todo.overdue?
-    icons << image_tag("icons/todo/overdue.png", :title => 'Overdue!', :height => 12) if todo.overdue?
+    icons << link_to(image_tag("ric_addons/icons/website.png", :title => "Website: #{todo.url}", :height => 12), todo.url) if todo.url?
     
     # Add more icons here...
     icons.join(' ').html_safe
