@@ -2,7 +2,9 @@
   @my_projects ||= Project.find_all_by_user_id_and_active(current_user.id, true) rescue []
   #@my_projects = Project.find_securely(current_user, :all, :conditions => { :active => true} ) #rescue []
 
+
 %>
+<% if logged_in? %>
 <div class='project_synoptic' align='right' style='font-size:x-small' >
 	<%= link_to(image_tag('icons/models/project.png' , :title => 'All projects', :height => 12),projects_url) %>
 	<b><%= link_to('all', todos_url) if params[:add_project] %></b>
@@ -14,3 +16,4 @@
 	<% end %>
 	<%= link_to "+", new_project_path() %>
 </div>
+<% end %>
