@@ -10,16 +10,18 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110123193547) do
+ActiveRecord::Schema.define(:version => 20110126125043) do
 
   create_table "projects", :force => true do |t|
     t.string   "name"
     t.text     "description"
-    t.string   "color",       :default => "grey"
-    t.boolean  "active",      :default => true
+    t.string   "color",        :default => "grey"
+    t.boolean  "active",       :default => true
     t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "home_visible", :default => true
+    t.boolean  "public",       :default => false
   end
 
   create_table "todos", :force => true do |t|

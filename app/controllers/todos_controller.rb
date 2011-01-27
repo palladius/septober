@@ -6,8 +6,9 @@ class TodosController < ApplicationController
     #    :find => {:conditions => "user_id = #{user.id}"},
     #    :create => {:user_id => user.id}
     #  )
-    filter_conditions = { :user_id => current_user.id }
-    filter_conditions[:project_id] = Project.find_by_name(params[:add_project]).id if params[:add_project]
+    filter_conditions = { :user_id => current_user.id  } 
+    #  Project: , :home_visible => true
+    filter_conditions[:project_id] = Project.find_by_name_and_user_id(params[:add_project], current_user.id).id if params[:add_project]
     
     # TODO joins condition so to MUTE all projects that are UNACTIVE
     
