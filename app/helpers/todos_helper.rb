@@ -48,8 +48,7 @@ module TodosHelper
     new_priority = raise_or_lower ? todo.priority+1 : todo.priority-1
     exception_priority = raise_or_lower ? 5 : 1
     action = raise_or_lower ? 'raise' : 'lower'
-    #icon_gray = 'icon_priority3.png'
-    
+    icon_gray = 'white.png'
     # LOWER/RAISE link
     return link_to( 
       image_tag("icons/priorities/icon_priority#{icon1}.png",
@@ -59,28 +58,14 @@ module TodosHelper
       "/todos/#{todo.id}/set_priority?new_priority=#{new_priority}", :title => "#{action} priority from #{todo.priority} to #{new_priority}" 
     ) unless todo.priority==exception_priority
     # return gray and NOT linked
-    return image_tag("icons/priorities/icon_priority3.png", :height => 20, :title => "Can't #{action} further..")
+    return image_tag("icons/priorities/#{icon_gray}", :height => 20, :title => "Can't #{action} further..")
   end
   
   def render_todo_action_icons(todo)
     icons = []
     ## Priority raise
-    #icons << link_to( 
-    #  image_tag("icons/priorities/icon_priority5.png",
-    #    :mouseover => "icons/priorities/icon_priority4.png"  ,
-    #    :height => 20
-    #  ),
-    #  "/todos/#{todo.id}/set_priority?new_priority=#{todo.priority+1}", :title => "raise_priority_to #{todo.priority+1}" 
-    #) unless todo.priority==5
     icons << eventual_link_priority(todo, true)
     icons << eventual_link_priority(todo, false)
-    #icons << link_to( 
-    #  image_tag("icons/priorities/icon_priority1.png",
-    #    :mouseover => "icons/priorities/icon_priority2.png"  ,
-    #    :height => 20
-    #  ),
-    #  "/todos/#{todo.id}/set_priority?new_priority=#{todo.priority-1}", :title => "lower priority to #{todo.priority-1}" 
-    #) unless todo.priority==1
     ## Mark as done..
     icons << link_to( 
       image_tag("icons/todo/done_blue.png",
@@ -96,6 +81,8 @@ module TodosHelper
     icons = []
     icons << render_priority_icon(todo.priority)
     icons << image_tag("icons/todo/overdue.png", :title => 'Overdue!', :height => 12) if todo.overdue?
+    icons << image_tag("icons/todo/overdue.png", :title => 'Overdue!', :height => 12) if todo.overdue?
+    
     # Add more icons here...
     icons.join(' ').html_safe
   end

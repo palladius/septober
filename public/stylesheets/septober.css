@@ -8,3 +8,16 @@
   font: 65% "Lucida Grande", "Trebuchet MS", Verdana, sans-serif;
   font-style: oblique;
 }
+
+
+div#logo a {
+/*	display: none;
+	position: absolute;
+	left: 0;
+	bottom: 0;
+	*/
+	position: fixed;
+	right: 1%;
+	bottom: 1%;
+	
+}
