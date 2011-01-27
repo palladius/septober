@@ -1,14 +1,25 @@
 module ProjectsHelper
   
-  def render_project(project)
+  def render_project(project,opts={})
     #content_tag(:font, project.to_s,  :color => project.color)
-    render_within_project(project,project.to_s)
+    project_str = project.to_s
+    project_str = project_str.upcase + '(!)' if project.public
+    opts[:style] = 'font:bold; filter:alpha(opacity=60) '  if project.home_visible
+    opts[:style] = 'font-style:italic'  unless project.home_visible
+    
+    opts[:title] ||= "(id=#{project.id}) " + project.description
+    render_within_project(project,project_str, opts )
   end
   
   # TODO refactor
-  def render_within_project(project, string)
-      content_tag(:font, string,  :color => project.color)
+  def render_within_project(project, str, opts={})
+    opts[:color] = project.color
+    opts[:class] = "project homevisible_#{project.home_visible} public_#{project.public} active_#{project.active}"
+    content_tag(:font, str, opts )
   end
+  
+  # Try this instead: #
+  # <span style="background:#FF0000">&nbsp;&nbsp;&nbsp;&nbsp;</span>
   
   def render_colored_square(opts={})
     height = opts.fetch(:height, 30)

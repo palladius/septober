@@ -7,4 +7,11 @@
 
 module RicAddonsHelper
   
+  def okno(bool,opts={})
+    bool = !!bool #force to boolean :)
+    icon_name = bool ? 'done.png' : 'destroy.png'
+    opts[:height] ||= 20
+    image_tag("ric_addons/icons/#{icon_name}", opts )
+  end
+  
 end

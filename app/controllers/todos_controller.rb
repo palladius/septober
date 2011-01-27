@@ -14,14 +14,14 @@ class TodosController < ApplicationController
     
     #filter_conditions[:project_id] = Project.find_by_name(params[:add_project] rescue nil )        # TODO_IMP Try this!!!
     #filter_conditions[:project_id] = Project.find_all_by_name(params.fetch(:add_project, nil) ) # if params[:add_project]
-    @todos = Todo.find(:all, 
-      #:conditions => "user_id = #{current_user.id}", 
+    @todos = Todo.find :all, 
       :conditions => filter_conditions, 
-      :order => 'active DESC, priority DESC, updated_at DESC')
+      :order => 'active DESC, priority DESC, updated_at DESC',
+      :limit => 20
   end
 
   def show
-    @todo = Todo.find(params[:id])
+    @todo = Todo.find_securely(current_user,params[:id])
   end
 
   def new
@@ -41,7 +41,7 @@ class TodosController < ApplicationController
   end
 
   def edit
-    @todo = Todo.find(params[:id])
+    @todo = Todo.find_securely(current_user,params[:id])
   end
 
   def update
@@ -58,7 +58,9 @@ class TodosController < ApplicationController
   def toggle; _update_active(:toggled) ; end 
   def done;   _update_active(:deactivated,false) ; end
   def undone; _update_active(:reactivated,true) ; end
-
+  def set_priority
+    _update_field(:priority,params[:new_priority])
+  end
   def destroy
     @todo = Todo.find(params[:id])
     @todo.destroy
@@ -71,9 +73,20 @@ private
     # nil = toggle
     new_active ||= false # should be the REVERSE... TODO!
     # copy the data from edit
-    @todo = Todo.find(params[:id])
+    #@todo = Todo.find(params[:id])
+    @todo = Todo.find_securely(current_user, params[:id])
     if @todo.update_attributes( :active => new_active )
       flash[:notice] = "Successfully '#{participle}' todo ##{params[:id]}"
+      redirect_to todos_url
+    else
+      render :action => 'edit'
+    end
+  end
+  
+  def _update_field(field_name,new_val)
+    @todo = Todo.find_securely(current_user,params[:id])
+    if @todo.update_attributes( field_name.to_sym => new_val )
+      flash[:notice] = "Successfully set '#{field_name}'='#{new_val}' for Todo ##{params[:id]}: '#{@todo}'"
       redirect_to todos_url
     else
       render :action => 'edit'

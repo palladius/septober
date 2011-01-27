@@ -3,7 +3,9 @@ class Todo < ActiveRecord::Base
   require 'socket'
   
     attr_accessible :name, :description, :active, :due, :user_id, :where, :priority, :project_id
-      
+    searchable_by :name, :description
+    acts_as_carlesso
+    
     belongs_to :user
     belongs_to :project
     
@@ -23,7 +25,7 @@ class Todo < ActiveRecord::Base
     before_create :apply_todo_regex_magic
 
     def to_s
-      name
+      name.capitalize
     end
     
     # TODO put a link of interesting queries top left
@@ -32,7 +34,8 @@ class Todo < ActiveRecord::Base
     end
     
     def to_html
-      'TODO_HTML'
+      "<span class='todo'>#{self.to_s}</span>"
+      #TodosHelper::render_todo_name(self)
     end
     
     def done?
@@ -100,5 +103,17 @@ class Todo < ActiveRecord::Base
         {:user_id => user.id, :project_id => septober.id, :name => 'Eventually cleanup the room' , :description => "Something to be done in 1yr time"+tail },
         {:user_id => user.id, :project_id => septober.id, :name => 'Thank Riccardo for this wonderful application' , :description => "His email is "+ $APP[:email] },
       ])
+    end
+    
+    def search_tbd(q)
+    end
+    
+    def self.find_securely(user,whatever,opts={})
+      Todo.with_scope(
+        :find =>   { :conditions => "user_id = #{user.id}"},
+        :create => { :user_id => user.id }
+      ) do
+        find(whatever,opts)
+      end
     end
 end

@@ -1,11 +1,13 @@
 class Project < ActiveRecord::Base
-    attr_accessible :name, :description, :color, :active, :user_id
+    attr_accessible :name, :description, :color, :active, :user_id, :home_visible, :public
     # only one 'personal' of a name per user..
     validates_format_of :name, :with => /^[a-z_]+$/, :message => "is invalid (only lowercase letters and _)"
     validates_uniqueness_of :name, :scope => :user_id, 
       :message => "for this user is already taken! (Cant have duplicate Projects)"
     belongs_to :user
     has_many :todos
+    searchable_by :name, :description
+    acts_as_carlesso
     
     def to_s
       name
@@ -26,4 +28,6 @@ class Project < ActiveRecord::Base
       #  { :name => 'love'     , :description => "AutoProvisioned Projects v.#{ver}", :color => :pink,   :user_id => user.id },
       ])
     end
+    
+
 end

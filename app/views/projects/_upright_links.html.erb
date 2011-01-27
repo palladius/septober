@@ -1,7 +1,12 @@
+<%
+  @my_projects ||= Project.find_all_by_user_id_and_active(current_user.id, true) rescue []
+  #@my_projects = Project.find_securely(current_user, :all, :conditions => { :active => true} ) #rescue []
+
+%>
 <div class='project_synoptic' align='right' style='font-size:x-small' >
 	<%= link_to(image_tag('icons/models/project.png' , :title => 'All projects', :height => 12),projects_url) %>
 	<b><%= link_to('all', todos_url) if params[:add_project] %></b>
-	<% (Project.find_all_by_user_id_and_active(current_user.id, true) rescue [] ).each do |proj| %>
+	<% @my_projects.each do |proj| %>
 		<%= params[:add_project].to_s == proj.to_s ? 
 			content_tag(:b, render_project(proj) ) : # emphasize but unlink
 			link_to(render_project(proj),"/todos?add_project=#{proj.name}")  # linking

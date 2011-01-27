@@ -1,41 +1,34 @@
-<%
- #Todo.with_scope(:find => {:conditions => "user_id = #{current_user.id}"},
- #                :create => {:user_id => current_user.id}) do
- # user_posts = Post.find(:all)
-%>
-<%=render :partial => "projects/upright_links" %>
-
 <table width='100%' border="0" >
   <tr width='100%' >
-    <th></th>
-		<th></th>
-		<th>Todos</th>
+    <th>Actions</th>
+    <th>Todos</th>
     <th>Options</th>
   </tr>
   <% for todo in @todos %>
-    <tr>
-      <td><%= render_todo_icons(todo) %></td>
-      <td>
-        <%#= iconed_link_to( "Toggle", "/todos/#{todo.id}/toggle") %>
-        <%#= link_to( icon("toggle"), "/todos/#{todo.id}/toggle") %>
-        <%= link_to( image_tag("icons/todo/done_blue.png",
-                       #:onmouseover => "icons/todo/done.png"  ,
-                       :mouseover => "icons/todo/done_green.png"  ,
-                       :height => 20
-                     ),
-			   "/todos/#{todo.id}/done", :title => t(:mark_as_done) ) unless todo.done? %>
+    <tr class="todo_line" >
+      <td width='80' >
+        <%= render_todo_action_icons(todo) %>
       </td>
       <td>
-				<%= link_to(render_todo_name(todo) , edit_todo_path(todo) ) %>
-			</td>
+          <%= link_to(render_todo_name(todo) , edit_todo_path(todo) ) %>
+          <%= render_todo_icons(todo) %>
+      </td>
       <td align='right' ><small>
-        
-	        <%= iconed_link_to( "Done", "/todos/#{todo.id}/done") rescue "ToggleRoutigErr (#{$!})" unless todo.done? %>
-	        <%= iconed_link_to( "Undone", "/todos/#{todo.id}/undone") rescue "ToggleRoutigErr (#{$!})" if todo.done?  %>
+          <%= iconed_link_to( "Done", "/todos/#{todo.id}/done") rescue "ToggleRoutigErr (#{$!})" unless todo.done? %>
+          <%= iconed_link_to( "Undone", "/todos/#{todo.id}/undone") rescue "ToggleRoutigErr (#{$!})" if todo.done?  %>
           <%= iconed_link_to "Show", (todo) %>
+          <%#= link_to "AjaxTest", # was link_to_remote in rails 2
+				:update => "todo-#{todo.id}-detail",
+				:method => :get,
+				:url    => "/todos/#{todo.id}.txt",
+				#:confirm => "Populating todo.##{todo.id}?!?",
+				:remote => true
+				
+			%>
           <%#= iconed_link_to "Destroy", todo, :confirm => 'Are you sure?', :method => :delete %>
           <%#= link_to "Toggle (TODO)", todo, :method => :toggle %>
-					</small>
+        </small>
+        <div id='todo-<%=todo.id%>-detail' ></div>
       </td>
     </tr>
   <% end %>

@@ -1,0 +1,11 @@
+<%= '-' * (@todo.name.length) %>
+<%= @todo.to_s %>
+<%= '-' * (@todo.name.length) %>
+
+<%= @todo.description %>
+
+--
+Priority: <%= @todo.priority %>
+Project: <%= @todo.project%>
+Due: <%= @todo.due %><%=@todo.overdue? ? ' (overdue)' : '' %>
+URL: <%= url_for @todo %>
