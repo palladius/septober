@@ -68,8 +68,9 @@ module TodosHelper
     icons << eventual_link_priority(todo, false)
     ## Mark as done..
     icons << link_to( 
-      image_tag("icons/todo/done_blue.png",
-        :mouseover => "icons/todo/done_green.png"  ,
+      image_tag(
+        "icons/todo/V-grey.png",
+        :mouseover => "icons/todo/V.png"  ,
         :height => 25
       ),
       "/todos/#{todo.id}/done", :title => t(:mark_as_done) 
