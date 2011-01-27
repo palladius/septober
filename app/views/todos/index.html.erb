@@ -6,12 +6,10 @@
   </tr>
   <% for todo in @todos %>
     <tr class="todo_line" >
-      <td><%= render_todo_action_icons(todo) %>
-        <%#= iconed_link_to( "Toggle", "/todos/#{todo.id}/toggle") %>
-        <%#= link_to( icon("toggle"), "/todos/#{todo.id}/toggle") %>
+      <td width='80' >
+        <%= render_todo_action_icons(todo) %>
       </td>
       <td>
-          <%#= render_todo_icons(todo) %>
           <%= link_to(render_todo_name(todo) , edit_todo_path(todo) ) %>
           <%= render_todo_icons(todo) %>
       </td>
