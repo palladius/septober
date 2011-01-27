@@ -44,10 +44,9 @@ module RiccardoHelper
   end
   
   def iconed_label(mylabel, opts={})
-    text = ''
-    text = t(mylabel) unless opts.fetch( :skip_text, false)
-    icon(mylabel.to_s.downcase,opts) + text + text # t(mylabel)
+    icon(mylabel.to_s.downcase,opts) + t(mylabel)
   end
+
   def iconed_content_tag(tag,name, opts={})
     icon = opts.fetch(:icon, name) # defaults to name
     return (content_tag(tag,icon(icon,opts)+' '+name,opts)).html_safe # TODO t(name)
