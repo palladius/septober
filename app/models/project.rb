@@ -7,6 +7,7 @@ class Project < ActiveRecord::Base
     belongs_to :user
     has_many :todos
     searchable_by :name, :description
+    acts_as_carlesso
     
     def to_s
       name
@@ -27,4 +28,6 @@ class Project < ActiveRecord::Base
       #  { :name => 'love'     , :description => "AutoProvisioned Projects v.#{ver}", :color => :pink,   :user_id => user.id },
       ])
     end
+    
+
 end

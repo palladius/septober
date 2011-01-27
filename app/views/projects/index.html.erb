@@ -4,18 +4,20 @@
   <tr>
     <th>Name</th>
     <th>Description</th>
-    <th>Home Visible</th>
+    <th>Home?</th>
     <th>Public</th>
   </tr>
   <% for project in @projects %>
     <tr>
-      <td><b><%= render_project(project) %></b></td>
-      <td><%= project.description %></td>
-      <td><%= project.home_visible %></td>
-      <td><%= project.public %></td>
-      <td><%= link_to "Show", project %></td>
-      <td><%= link_to "Edit", edit_project_path(project) %></td>
-      <td><%= link_to "Destroy", project, :confirm => 'Are you sure?', :method => :delete %></td>
+      <td><b><%= link_to(render_project(project),project) %></b></td>
+      <td><small><%= project.description %></small></td>
+      <td><%= okno(project.home_visible) %></td>
+      <td><%= okno project.public %></td>
+      <td>
+          <%#= link_to "Show", project %>
+          <%= iconed_link_to "Edit", edit_project_path(project) %>
+          <%= iconed_link_to "Destroy", project, :confirm => 'Are you sure?', :method => :delete %>
+      </td>
     </tr>
   <% end %>
 </table>

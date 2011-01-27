@@ -12,6 +12,7 @@
       <%= render :partial => 'ric_addons/header' %>
     </div>
     <div id="container" >
+      <%= render "projects/upright_links" %>
       <%= render 'todos/oneline_create' %>
       <% flash.each do |name, msg| %>
         <%= content_tag :div, msg, :id => "flash_#{name}" %>

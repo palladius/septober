@@ -9,25 +9,23 @@
 module ActiveRecord #:nodoc:
   module Acts #:nodoc:
     module Carlesso #:nodoc:
+      @@acts_as_carlesso_version = '1.1'
       def self.included(base)
         base.extend(ClassMethods)
       end
       
       module ClassMethods
         def acts_as_carlesso
-          puts 'ActsAsCarlesso: Eppur si muove!'
-        #  has_many :taggings, :as => :taggable, :dependent => :destroy, :include => :tag
-        #  has_many :tags, :through => :taggings
-        #  
-        #  before_save :save_cached_tag_list
-        #  
-        #  after_create :save_tags
-        #  after_update :save_tags
-        #  
+          puts "ActsAsCarlesso v#{@@acts_as_carlesso_version rescue "Err('#{$!}')"}: Eppur si muove!"
+          #  has_many :taggings, :as => :taggable, :dependent => :destroy, :include => :tag
+          #  has_many :tags, :through => :taggings
+          #  before_save :save_cached_tag_list
+          #  after_create :save_tags
+          #  after_update :save_tags
           include ActiveRecord::Acts::Carlesso::InstanceMethods
-        #  extend ActiveRecord::Acts::Taggable::SingletonMethods
-        #  
-        #  alias_method_chain :reload, :tag_list
+          extend ActiveRecord::Acts::Taggable::SingletonMethods
+          #  
+          #  alias_method_chain :reload, :tag_list
         end
         #
         #def cached_tag_list_column_name
@@ -38,8 +36,8 @@ module ActiveRecord #:nodoc:
         #  define_attr_method :cached_tag_list_column_name, value, &block
         #end
         
-        def ids
-          "ActsAsCarlesso::Ids 1 TODO!!!"
+        def ids() # (find_args=:all)
+          find(:all).map{|el| el.id  } rescue "ActsAsCarlesso::ids.Error('#{$!}')"
         end
         
         def names
@@ -53,6 +51,18 @@ module ActiveRecord #:nodoc:
         def carlesso_names
           find(:all).map{|record| [ record.id, "CarlessoName(TODO)" ] }
         end
+        
+        # A with_cope example thx to RyanBates!
+        def self.find_securely(user,whatever,opts={})
+          # TODO: unless user.admin? responds and reposnds to true
+          self.with_scope(
+            :find =>   { :conditions => "user_id = #{user.id}"},
+            :create => { :user_id => user.id }
+          ) do
+            find(whatever,opts)
+          end
+        end
+        
       end
       
       module SingletonMethods

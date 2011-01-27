@@ -1,15 +1,8 @@
-<%
- #Todo.with_scope(:find => {:conditions => "user_id = #{current_user.id}"},
- #                :create => {:user_id => current_user.id}) do
- # user_posts = Post.find(:all)
-%>
-<%=render :partial => "projects/upright_links" %>
-
 <table width='100%' border="0" >
   <tr width='100%' >
     <th></th>
-		<th></th>
-		<th>Todos</th>
+    <th></th>
+    <th>Todos</th>
     <th>Options</th>
   </tr>
   <% for todo in @todos %>
