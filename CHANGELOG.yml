@@ -3,6 +3,7 @@
 # - ./VERSION
 # - app/helpers/application_helper
 1.1.2:
+  - Priority toggles!!
   - 20110127 Rewoking on Projects. New ActsAsCarlesso implementations (need to backport to AAC plugin!)
 1.1.1:
   - 20110126 Search on TODOs fixed
