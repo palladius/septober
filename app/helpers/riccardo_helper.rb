@@ -37,13 +37,16 @@ module RiccardoHelper
     mylabel=mylabel.to_s
     icon_path = opts.fetch(:icon, mylabel.to_s.downcase)
     opts[:title] ||= html_strip(ric_translate(mylabel,opts))
-    ret = opts.fetch(:short, false) ?
+    ret = opts.fetch(:short, false) ? # skip text?
       link_to(icon(icon_path,opts ) , obj, opts) :  # short: just 
       icon(icon_path,opts).html_safe + link_to(ric_translate(mylabel,opts), obj, opts).html_safe # normal, icon + linked obj
     return ret #.html_safe
   end
+  
   def iconed_label(mylabel, opts={})
-    icon(mylabel.to_s.downcase,opts) + t(mylabel)
+    text = ''
+    text = t(mylabel) unless opts.fetch( :skip_text, false)
+    icon(mylabel.to_s.downcase,opts) + text + text # t(mylabel)
   end
   def iconed_content_tag(tag,name, opts={})
     icon = opts.fetch(:icon, name) # defaults to name
