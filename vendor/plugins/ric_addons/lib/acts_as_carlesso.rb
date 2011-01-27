@@ -23,7 +23,7 @@ module ActiveRecord #:nodoc:
           #  after_create :save_tags
           #  after_update :save_tags
           include ActiveRecord::Acts::Carlesso::InstanceMethods
-          extend ActiveRecord::Acts::Taggable::SingletonMethods
+          #extend ActiveRecord::Acts::Carlesso::SingletonMethods
           #  
           #  alias_method_chain :reload, :tag_list
         end
