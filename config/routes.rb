@@ -21,9 +21,10 @@ Septober::Application.routes.draw do
   #   post 'toggle'
   #end
   
-  match "/todos/:id/toggle" => 'todos#toggle'
-  match "/todos/:id/done"   => 'todos#done'
-  match "/todos/:id/undone" => 'todos#undone'
+  match "/todos/:id/toggle"        => 'todos#toggle'
+  match "/todos/:id/done"          => 'todos#done'
+  match "/todos/:id/undone"        => 'todos#undone'
+  match "/todos/:id/set_priority"  => 'todos#set_priority'
   
   #####################################
   ### RicAddons::Routes

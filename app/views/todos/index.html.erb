@@ -1,33 +1,25 @@
 <table width='100%' border="0" >
   <tr width='100%' >
-    <th></th>
-    <th></th>
+    <th>Actions</th>
     <th>Todos</th>
     <th>Options</th>
   </tr>
   <% for todo in @todos %>
-    <tr>
-      <td><%= render_todo_icons(todo) %></td>
-      <td>
+    <tr class="todo_line" >
+      <td><%= render_todo_action_icons(todo) %>
         <%#= iconed_link_to( "Toggle", "/todos/#{todo.id}/toggle") %>
         <%#= link_to( icon("toggle"), "/todos/#{todo.id}/toggle") %>
-        <%= link_to( image_tag("icons/todo/done_blue.png",
-                       #:onmouseover => "icons/todo/done.png"  ,
-                       :mouseover => "icons/todo/done_green.png"  ,
-                       :height => 20
-                     ),
-                     "/todos/#{todo.id}/done", :title => t(:mark_as_done) 
-             ) unless todo.done? 
-        %>
       </td>
       <td>
+          <%#= render_todo_icons(todo) %>
           <%= link_to(render_todo_name(todo) , edit_todo_path(todo) ) %>
+          <%= render_todo_icons(todo) %>
       </td>
       <td align='right' ><small>
           <%= iconed_link_to( "Done", "/todos/#{todo.id}/done") rescue "ToggleRoutigErr (#{$!})" unless todo.done? %>
           <%= iconed_link_to( "Undone", "/todos/#{todo.id}/undone") rescue "ToggleRoutigErr (#{$!})" if todo.done?  %>
           <%= iconed_link_to "Show", (todo) %>
-          <%= link_to "Ajax", # was link_to_remote in rails 2
+          <%#= link_to "AjaxTest", # was link_to_remote in rails 2
 				:update => "todo-#{todo.id}-detail",
 				:method => :get,
 				:url    => "/todos/#{todo.id}.txt",

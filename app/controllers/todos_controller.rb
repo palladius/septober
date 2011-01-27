@@ -58,7 +58,9 @@ class TodosController < ApplicationController
   def toggle; _update_active(:toggled) ; end 
   def done;   _update_active(:deactivated,false) ; end
   def undone; _update_active(:reactivated,true) ; end
-
+  def set_priority
+    _update_field(:priority,params[:new_priority])
+  end
   def destroy
     @todo = Todo.find(params[:id])
     @todo.destroy
@@ -71,9 +73,20 @@ private
     # nil = toggle
     new_active ||= false # should be the REVERSE... TODO!
     # copy the data from edit
-    @todo = Todo.find(params[:id])
+    #@todo = Todo.find(params[:id])
+    @todo = Todo.find_securely(current_user, params[:id])
     if @todo.update_attributes( :active => new_active )
       flash[:notice] = "Successfully '#{participle}' todo ##{params[:id]}"
+      redirect_to todos_url
+    else
+      render :action => 'edit'
+    end
+  end
+  
+  def _update_field(field_name,new_val)
+    @todo = Todo.find_securely(current_user,params[:id])
+    if @todo.update_attributes( field_name.to_sym => new_val )
+      flash[:notice] = "Successfully set '#{field_name}'='#{new_val}' for Todo ##{params[:id]}: '#{@todo}'"
       redirect_to todos_url
     else
       render :action => 'edit'
