@@ -25,7 +25,7 @@ class Todo < ActiveRecord::Base
     before_create :apply_todo_regex_magic
 
     def to_s
-      name
+      name.capitalize
     end
     
     # TODO put a link of interesting queries top left

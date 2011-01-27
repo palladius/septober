@@ -16,19 +16,30 @@
                        :mouseover => "icons/todo/done_green.png"  ,
                        :height => 20
                      ),
-			   "/todos/#{todo.id}/done", :title => t(:mark_as_done) ) unless todo.done? %>
+                     "/todos/#{todo.id}/done", :title => t(:mark_as_done) 
+             ) unless todo.done? 
+        %>
       </td>
       <td>
-				<%= link_to(render_todo_name(todo) , edit_todo_path(todo) ) %>
-			</td>
+          <%= link_to(render_todo_name(todo) , edit_todo_path(todo) ) %>
+      </td>
       <td align='right' ><small>
-        
-	        <%= iconed_link_to( "Done", "/todos/#{todo.id}/done") rescue "ToggleRoutigErr (#{$!})" unless todo.done? %>
-	        <%= iconed_link_to( "Undone", "/todos/#{todo.id}/undone") rescue "ToggleRoutigErr (#{$!})" if todo.done?  %>
+          <%= iconed_link_to( "Done", "/todos/#{todo.id}/done") rescue "ToggleRoutigErr (#{$!})" unless todo.done? %>
+          <%= iconed_link_to( "Undone", "/todos/#{todo.id}/undone") rescue "ToggleRoutigErr (#{$!})" if todo.done?  %>
           <%= iconed_link_to "Show", (todo) %>
+          <%= link_to "AJAX-Detail1", # was link_to_remote in rails 2
+				:update => "todo-#{todo.id}-detail",
+				:method => :get,
+				:url    => "/todos/#{todo.id}",
+				:remote => true
+				
+			%>
           <%#= iconed_link_to "Destroy", todo, :confirm => 'Are you sure?', :method => :delete %>
           <%#= link_to "Toggle (TODO)", todo, :method => :toggle %>
-					</small>
+        </small>
+      </td>
+      <td class='seymour'>
+        <div id='todo-<%=todo.id%>-detail' >Ajax</div>
       </td>
     </tr>
   <% end %>
