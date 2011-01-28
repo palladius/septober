@@ -35,10 +35,22 @@ module TodosHelper
   
   def render_todo_second_row(todo,opts={})
     ret = ''
+      # short things
     ret += content_tag(:span, "(OverDue: #{time_ago_in_words(Time.now - todo.due)  rescue todo.due})", :class => :small_overdue ) if todo.overdue?
     ret += content_tag(:span, "(hide for: #{time_ago_in_words(todo.hide_until) })", :class => :small_hide_until ) if todo.still_hidden?
+    ret += content_tag(:span, "#{todo.progress_status}%", :class => :progress_status_small, :style => 'font-size: xx-small; color: blue')
+      # long
     ret += content_tag(:span, truncate_words(todo.description), :class => :description_snippet, :style => 'font-size: xx-small; color: grey')
     ret.html_safe
+  end
+  
+  ### AAHAHAAHH super! TODO put in ric_addons
+  def render_icon_grayable(icon_path, gray, opts={})
+    image_tag("#{icon_path}#{gray ? '-grey' : ''}.png", opts)
+  end
+  
+  def render_icon_favorite(todo,opts={})
+    render_icon_grayable('icons/todo/favorite', ! todo.favorite, opts.merge(:title => "Favorite is #{todo.favorite}") )
   end
   
   def priority_name(num)
