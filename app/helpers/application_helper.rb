@@ -3,7 +3,7 @@ module ApplicationHelper
       # TODO put me in YML..
     :name => 'Septober',
     :headline => 'Yet another ToDo Application, with simplicity kept in mind. Procrastinators unite.. tomorrow! (op. cit.)',
-    :version => '1.2.0',
+    :version => '1.3.0',
     :copyright => 'Copyright 2011-11 Some rights reserved',
     :email => 'palladius@email.it',
   }
