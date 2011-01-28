@@ -28,6 +28,10 @@
     <%= f.date_select :due %>
   </p>
   <p>
+    <%= f.label :hide_until %><br />
+    <%= f.datetime_select :hide_until %>
+  </p>
+  <p>
     <%= f.label :project_id %><br />
     <%#= collection_select("todo", :project_id , Project.find_all_by_user_id_and_active(current_user.id,true, :order => "id") , :id, :name , :include_blank => false ) %>
     <%= f.collection_select(:project_id , Project.find_all_by_user_id(current_user.id, :order => "id") , :id, :name_and_activity , :include_blank => false ) %>
