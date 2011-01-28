@@ -36,11 +36,11 @@ module TodosHelper
   def render_todo_second_row(todo,opts={})
     ret = ''
       # short things
-    ret += content_tag(:span, "(OverDue: #{time_ago_in_words(Time.now - todo.due)  rescue todo.due})", :class => :small_overdue ) if todo.overdue?
-    ret += content_tag(:span, "(hide for: #{time_ago_in_words(todo.hide_until) })", :class => :small_hide_until ) if todo.still_hidden?
-    ret += content_tag(:span, "#{todo.progress_status}%", :class => :progress_status_small, :style => 'font-size: xx-small; color: blue')
+    ret += content_tag(:span, " (OverDue: #{time_ago_in_words(Time.now - todo.due)  rescue todo.due})", :class => :small_overdue ) if todo.overdue?
+    ret += content_tag(:span, " (hide for: #{time_ago_in_words(todo.hide_until) })", :class => :small_hide_until ) if todo.still_hidden?
+    ret += content_tag(:span, " #{todo.progress_status}%", :class => :progress_status_small) if todo.progress_status > 0 # , :style => 'font-size: xx-small; color: blue'
       # long
-    ret += content_tag(:span, truncate_words(todo.description), :class => :description_snippet, :style => 'font-size: xx-small; color: grey')
+    ret += content_tag(:span, ' ' + truncate_words(todo.description), :class => :description_snippet, :style => 'font-size: xx-small; color: grey')
     ret.html_safe
   end
   

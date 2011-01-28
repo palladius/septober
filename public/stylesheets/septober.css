@@ -9,6 +9,15 @@
   font-style: oblique;
 }
 
+.small_hide_until {
+	color: purple;
+	font-size: xx-small; 
+}
+
+.progress_status_small {
+	font-size: xx-small; 
+	color: purple;
+}
 
 div#logo a {
 /*	display: none;

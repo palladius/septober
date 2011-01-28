@@ -21,10 +21,14 @@ class Todo < ActiveRecord::Base
     validates_associated :project, :user
     validates_presence_of :project, :user, :name
     validates_inclusion_of :priority, :in => 1..5 ## , :message => "number must be in 1..5!"
-    validates_inclusion_of :progress_status, :in => 1..100, :message => "is a percentage, please go back to school :P"
+    validates_inclusion_of :progress_status, :in => 0..100, :message => "is a percentage, please go back to school :P"
     
     #  before_save :apply_todo_regex_magic #    RIGHT NOW... TO BECOME => BeforeCreate
     before_create :apply_todo_regex_magic
+    
+    # TODO
+    #acts_as_taggable_on :tags        # normal, user created
+    #acts_as_taggable_on :system_tags # system created
 
     def to_s
       name.capitalize
