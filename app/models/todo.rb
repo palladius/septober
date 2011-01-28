@@ -60,6 +60,10 @@ class Todo < ActiveRecord::Base
       # autodetect stuff!
     end
     
+    def progress_status?
+      progress_status && progress_status > 0 rescue false
+    end
+    
     def overdue?
       due < Date.today && active == true rescue false
     end
