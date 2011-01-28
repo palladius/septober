@@ -5,6 +5,8 @@
 1.3.0:
   - Added to todos: hide_until,favorite, progress_status
   - better view/edit/list
+  - BUG! in local populated all progress_status of old todos to 0, in production it DIDNT. I had to do on prodyction the following
+  - "Todo.all.each{|t| t.progress_status = 0 ; t.save }"
 1.2.0:
   - Migrated with TAGS
   - cleaner interface
