@@ -2,8 +2,13 @@
 # PS TODO make this DRY, now youve to remember to update as well the following files:
 # - ./VERSION
 # - app/helpers/application_helper
+1.2.0:
+  - Migrated with TAGS
+  - cleaner interface
+1.1.3:
+  - Fatal auth bug!!
 1.1.2:
-  - Priority toggles!!
+    - Priority toggles!!
   - 20110127 Rewoking on Projects. New ActsAsCarlesso implementations (need to backport to AAC plugin!)
 1.1.1:
   - 20110126 Search on TODOs fixed

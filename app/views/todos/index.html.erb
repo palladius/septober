@@ -6,29 +6,28 @@
   </tr>
   <% for todo in @todos %>
     <tr class="todo_line" >
-      <td><%= render_todo_action_icons(todo) %>
-        <%#= iconed_link_to( "Toggle", "/todos/#{todo.id}/toggle") %>
-        <%#= link_to( icon("toggle"), "/todos/#{todo.id}/toggle") %>
+      <td width='80' >
+        <%= render_todo_action_icons(todo) %>
       </td>
       <td>
-          <%#= render_todo_icons(todo) %>
           <%= link_to(render_todo_name(todo) , edit_todo_path(todo) ) %>
+						<br/>
           <%= render_todo_icons(todo) %>
+					<%= render_todo_second_row(todo) %>
       </td>
       <td align='right' ><small>
-          <%= iconed_link_to( "Done", "/todos/#{todo.id}/done") rescue "ToggleRoutigErr (#{$!})" unless todo.done? %>
-          <%= iconed_link_to( "Undone", "/todos/#{todo.id}/undone") rescue "ToggleRoutigErr (#{$!})" if todo.done?  %>
-          <%= iconed_link_to "Show", (todo) %>
+          <%#= iconed_link_to( "Done", "/todos/#{todo.id}/done") rescue "ToggleRoutigErr (#{$!})" unless todo.done? %>
+          <%#= iconed_link_to( "Undone", "/todos/#{todo.id}/undone") rescue "ToggleRoutigErr (#{$!})" if todo.done?  %>
+          <%= iconed_link_to "Show", todo, :short => true  %>
+          <%= iconed_link_to "Edit", edit_todo_path(todo), :short => true  %>
           <%#= link_to "AjaxTest", # was link_to_remote in rails 2
 				:update => "todo-#{todo.id}-detail",
 				:method => :get,
 				:url    => "/todos/#{todo.id}.txt",
 				#:confirm => "Populating todo.##{todo.id}?!?",
 				:remote => true
-				
 			%>
-          <%#= iconed_link_to "Destroy", todo, :confirm => 'Are you sure?', :method => :delete %>
-          <%#= link_to "Toggle (TODO)", todo, :method => :toggle %>
+          <%= iconed_link_to "Destroy", todo, :confirm => 'Are you sure you want to delete this? You know you can mark it as done as well? ARE YOU SURE?', :method => :delete, :title => 'Are you sure u want to delete this ticket and not rather mark it as done?!?', :short => true %>
         </small>
         <div id='todo-<%=todo.id%>-detail' ></div>
       </td>

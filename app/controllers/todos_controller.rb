@@ -11,14 +11,20 @@ class TodosController < ApplicationController
     filter_conditions[:project_id] = Project.find_by_name_and_user_id(params[:add_project], current_user.id).id if params[:add_project]
     
     # TODO joins condition so to MUTE all projects that are UNACTIVE
-    
+
+    #User.find(:all, :joins => :article,
+    #  :conditions => { :articles => { :published => true } })
+    filter_conditions[:projects] = { :home_visible => true } unless params[:add_project] # in which case i show everything
     #filter_conditions[:project_id] = Project.find_by_name(params[:add_project] rescue nil )        # TODO_IMP Try this!!!
     #filter_conditions[:project_id] = Project.find_all_by_name(params.fetch(:add_project, nil) ) # if params[:add_project]
     @todos = Todo.find :all, 
+      :joins => :project,
       :conditions => filter_conditions, 
       :order => 'active DESC, priority DESC, updated_at DESC',
       :limit => 20
   end
+  
+  
 
   def show
     @todo = Todo.find_securely(current_user,params[:id])
@@ -32,7 +38,7 @@ class TodosController < ApplicationController
     params[:todo][:user_id] = current_user.id
     @todo = Todo.new(params[:todo])
     if @todo.save
-      flash[:notice] = "Successfully created todo."
+      flash[:notice] = "Successfully created todo '#{@todo.to_s}'"
       #redirect_to @todo
       redirect_to todos_url
     else

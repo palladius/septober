@@ -3,13 +3,13 @@
 %>
 <div class='todo_oneline' >
 <%= form_for @quick_todo do |f| %>
-  <%= t(:quick_create) %>
   <%= f.error_messages %>
   <p>
+		<%#= t(:quick_create) %>
     <%= f.text_field :name %>
     <%= f.date_select(:due) rescue "((DueErr: #{$!}))" %>
     <%= f.collection_select(:project_id , Project.find_all_by_user_id_and_active(current_user.id,true, :order => "id") , :id, :name , :include_blank => false ) rescue "((ProjErr: #{$!}))" %>
     <%#= collection_select("todo", :priority , $priorities_names, :id, :to_s , :include_blank => false ) rescue "((ProjErr: #{$!}))" %>
-<%= f.submit 'Add' %></p>
+<%= f.submit 'Add Todo' %></p>
 <% end if logged_in? %>
 </div>

@@ -6,3 +6,5 @@ gem "nifty-generators", :group => :development
 gem "ric" 
 gem "mocha", :group => :test
 gem "bcrypt-ruby", :require => "bcrypt"
+
+gem 'acts-as-taggable-on'

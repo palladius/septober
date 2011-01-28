@@ -5,18 +5,24 @@
 		'SeptOber' => 'http://septober.heroku.com',
 		'FsDB' => 'http://fsdb.dev.palladius.eu/',
 		'RicLife' => 'https://riclife.palladius.eu/',
+		'Homepage' => 'https://www.palladius.it/',
 	}
 
-%><div class='footer' align='center' >
-	<hr width='50%' />
+%><div class='footer' align='center' ><small>
 	<p>
 		<b class='ric_app' ><%=$APP[:name] rescue "Unknown RicApp" %></b> v.<%=$APP[:version] rescue 'VER_ERR' %> - <%=$APP.fetch :copyright, 'All rights reserved (TM)'%>
-	</p>
-	<p>
+	<br/>
 		[
 		<%= ric_websites_ring.map{|appname,url| link_to(appname,url)}.join(' :: ').html_safe %>
 		]
 	<%#= RicPlugin.ric_websites_ring rescue "Problems to include ric_websites_ring" %>
 	</p>
-
+	
+</small>
 </div>
+
+<div id="logo">
+	<a href="http://www.palladius.it/" >
+		<%= image_tag('ric_addons/icons/powered_by_palladius.png', :alt => 'Riccardo Website' ) %>
+	</a>
+<div>
