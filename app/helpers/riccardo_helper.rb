@@ -69,6 +69,16 @@ module RiccardoHelper
     end
   end
   
+  # TODO backport
+  def truncate_words(text, length=80, end_string = ' ...')
+    text ||= ''
+    #returning words = text.split() do
+    #  words = words[0..(length-1)].join(' ') + (words.length > length ? end_string : '')
+    #end
+    text[0..length]
+  end
+  
+  
     # TODO put in RicUtil gem !!!
     # always been my dream, to DRY up exception handling! Hahahahah
   def ric_rescue(msg="Unknown Rescue Problem")

@@ -2,8 +2,9 @@ class Todo < ActiveRecord::Base
   
   require 'socket'
   
-    attr_accessible :name, :description, :active, :due, :user_id, :where, :priority, :project_id, :url
-    searchable_by :name, :description
+    attr_accessible :name, :description, :active, :due, :user_id, :where, :priority, :project_id, :url,
+      :progress_status, :favorite, :hide_until
+    searchable_by :name, :description, :where
     acts_as_carlesso
     
     belongs_to :user
@@ -20,6 +21,7 @@ class Todo < ActiveRecord::Base
     validates_associated :project, :user
     validates_presence_of :project, :user, :name
     validates_inclusion_of :priority, :in => 1..5 ## , :message => "number must be in 1..5!"
+    validates_inclusion_of :progress_status, :in => 1..100, :message => "is a percentage, please go back to school :P"
     
     #  before_save :apply_todo_regex_magic #    RIGHT NOW... TO BECOME => BeforeCreate
     before_create :apply_todo_regex_magic
@@ -56,6 +58,10 @@ class Todo < ActiveRecord::Base
     
     def overdue?
       due < Date.today && active == true rescue false
+    end
+    
+    def still_hidden?
+      hide_until && hide_until > Time.now
     end
     
     def url?

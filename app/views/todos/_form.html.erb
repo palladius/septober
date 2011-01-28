@@ -13,10 +13,13 @@
     <%= f.label :url %><br />
     <%= f.text_field :url %>
   </p>
-
   <p>
     <%= f.label :active %><br />
     <%= f.check_box :active %>
+  </p>
+  <p>
+    <%= f.label :favorite %><br />
+    <%= f.check_box :favorite %>
   </p>
   <p>
     <%= f.label :priority %><br />
@@ -31,6 +34,10 @@
   <p>
     <%= f.label :due %><br />
     <%= f.date_select :due %>
+  </p>
+  <p>	
+	<input type="range" min="0" max="100" id="todo_progress_status" name="todo[progress_status]" value="<%=@todo.progress_status %>"  >
+	<%= f.label( :progress_status ) %> (percentage. Works on Safari and Chrome!)
   </p>
   <p>
     <%= f.label :hide_until %><br />

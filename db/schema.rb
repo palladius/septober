@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110127183341) do
+ActiveRecord::Schema.define(:version => 20110128071123) do
 
   create_table "projects", :force => true do |t|
     t.string   "name"
@@ -44,17 +44,20 @@ ActiveRecord::Schema.define(:version => 20110127183341) do
   create_table "todos", :force => true do |t|
     t.string   "name"
     t.text     "description"
-    t.boolean  "active",        :default => true
+    t.boolean  "active",          :default => true
     t.date     "due"
-    t.integer  "priority",      :default => 3
+    t.integer  "priority",        :default => 3
     t.integer  "user_id"
     t.integer  "project_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "source",        :default => "web"
+    t.string   "source",          :default => "web"
     t.string   "where"
     t.string   "url"
     t.integer  "depends_on_id"
+    t.datetime "hide_until"
+    t.integer  "progress_status", :default => 0
+    t.boolean  "favorite",        :default => false
   end
 
   create_table "users", :force => true do |t|

@@ -35,8 +35,9 @@ module TodosHelper
   
   def render_todo_second_row(todo,opts={})
     ret = ''
-    ret += content_tag(:span, "OverDue: #{time_ago_in_words(Time.now - todo.due)  rescue todo.due}", :class => :small_overdue ) if todo.overdue?
-    
+    ret += content_tag(:span, "(OverDue: #{time_ago_in_words(Time.now - todo.due)  rescue todo.due})", :class => :small_overdue ) if todo.overdue?
+    ret += content_tag(:span, "(hide for: #{time_ago_in_words(todo.hide_until) })", :class => :small_hide_until ) if todo.still_hidden?
+    ret += content_tag(:span, truncate_words(todo.description), :class => :description_snippet, :style => 'font-size: xx-small; color: grey')
     ret.html_safe
   end
   
@@ -68,6 +69,7 @@ module TodosHelper
     return image_tag("icons/priorities/#{icon_gray}", :height => 20, :title => "Can't #{action} further..")
   end
   
+  
   def render_todo_action_icons(todo)
     icons = []
     ## Priority raise
@@ -87,9 +89,12 @@ module TodosHelper
   
   def render_todo_icons(todo,opts={})
     icons = []
+    height = opts.fetch :height, 12
     icons << render_priority_icon(todo.priority)
     icons << image_tag("icons/todo/overdue.png", :title => 'Overdue!', :height => 12) if todo.overdue?
-    icons << link_to(image_tag("ric_addons/icons/website.png", :title => "Website: #{todo.url}", :height => 12), todo.url) if todo.url?
+    icons << link_to(image_tag("ric_addons/icons/website.png", :title => "Website: #{todo.url}", :height => height), todo.url) if todo.url?
+    icons << image_tag("icons/todo/favorite.png", :title => "You must like this", :height => height) if todo.favorite?
+    icons << image_tag("icons/todo/hidden.png", :title => "Hidden Until: #{todo.hide_until}", :height => height) if todo.still_hidden?
     
     # Add more icons here...
     icons.join(' ').html_safe
