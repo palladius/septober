@@ -2,10 +2,6 @@ class TodosController < ApplicationController
   before_filter :login_required 
   
   def index
-    #  Project.with_scope(
-    #    :find => {:conditions => "user_id = #{user.id}"},
-    #    :create => {:user_id => user.id}
-    #  )
     filter_conditions = { :user_id => current_user.id  } 
     #  Project: , :home_visible => true
     filter_conditions[:project_id] = Project.find_by_name_and_user_id(params[:add_project], current_user.id).id if params[:add_project]
@@ -23,11 +19,9 @@ class TodosController < ApplicationController
       :order => 'active DESC, priority DESC, updated_at DESC',
       :limit => 20
   end
-  
-  
 
   def show
-    @todo = Todo.find_securely(current_user,params[:id])
+    @todo = Todo.find_securely(current_user,params[:id]) rescue nil
   end
 
   def new

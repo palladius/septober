@@ -1,4 +1,4 @@
-<% #title "Todo" %>
+<% if @todo %>
 
 <h1><%= render_todo_name(@todo) %></h1>
 <p>
@@ -36,4 +36,6 @@
   <strong>Description:</strong>
   <%= @todo.description %>
 </p>
-
+<% else %>
+	TODO not found: <%= @todo.inspect %>
+<% end %>
