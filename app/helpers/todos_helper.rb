@@ -84,25 +84,23 @@ module TodosHelper
   
   
   def render_todo_action_icons(todo,opts={})
-    cell_height = opts.fetch :cell_height, 20
+    cell_height = opts.fetch :cell_height, 30
+    border = opts.fetch :border, 0
     icons = []
     ## Priority raise, rtable of 2..
-    icons << "<table border='1'><tr><td height='#{cell_height/2}'>" +
+    icons << "<table border='0' ><tr><td width='11' height='16' >" +
         eventual_link_priority(todo, true) +
-      "<tr><td>" +
+      #{}"<tr><td >" +
         eventual_link_priority(todo, false)+
       "</table>"
       
     ## Mark as done..
     icons << link_to( 
-      image_tag(
-        "icons/todo/V-grey.png",
-        :mouseover => "icons/todo/V.png"  ,
-        :height => cell_height
-      ),
-      "/todos/#{todo.id}/done", :title => t(:mark_as_done) 
+      image_tag("icons/todo/V-grey.png", :mouseover => "icons/todo/V.png", :height => cell_height) ,
+      "/todos/#{todo.id}/done", :title => t(:mark_as_done)
     ) unless todo.done?
-    return ( "<table border=\"1\" ><tr><td height=\"#{cell_height}\" >" + 
+    # Formatting the return as a table on its own..
+    return ( "<table border=\"#{border}\" ><tr><td height=\"#{cell_height}\" >" + 
       icons.join("</td><td height=\"#{cell_height}\" >") + 
       '</table'
     ).html_safe
