@@ -18,6 +18,7 @@
   require 'optparse'       
   require 'rubygems'
   require 'ric'
+  require 'active_resource'
   $PROG_VER = '0.1'
   $DEBUG    = true
   $TEMPLATE_VER = '1.5.1'
@@ -27,6 +28,7 @@
     :foo_arr             => %w{ bar baz },
     :hello               => 'Welcome to this terrific application',
     :septober_url        => 'http://septober.heroku.com/' , 
+    :dflt_config         => './.septober.yml' , 
   }
 
   def usage(comment=nil)
@@ -35,6 +37,14 @@
     puts $opts
     pred comment if comment
     exit 11
+  end
+
+  class RemoteTodo < ActiveResource::Base
+    self.site = "http://localhost:3000/"
+    #self.site = "http://septober.heroku.com/"
+    self.element_name = 'todo'
+    self.user         = 'guest'
+    self.password     = 'guest'
   end
 
 
@@ -51,10 +61,7 @@
     deb "+ Your configuration: #{purple $myconf}"
     
     deb "PS Please find me in " + yellow("#{__FILE__}")
-    deb "Maybe you forgot to do:
-      svn add #{__FILE__}       # add to SVN
-      mate #{__FILE__}          # edit file
-      always -- #{__FILE__} -d  # to see what happens..."
+    pazure RemoteTodo.find(10)
     # Your code goes here...
   end
 

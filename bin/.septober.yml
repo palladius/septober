@@ -1,0 +1,5 @@
+# sample configuration file
+septober:
+ user: guest
+ pass: guest
+ url:  'http://localhost:3000/'
