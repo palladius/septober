@@ -1,41 +1,5 @@
 <% if @todo %>
-
-<h1><%= render_todo_name(@todo) %></h1>
-<p>
-  <%= iconed_link_to "Edit", edit_todo_path(@todo) %> |
-  <%= iconed_link_to "Destroy", @todo, :confirm => 'Are you sure?', :method => :delete %> |
-  <%= iconed_link_to "View All", todos_path %>
-</p>
-<p>
-  <strong>Due:</strong>
-  <%= @todo.due %>
-</p>
-<p>
-  <strong>favorite:</strong>
-  <%= render_icon_favorite( @todo ) %>
-</p>
-<p>
-  <strong>Progress Status:</strong>
-  <%= @todo.progress_status %>%
-</p>
-<p>
-  <strong>Hide Until:</strong>
-  <%= @todo.hide_until %> (<i><%= t(:in_the_future_particle) %> <%= time_ago_in_words @todo.hide_until %></i>)
-</p>
-
-<p>
-  <strong>Priority:</strong>
-  <%= render_priority(@todo) %>
-</p>
-<p>
-  <strong>Project:</strong>
-  <%= link_to( render_project(@todo.project), @todo.project ) %>
-</p>
-<hr/>
-<p>
-  <strong>Description:</strong>
-  <%= @todo.description %>
-</p>
+	<%= render :partial => "todos/show"  %>
 <% else %>
-	TODO not found: <%= @todo.inspect %>
+	<%=t(:todo_not_found)%>: <%= @todo.inspect %>
 <% end %>

@@ -67,13 +67,14 @@ module TodosHelper
     new_priority = raise_or_lower ? todo.priority+1 : todo.priority-1
     exception_priority = raise_or_lower ? 5 : 1
     action = raise_or_lower ? 'raise' : 'lower'
-    updown = raise_or_lower ? 'up' : 'down'
+    updown_icon = raise_or_lower ? 'up10x8' : 'down10x8'
     icon_gray = 'white.png'
     # LOWER/RAISE link
     return link_to( 
-      image_tag("icons/priorities/#{updown}-grey.png",
-        :mouseover => "icons/priorities/#{updown}.png"  ,
-        :height => 20
+      image_tag("icons/priorities/#{updown_icon}-grey.png",
+        :mouseover => "icons/priorities/#{updown_icon}.png"  ,
+        :height => 8,
+        :width => 10
       ),
       "/todos/#{todo.id}/set_priority?new_priority=#{new_priority}", :title => "#{action} priority from #{todo.priority} to #{new_priority}" 
     ) unless todo.priority==exception_priority
@@ -82,21 +83,29 @@ module TodosHelper
   end
   
   
-  def render_todo_action_icons(todo)
+  def render_todo_action_icons(todo,opts={})
+    cell_height = opts.fetch :cell_height, 20
     icons = []
-    ## Priority raise
-    icons << eventual_link_priority(todo, true)
-    icons << eventual_link_priority(todo, false)
+    ## Priority raise, rtable of 2..
+    icons << "<table border='1'><tr><td height='#{cell_height/2}'>" +
+        eventual_link_priority(todo, true) +
+      "<tr><td>" +
+        eventual_link_priority(todo, false)+
+      "</table>"
+      
     ## Mark as done..
     icons << link_to( 
       image_tag(
         "icons/todo/V-grey.png",
         :mouseover => "icons/todo/V.png"  ,
-        :height => 25
+        :height => cell_height
       ),
       "/todos/#{todo.id}/done", :title => t(:mark_as_done) 
     ) unless todo.done?
-    return icons.join('').html_safe
+    return ( "<table border=\"1\" ><tr><td height=\"#{cell_height}\" >" + 
+      icons.join("</td><td height=\"#{cell_height}\" >") + 
+      '</table'
+    ).html_safe
   end
   
   def render_todo_icons(todo,opts={})
@@ -118,5 +127,11 @@ module TodosHelper
     content_tag(:font, "#{prio_name} (#{priority})", :color=>$priorities_colors[priority], :class => "priority_#{priority}")
   end
   
+  def render_todo_hide_until(todo)
+    ret = todo.hide_until || '-'
+    ret += content_tag(:i, " (#{t :in_the_future_particle} #{time_ago_in_words( todo.hide_until )})") if todo.hide_until
+    ret
+  end
+
 
 end

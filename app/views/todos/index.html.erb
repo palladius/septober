@@ -17,7 +17,7 @@
       </td>
       <td align='right' ><small>
           <%#= iconed_link_to( "Done", "/todos/#{todo.id}/done") rescue "ToggleRoutigErr (#{$!})" unless todo.done? %>
-          <%#= iconed_link_to( "Undone", "/todos/#{todo.id}/undone") rescue "ToggleRoutigErr (#{$!})" if todo.done?  %>
+          <%= iconed_link_to( "Undone", "/todos/#{todo.id}/undone", :short => true ) rescue "ToggleRoutigErr (#{$!})" if todo.done?  %>
           <%= iconed_link_to "Show", todo, :short => true  %>
           <%= iconed_link_to "Edit", edit_todo_path(todo), :short => true  %>
           <%#= link_to "AjaxTest", # was link_to_remote in rails 2

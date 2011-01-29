@@ -1,5 +1,6 @@
 class TodosController < ApplicationController
   before_filter :login_required 
+  helper :riccardo
   
   def index
     filter_conditions = { :user_id => current_user.id  } 

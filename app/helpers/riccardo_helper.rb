@@ -111,6 +111,24 @@ module RiccardoHelper
   class Array
     def ids
       map{|element| element.id rescue "IdErr{#{$!}}"}
-    end    
+    end
+        
+=begin
+  [1,2,3].join2('A','Z ') => "A1Z A2Z A3Z "
+=end    
+  
+    def join2(pre,post)
+      pre + join(post+pre) + post
+    end
+    
+=begin
+  [1,2,3].join4('TABLE','TR TD','/TD /TR','/TABLE') =>
+  I guess you know...
+=end
+    
+    def join4(once_begin,cycle_begin, cycle_end, once_end)
+      once_begin + cycle_begin + join2(cycle_begin, cycle_end) + cycle_end + once_end
+    end
   end #/Array
-end
+  
+end #/RiccardoHelper
