@@ -1,7 +1,6 @@
-class TodosController < ApplicationController
+class Api::TodosController < ApplicationController
   before_filter :authorize_episode95
-  #before_filter :login_required 
-  helper :riccardo
+  #helper :riccardo
   
   def index
     filter_conditions = { :user_id => current_user.id  } 
@@ -75,29 +74,29 @@ class TodosController < ApplicationController
   end
   
 private
-  def _update_active(participle,new_active=nil)
-    # nil = toggle
-    new_active ||= false # should be the REVERSE... TODO!
-    # copy the data from edit
-    #@todo = Todo.find(params[:id])
-    @todo = Todo.find_securely(current_user, params[:id])
-    if @todo.update_attributes( :active => new_active )
-      flash[:notice] = "Successfully '#{participle}' todo ##{params[:id]}"
-      redirect_to todos_url
-    else
-      render :action => 'edit'
-    end
-  end
+  #def _update_active(participle,new_active=nil)
+  #  # nil = toggle
+  #  new_active ||= false # should be the REVERSE... TODO!
+  #  # copy the data from edit
+  #  #@todo = Todo.find(params[:id])
+  #  @todo = Todo.find_securely(current_user, params[:id])
+  #  if @todo.update_attributes( :active => new_active )
+  #    flash[:notice] = "Successfully '#{participle}' todo ##{params[:id]}"
+  #    redirect_to todos_url
+  #  else
+  #    render :action => 'edit'
+  #  end
+  #end
   
-  def _update_field(field_name,new_val)
-    @todo = Todo.find_securely(current_user,params[:id])
-    if @todo.update_attributes( field_name.to_sym => new_val )
-      flash[:notice] = "Successfully set '#{field_name}'='#{new_val}' for Todo ##{params[:id]}: '#{@todo}'"
-      redirect_to todos_url
-    else
-      render :action => 'edit'
-    end
-  end
+  #def _update_field(field_name,new_val)
+  #  @todo = Todo.find_securely(current_user,params[:id])
+  #  if @todo.update_attributes( field_name.to_sym => new_val )
+  #    flash[:notice] = "Successfully set '#{field_name}'='#{new_val}' for Todo ##{params[:id]}: '#{@todo}'"
+  #    redirect_to todos_url
+  #  else
+  #    render :action => 'edit'
+  #  end
+  #end
   
   # episode 95 for Remote app with authentication
   # Episode 82 for multiple auth...

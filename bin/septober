@@ -20,7 +20,7 @@
   require 'ric'
   require 'active_resource'
   
-  $PROG_VER = '0.9.a'
+  $PROG_VER = '0.9.1'
   $DEBUG    = false
   
   $myconf = {
@@ -33,16 +33,16 @@
 
 
   class RemoteTodo < ActiveResource::Base
-    self.site = "http://localhost:3000/"
-    #self.site = "http://septober.heroku.com/"
+    #self.site = "http://localhost:3000/"
+    self.site = "http://septober.example.com/" # uninitialized
+    #self.user         = 'guest'
+    #self.password     = 'guest'
     self.element_name = 'todo'
-    self.user         = 'guest'
-    self.password     = 'guest'
-    @@pseudo_config = 'septober:
-host:  http://localhost:3000/
-user: guest
-pass: guest
-'
+    @@pseudo_config = 'septober: 
+       # YAML file with septober configuration. For more info: http://septober.heroku.com/
+       site: "http://localhost:3000/"   # or http://septober.heroku.com/
+       user: guest
+       password: guest'
     
     # self.ssl_options = {:cert         => OpenSSL::X509::Certificate.new(File.open(pem_file))
     #                        :key          => OpenSSL::PKey::RSA.new(File.open(pem_file)),
@@ -51,12 +51,19 @@ pass: guest
     
     def self.import_config(file=nil)
       file ||= $myconf[:dflt_config]
+      real_file = File.expand_path file
       puts "Importing config from #{file}.."
-      if File.exists?(file)
-        puts "TODO import from #{file}"
+      if File.exists?(real_file)
+        #puts "TODO import from #{file}"
+        conf_hash = YAML.load_file(real_file)['septober'] rescue nil
+        self.site = conf_hash['site']
+        self.user = conf_hash['user']
+        self.password = conf_hash['password']
+        puts "Conf imported successuflly: #{blue self.user} @ #{azure self.site}"
       else
-        fatal "Missing file: #{file} !!! Try to do the following:"
+        pred "Missing file: #{file} !!! Try to do the following:"
         puts "cat > #{file}\n#{@@pseudo_config rescue "Err#{$!}" }"
+        exit 79
       end
     end
     
@@ -90,7 +97,9 @@ pass: guest
       key_vals << ['ProjectName', project.name ]
       key_vals.map{ |k,v| "#{k}: #{v}" }.join("\n")
     end
-  end
+  end # /RemoteTodo
+  
+  RemoteTodo.import_config()
   
   def usage(comment=nil)
     puts "#{$0} v.#{$PROG_VER}"
@@ -115,13 +124,18 @@ pass: guest
     deb "+ Your configuration: #{purple $myconf}"
     pazure 'Todo List for user guest..'
     #pazure RemoteTodo.find(10)
-    list
-    show(42)
-    # Your code goes here...
+    case ARGV[0]
+      when 'list' ;    todo_list()
+      when 'show' ;    todo_show(ARGV[1])
+      when 'done' ;    todo_done(ARGV[1],true)
+      else ;           usage "Unrecognized command: #{ARGV[0]}"
+    end
+    #list
+    #show(42)
   end
 
   
-  def list(opts={})
+  def todo_list(opts={})
     show_only_active = opts.fetch :only_active, true
     puts "# Todo.Index (user: #{blue RemoteTodo.user})"
     RemoteTodo.find(:all).each{|todo|
@@ -129,14 +143,20 @@ pass: guest
     }
   end
   
-  def show(id)
+  def todo_show(id)
     todo = RemoteTodo.find(id)
     puts "# Todo.Show(#{id}) (user: #{blue RemoteTodo.user})"
     puts( todo.show_full_entry )
   end
   
-  def search(q)
-    puts 'TODO'
+  def todo_done(id,done_or_undone=true)
+    puts "# Todo.Done(#{id}) (user: #{blue RemoteTodo.user})"
+    pred "To Be implemented Yet"
+  end
+  
+  def todo_search(q)
+    puts "# Todo.Search('#{q}') (user: #{blue RemoteTodo.user})"
+    pred "To Be implemented Yet"
   end
 
   def main()
