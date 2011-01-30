@@ -26,6 +26,7 @@ en:
   Toggle: Toggle
   Done: Done
   new_todo: New Task
+  todo_not_found: Task not found
   Undone: Reactivate
   View All: View All
   quick_create: Quick Creation
@@ -64,6 +65,7 @@ it:
     Todo: Voce
     Todos: Voci
     new_todo: Nuova Voce
+    todo_not_found: Voce non trovata
     ## Project
     
     ## Time

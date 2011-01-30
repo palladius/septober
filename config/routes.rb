@@ -7,24 +7,37 @@ Septober::Application.routes.draw do
 
   resources :sessions
   resources :users
-  resources :projects
+  #resources :todos
+  
   resources :projects do
-    resources :todos
+    resources :todos # how do I select only the sub_project stuff?!? 
+    member do
+      #get 'short'
+      post 'set_public'
+      post 'set_private'
+      post 'set_home'
+      post 'set_no_home'
+      get "procrastinate"
+    end
   end
-  resources :todos
+  resources :todos do
+    member do
+      #get 'short'
+      get  'done'
+      get  'undone'
+      get  'toggle'
+      get  'set_priority'
+      post 'quick_create_post'  # TODO!
+      get  'quick_create_get'
+    end
+  end
   
-  #resources :todos do
-  # #member do
-  #   #get 'short'
-  #   post 'done'
-  #   post 'undone'
-  #   post 'toggle'
-  #end
   
-  match "/todos/:id/toggle"        => 'todos#toggle'
-  match "/todos/:id/done"          => 'todos#done'
-  match "/todos/:id/undone"        => 'todos#undone'
-  match "/todos/:id/set_priority"  => 'todos#set_priority'
+  # TODO put into resource
+  #match "/todos/:id/toggle"        => 'todos#toggle'
+  #match "/todos/:id/done"          => 'todos#done'
+  #match "/todos/:id/undone"        => 'todos#undone'
+  #match "/todos/:id/set_priority"  => 'todos#set_priority'
   
   #####################################
   ### RicAddons::Routes
@@ -54,7 +67,13 @@ Septober::Application.routes.draw do
 
   # Sample resource route (maps HTTP verbs to controller actions automatically):
   #   resources :products
-
+  resources :projects do
+    member do
+  #       get 'short'
+  #       post 'toggle'
+      get :procrastinate
+    end
+  end
   # Sample resource route with options:
   #   resources :products do
   #     member do

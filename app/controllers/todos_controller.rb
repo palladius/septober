@@ -1,5 +1,4 @@
 class TodosController < ApplicationController
-  #before_filter :authorize_episode95
   before_filter :login_required 
   helper :riccardo
   
@@ -67,6 +66,7 @@ class TodosController < ApplicationController
   def set_priority
     _update_field(:priority,params[:new_priority])
   end
+  
   def destroy
     @todo = Todo.find(params[:id])
     @todo.destroy
