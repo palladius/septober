@@ -1,5 +1,6 @@
 class TodosController < ApplicationController
-  before_filter :login_required 
+  before_filter :authorize_episode95
+  #before_filter :login_required 
   helper :riccardo
   
   def index
@@ -14,15 +15,19 @@ class TodosController < ApplicationController
       :limit => 20
     respond_to do |format|
       format.html 
-      format.xml  { render :xml => @todos }
+      format.xml  { render_todos_xml_or_json :xml,  @todos } # :due_explaination
+      format.json { render_todos_xml_or_json :json, @todos }
     end
   end
+  
 
   def show
     @todo = Todo.find_securely(current_user,params[:id]) rescue nil
     respond_to do |format|
       format.html 
-      format.xml  { render :xml => @todo }
+      #format.xml  { render :xml  => @todo, $XML_TODO_OPTS } # :include => [:project] , :methods => [:due_explaination] }
+      format.xml  { render_todos_xml_or_json :xml ,  @todo }
+      format.json { render_todos_xml_or_json :json , @todo }
     end
   end
 
@@ -93,4 +98,44 @@ private
       render :action => 'edit'
     end
   end
-end
+  
+  def authorize_episode95
+   # user = User.authenticate(params[:login], params[:password])
+   # if user
+   #   session[:user_id] = user.id
+   #   flash[:notice] = "Logged in successfully."
+      
+    user = authenticate_or_request_with_http_basic do |username, password|
+      #username == "guest" && password == "guest"
+      User.authenticate(username, password)
+    end
+    puts "\n\nDEB(authorize_episode95): user='#{user}'\n\n"
+    if user
+      session[:user_id] = user.id 
+    end
+    return user || login_required # passing to Ryan Bates thing..
+  end
+  
+=begin
+  #  to DRY the methods for TODOS index and TODO show..
+  protocol: :xml or :json
+  
+  Possible options:  
+  - :only=>['id','title'] (either on master model or submodels) to restrict explicitally
+  - :include for DB relationships
+  - :methods for custom model methods
+  - for all the rest, there is mastercard. ehm, no, there is explicit XML builder in the view... or here :)
+
+   Resources:
+   - http://stackoverflow.com/questions/4363870/rails-json-rendering-ambiguous-table-column-names
+   
+=end
+  def render_todos_xml_or_json(protocol, object_s) # object(s)
+    render protocol => object_s, 
+      :include => {
+        :project=> {:only => [:name, :color ] } 
+      }, 
+      :methods => [:due_explaination] 
+  end
+  
+end #/TodosController

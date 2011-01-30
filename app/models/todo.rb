@@ -65,7 +65,18 @@ class Todo < ActiveRecord::Base
     end
     
     def overdue?
-      due < Date.today && active == true rescue false
+      #due < Date.today && active == true rescue false
+      due < Date.today rescue false
+    end
+    
+    def close_due?
+      due < Date.today + 2 rescue false
+    end
+    
+    def due_explaination
+      overdue? ? 'overdue' : (
+        close_due? ? 'close' : 'far'
+      )  rescue "DueXplnErr(#{$!})"# i.e. close = within 2 days
     end
     
     def still_hidden?
@@ -95,7 +106,7 @@ class Todo < ActiveRecord::Base
     end
     
     def self.provision_for_user(user)
-      ver = '0.1.0'
+      ver = '1.0.0alpha' # it works!
       projects = {}
       #Todo.with_scope(:find => {:conditions => "user_id = #{current_user.id}"},
       #                :create => {:user_id => current_user.id}) do

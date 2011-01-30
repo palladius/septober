@@ -19,25 +19,18 @@
   require 'rubygems'
   require 'ric'
   require 'active_resource'
-  $PROG_VER = '0.1'
-  $DEBUG    = true
-  $TEMPLATE_VER = '1.5.1'
+  
+  $PROG_VER = '0.9.a'
+  $DEBUG    = false
   
   $myconf = {
     :app_name            => 'septober client',
     :foo_arr             => %w{ bar baz },
     :hello               => 'Welcome to this terrific application',
     :septober_url        => 'http://septober.heroku.com/' , 
-    :dflt_config         => './.septober.yml' , 
+    :dflt_config         => '~/.septober.yml' , 
   }
 
-  def usage(comment=nil)
-    puts "#{$0} v.#{$PROG_VER}"
-    puts "Usage2: #{File.basename $0} [-dhjv] [-l LOGFILE] <FOO> <BAR>"
-    puts $opts
-    pred comment if comment
-    exit 11
-  end
 
   class RemoteTodo < ActiveResource::Base
     self.site = "http://localhost:3000/"
@@ -45,24 +38,105 @@
     self.element_name = 'todo'
     self.user         = 'guest'
     self.password     = 'guest'
+    @@pseudo_config = 'septober:
+host:  http://localhost:3000/
+user: guest
+pass: guest
+'
+    
+    # self.ssl_options = {:cert         => OpenSSL::X509::Certificate.new(File.open(pem_file))
+    #                        :key          => OpenSSL::PKey::RSA.new(File.open(pem_file)),
+    #                        :ca_path      => "/path/to/OpenSSL/formatted/CA_Certs",
+    #                        :verify_mode  => OpenSSL::SSL::VERIFY_PEER}
+    
+    def self.import_config(file=nil)
+      file ||= $myconf[:dflt_config]
+      puts "Importing config from #{file}.."
+      if File.exists?(file)
+        puts "TODO import from #{file}"
+      else
+        fatal "Missing file: #{file} !!! Try to do the following:"
+        puts "cat > #{file}\n#{@@pseudo_config rescue "Err#{$!}" }"
+      end
+    end
+    
+    def to_s
+      self.name
+    end
+    
+    def colored_project_name()
+      colora(project.color || :grey ,project.name)
+    end
+    
+    # TODO put this into todo.rb model and add it to the controller like "cli_colored_string" and "cli_neutral_string"
+    def colored_due_explaination(override_explaination=nil)
+      mycolor = case due_explaination
+        when 'overdue' ; :red 
+        when 'close' ;   :yellow 
+        when 'far' ;     :green 
+      end
+      return colora(mycolor, override_explaination || due_explaination)
+    end
+
+    def show_entry(opts={})
+      mywhere = where ? azure( " @#{where}") : ''
+      return sprintf "%-3d %-30s [P%d] %s %s%s",
+        id, colored_project_name , priority, colored_due_explaination(due), name, mywhere
+    end
+    
+    def show_full_entry(opts={})
+      attributes = %w{name id due where url progress_status active description }
+      key_vals = attributes.map{|attr| [attr,send(attr)] } # array of [key, val]
+      key_vals << ['ProjectName', project.name ]
+      key_vals.map{ |k,v| "#{k}: #{v}" }.join("\n")
+    end
+  end
+  
+  def usage(comment=nil)
+    puts "#{$0} v.#{$PROG_VER}"
+    puts "Usage: #{File.basename $0} [-dhjv] [-c LOGFILE] [--no-colors] OPTIONS"
+    puts "  list            # shows a list of your todos yet to complete"
+    puts "  show <ID>       # shows details about todo with id=ID"
+    puts "  done <ID>       # sets todo ID to done/resolved"
+    #puts "  search <QUERY>  # look for TODOs relating to 'QUERY' string"
+    pred comment if comment
+    exit 78
   end
 
-
   def real_program
-    #$DEBUG = true
-    debug_on 'Just created script, presuming u need some debug. TODO REMOVE ME when everything works!' #if $DEBUG
+    #debug_on 'Just created script, presuming u need some debug. TODO REMOVE ME when everything works!' if $DEBUG
       # Maybe you may want to check on ARGV
-    # unless ARGV.size == 2
-    #   usage "Give me 2 arguments!" 
-    # end
+    unless ARGV.size > 0
+      usage "Give me at least 1 argument" # Maybe default to list?!? 
+    end
+    # i dont need it for help :)
     deb("Hello world from a templated '#{yellow $0 }'")
-    deb "+ Options are:  #{gray $opts}"
     deb "+ Depured args: #{azure ARGV}"
     deb "+ Your configuration: #{purple $myconf}"
-    
-    deb "PS Please find me in " + yellow("#{__FILE__}")
-    pazure RemoteTodo.find(10)
+    pazure 'Todo List for user guest..'
+    #pazure RemoteTodo.find(10)
+    list
+    show(42)
     # Your code goes here...
+  end
+
+  
+  def list(opts={})
+    show_only_active = opts.fetch :only_active, true
+    puts "# Todo.Index (user: #{blue RemoteTodo.user})"
+    RemoteTodo.find(:all).each{|todo|
+      puts( todo.show_entry ) unless( show_only_active && ! todo.active )
+    }
+  end
+  
+  def show(id)
+    todo = RemoteTodo.find(id)
+    puts "# Todo.Show(#{id}) (user: #{blue RemoteTodo.user})"
+    puts( todo.show_full_entry )
+  end
+  
+  def search(q)
+    puts 'TODO'
   end
 
   def main()
