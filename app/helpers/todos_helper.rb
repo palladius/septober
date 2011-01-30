@@ -149,6 +149,13 @@ module TodosHelper
     ret += content_tag(:i, " (#{t :in_the_future_particle} #{time_ago_in_words( todo.hide_until )})") if todo.hide_until
     ret
   end
+  
+  def render_duetime(todo,opts={})
+    style_class = "due_explain_#{todo.due_explaination}"
+    time_in_words = time_ago_in_words(todo.due.to_time)
+    explaination = todo.overdue? ? "#{time_in_words} ago" : "in #{time_in_words}"
+    content_tag( :span, explaination , :class => style_class)
+  end
 
 
 end

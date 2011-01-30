@@ -44,5 +44,19 @@ a {
 }
 
 .done_false {
-	color: brown;
+	/* color: brown; */
+}
+
+/*
+	OverDue Explaination
+*/
+
+.due_explain_overdue {
+	  background-color: #fcc ; 
+}
+.due_explain_close {
+	  background-color: #ffa ; 
+}
+.due_explain_far {
+	  background-color: green ; 
 }
