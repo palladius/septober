@@ -79,6 +79,11 @@ class Todo < ActiveRecord::Base
       )  rescue "DueXplnErr(#{$!})"# i.e. close = within 2 days
     end
     
+    # has location
+    def where?
+      self.where.to_s.length > 0
+    end
+    
     def still_hidden?
       hide_until && hide_until > Time.now
     end

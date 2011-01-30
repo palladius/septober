@@ -34,16 +34,29 @@ module TodosHelper
   end
   
   def render_where(todo)
-    iconed_link_to('GugolMap', todo.where, "http://maps.google.com/q?#{todo.where}", :title => "Title for #{todo.where}", :target => '_blank' )
+    link_to(
+      icon('map') , 
+      "http://maps.google.com?q=#{todo.where}",
+      {
+      :title => "#{todo.where}"
+      #:method => :post,
+      #:confirm => "Are you sure to go to google map?!?",
+      
+      },
+      :popup => true ,
+      :target => '_blank' 
+    ) 
+    #iconed_link_to('GugolMap', todo.where, "http://maps.google.com/q?#{todo.where}") 
+    # , 
   end
   
   def render_todo_second_row(todo,opts={})
     ret = ''
       # short things
+    ret += content_tag(:span, render_where(todo), :class => :where_small) if todo.where?
     ret += content_tag(:span, " (OverDue: #{time_ago_in_words(Time.now - todo.due)  rescue todo.due})", :class => :small_overdue ) if todo.overdue?
     ret += content_tag(:span, " (hide for: #{time_ago_in_words(todo.hide_until) })", :class => :small_hide_until ) if todo.still_hidden?
     ret += content_tag(:span, " #{todo.progress_status}%", :class => :progress_status_small) if todo.progress_status?
-    ret += content_tag(:span, render_where(todo), :class => :where_small) if todo.where
       # long
     ret += content_tag(:span, ' ' + truncate_words(todo.description), :class => :description_snippet, :style => 'font-size: xx-small; color: grey')
     ret.html_safe
