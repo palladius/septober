@@ -8,9 +8,15 @@
       <%= render_todo_icons(todo) %>
       <%= render_todo_second_row(todo) %>
   </td>
-  <td class='todo_due_column due_column_<%todo.due_explaination%>'>
+  <td class='todo_due_column due_column_<%todo.due_explaination%>' align='right' >
     <%= render_duetime(todo) %>
-	<%=%>
+	<%= link_to(
+			image_tag("icons/todo/procrastinate-grey.png",
+   			   :mouseover => "icons/todo/procrastinate.png"  ,
+			   :height => 40
+			), "/todos/#{todo.id}/procrastinate" ,
+			:title => "Procrastinate a week or so.."
+    )%>
   </td>
   <td align='right' ><small>
       <%#= iconed_link_to( "Done", "/todos/#{todo.id}/done") rescue "ToggleRoutigErr (#{$!})" unless todo.done? %>

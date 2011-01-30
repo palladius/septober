@@ -67,6 +67,12 @@ class TodosController < ApplicationController
     _update_field(:priority,params[:new_priority])
   end
   
+  def procrastinate
+    # procrastinate by 7
+    n_days = params.fetch( :procrastinate_days, 7 )
+    _update_field(:due,Date.today + n_days )
+  end
+  
   def destroy
     @todo = Todo.find(params[:id])
     @todo.destroy

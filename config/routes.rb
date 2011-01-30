@@ -30,6 +30,7 @@ Septober::Application.routes.draw do
       get  'set_bookmark'
       post 'quick_create_post'  # TODO!
       get  'quick_create_get'
+      get  'procrastinate'
     end
   end
   

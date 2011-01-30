@@ -4,23 +4,6 @@ module TodosHelper
   $priorities_names = %w{ ZERO very_low low    normal  high     very_high }
   $priorities_colors= %w{ ZERO grey     green  black   orange   red       }
   
-  # class Priority
-  #   @@priorities_names = %w{ ZERO very_low low    normal  high     very_high }
-  #   
-  #   def new()
-  #     
-  #   end
-  #   
-  #   def find
-  #     %w{ ZERO very_low low    normal  high     very_high }
-  #   end
-  #   
-  #   def name
-  #     :todo
-  #   end
-  #   
-  # end
-  
   def render_todo_name(todo, opts={} )
     # (Prio=#{$priorities_names[todo.priority]})
     title = [

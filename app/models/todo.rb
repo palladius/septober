@@ -1,4 +1,5 @@
 class Todo < ActiveRecord::Base
+  @@default_procrastination = 7
   
   require 'socket'
   
