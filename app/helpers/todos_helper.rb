@@ -24,9 +24,10 @@ module TodosHelper
   def render_todo_name(todo, opts={} )
     # (Prio=#{$priorities_names[todo.priority]})
     title = [
-      todo.where ? "Where: #{todo.where}" : '-'  ,
-      "Due: #{todo.due}",
-      "Description: '#{todo.description}'",
+      #todo.where ? "Where: #{todo.where}" : '-'  ,
+      #"Due: #{todo.due}",
+      #{}"Description: '#{todo.description}'",
+      todo.description
       ].join("\n")
     coloured_todo = render_within_project(todo.project,todo.to_s.capitalize) rescue "TodoErr('#{$!}')"
     ret = content_tag( (todo.active ? :b : :s) , coloured_todo , :title => title , :alt => :alt , :class => "todo") # , :id => "todo_#{todo.id}")
@@ -76,7 +77,7 @@ module TodosHelper
   end
 
   def render_priority_icon(priority,opts={})
-    image_tag("icons/priorities/#{priority}.png" , :title => "Priority ##{priority}: #{priority_name(priority)}", :height => 12)
+    image_tag("icons/priorities/#{priority}.png" , :title => "Priority ##{priority}: #{priority_name(priority)}", :height => 12) unless priority == 3
   end
   
   def eventual_link_priority(todo,raise_or_lower) 
@@ -86,7 +87,7 @@ module TodosHelper
     exception_priority = raise_or_lower ? 5 : 1
     action = raise_or_lower ? 'raise' : 'lower'
     updown_icon = raise_or_lower ? 'up10x8' : 'down10x8'
-    icon_gray = 'white.png'
+    icon_gray = 'white-10x8.png'
     # LOWER/RAISE link
     return link_to( 
       image_tag("icons/priorities/#{updown_icon}-grey.png",
@@ -97,12 +98,12 @@ module TodosHelper
       "/todos/#{todo.id}/set_priority?new_priority=#{new_priority}", :title => "#{action} priority from #{todo.priority} to #{new_priority}" 
     ) unless todo.priority==exception_priority
     # return gray and NOT linked
-    return image_tag("icons/priorities/#{icon_gray}", :height => 20, :title => "Can't #{action} further..")
+    return image_tag("icons/priorities/#{icon_gray}", :width => 10, :height => 8, :title => "Can't #{action} further..")
   end
   
   
   def render_todo_action_icons(todo,opts={})
-    cell_height = opts.fetch :cell_height, 30
+    cell_height = opts.fetch :cell_height, 40
     border = opts.fetch :border, 0
     icons = []
     ## Priority raise, rtable of 2..
@@ -140,7 +141,7 @@ module TodosHelper
   def render_priority(todo)
     priority = todo.priority
     prio_name = $priorities_names[priority]
-    content_tag(:font, "#{prio_name} (#{priority})", :color=>$priorities_colors[priority], :class => "priority_#{priority}")
+    content_tag(:span , "#{prio_name} (#{priority})", :style => "color:"+$priorities_colors[priority], :class => "priority_#{priority}")
   end
   
   def render_todo_hide_until(todo)

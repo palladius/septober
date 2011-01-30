@@ -1,12 +1,12 @@
-<tr class="todo_line " >
+<tr class="todo_line done_<%=todo.done? %> overdue_<%=todo.due_explaination%>" >
   <td width='80' >
     <%= render_todo_action_icons(todo) %>
   </td>
   <td>
       <%= link_to(render_todo_name(todo) , edit_todo_path(todo) ) %>
-		<br/>
+        <br/>
       <%= render_todo_icons(todo) %>
-	<%= render_todo_second_row(todo) %>
+      <%= render_todo_second_row(todo) %>
   </td>
   <td align='right' ><small>
       <%#= iconed_link_to( "Done", "/todos/#{todo.id}/done") rescue "ToggleRoutigErr (#{$!})" unless todo.done? %>

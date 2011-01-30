@@ -28,5 +28,21 @@ div#logo a {
 	position: fixed;
 	right: 1%;
 	bottom: 1%;
-	
+}
+
+a {
+  /* border: none; */
+  text-decoration: none ;
+}
+
+/* stuff relative to a Todo */
+
+.done_true {
+	color: red;
+	display: none;
+	position: absolute;
+}
+
+.done_false {
+	color: brown;
 }

@@ -4,15 +4,10 @@
     <%= f.label :name %><br />
     <%= f.text_field :name %>
   </p>
-
   <p>
-		<%#= #render_colored_square( :color => @project.color, :height => 15) do %>
-    	<%#= f.label :color %>
-		<%# end %>
-		
-  	<%= f.label :color %>
+  		<%= f.label :color %>
 		<%= render_colored_square( :color => @project.color, :height => 15) %>
-    <span style='color:<%@project.color%>' ><%= f.text_field :color %></font>
+    <span style='color:<%@project.color%>' ><%= f.text_field :color %></span>
   </p>
   <p>
     <%= f.check_box :home_visible %>

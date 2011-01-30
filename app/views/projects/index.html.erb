@@ -2,14 +2,19 @@
 
 <table>
   <tr>
-    <th>Name</th>
+    <th colspan='2' >Name</th>
     <th>Description</th>
     <th>Home?</th>
     <th>Public</th>
   </tr>
   <% for project in @projects %>
     <tr>
-      <td><b><%= link_to(render_project(project),project) %></b></td>
+      <td>
+        <%= render_colored_square( :color => project.color, :height => 15, :title => project.color ) %>
+      </td>
+      <td>
+        <b><%= link_to(render_project(project),project) %></b>
+      </td>
       <td><small><%= project.description %></small></td>
       <td><%= okno(project.home_visible) %></td>
       <td><%= okno project.public %></td>

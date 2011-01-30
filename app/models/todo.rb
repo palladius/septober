@@ -73,6 +73,7 @@ class Todo < ActiveRecord::Base
       due < Date.today + 2 rescue false
     end
     
+    # overdue, close, far
     def due_explaination
       overdue? ? 'overdue' : (
         close_due? ? 'close' : 'far'

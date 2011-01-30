@@ -13,9 +13,10 @@ module ProjectsHelper
   
   # TODO refactor
   def render_within_project(project, str, opts={})
-    opts[:color] = project.color
+    #opts[:color] = project.color
+    opts[:style] = "color:#{project.color}"
     opts[:class] = "project homevisible_#{project.home_visible} public_#{project.public} active_#{project.active}"
-    content_tag(:font, str, opts )
+    content_tag(:span, str, opts )
   end
   
   # Try this instead: #

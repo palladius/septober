@@ -27,6 +27,7 @@ Septober::Application.routes.draw do
       get  'undone'
       get  'toggle'
       get  'set_priority'
+      get  'set_bookmark'
       post 'quick_create_post'  # TODO!
       get  'quick_create_get'
     end
