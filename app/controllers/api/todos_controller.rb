@@ -3,9 +3,9 @@ class Api::TodosController < ApplicationController
   #helper :riccardo
   
   def index
-    filter_conditions = { :user_id => current_user.id  } 
+    filter_conditions = { :user_id => current_api_user.id  } 
     #  Project: , :home_visible => true
-    filter_conditions[:project_id] = Project.find_by_name_and_user_id(params[:add_project], current_user.id).id if params[:add_project]
+    filter_conditions[:project_id] = Project.find_by_name_and_user_id(params[:add_project], current_api_user.id).id if params[:add_project]
     filter_conditions[:projects] = { :home_visible => true } unless params[:add_project] # in which case i show everything
     @todos = Todo.find :all, 
       :joins => :project,
@@ -21,7 +21,7 @@ class Api::TodosController < ApplicationController
   
 
   def show
-    @todo = Todo.find_securely(current_user,params[:id]) rescue nil
+    @todo = Todo.find_securely(current_api_user,params[:id]) rescue nil
     respond_to do |format|
       format.html 
       #format.xml  { render :xml  => @todo, $XML_TODO_OPTS } # :include => [:project] , :methods => [:due_explaination] }
@@ -35,7 +35,7 @@ class Api::TodosController < ApplicationController
   end
 
   def create
-    params[:todo][:user_id] = current_user.id
+    params[:todo][:user_id] = current_api_user.id
     @todo = Todo.new(params[:todo])
     if @todo.save
       flash[:notice] = "Successfully created todo '#{@todo.to_s}'"
@@ -46,7 +46,7 @@ class Api::TodosController < ApplicationController
   end
 
   def edit
-    @todo = Todo.find_securely(current_user,params[:id])
+    @todo = Todo.find_securely(current_api_user,params[:id])
   end
 
   def update
@@ -107,15 +107,20 @@ private
    #   flash[:notice] = "Logged in successfully."
       
     user = nil
-    authenticate_or_request_with_http_basic do |username, password|
+    return authenticate_or_request_with_http_basic do |username, password|
       #username == "guest" && password == "guest"
+      #user = 
       user = User.authenticate(username, password )
+      if user
+        session[:api_user_id] = user.id 
+      end
+      user
     end
-    puts "\n\nDEB(authorize_episode95): user='#{user.id}'\n\n"
-    if user
-      session[:user_id] = user.id 
-    end
-    return user || login_required # passing to Ryan Bates thing..
+    #puts "\n\nDEBUG (API authorize_episode95): user='#{user.id rescue "NoId:"}'\n\n"
+    #if user
+    #  session[:user_id] = user.id 
+    #end
+    # return user || login_required # passing to Ryan Bates thing..
   end
   
 =begin

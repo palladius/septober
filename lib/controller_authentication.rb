@@ -23,6 +23,10 @@ module ControllerAuthentication
   def current_user
     @current_user ||= User.find(session[:user_id]) if session[:user_id]
   end
+  
+  def current_api_user
+    @current_user ||= User.find(session[:api_user_id]) if session[:api_user_id]
+  end
 
   def logged_in?
     current_user

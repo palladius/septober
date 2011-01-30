@@ -40,7 +40,7 @@
     self.element_name = 'todo'
     @@pseudo_config = 'septober: 
        # YAML file with septober configuration. For more info: http://septober.heroku.com/
-       site: "http://localhost:3000/"   # or http://septober.heroku.com/
+       site: "http://localhost:3000/api/"   # or http://septober.heroku.com/api/
        user: guest
        password: guest'
     
@@ -119,10 +119,9 @@
       usage "Give me at least 1 argument" # Maybe default to list?!? 
     end
     # i dont need it for help :)
-    deb("Hello world from a templated '#{yellow $0 }'")
-    deb "+ Depured args: #{azure ARGV}"
-    deb "+ Your configuration: #{purple $myconf}"
-    pazure 'Todo List for user guest..'
+    #deb("Hello world from a templated '#{yellow $0 }'")
+    #deb "+ Depured args: #{azure ARGV}"
+    #deb "+ Your configuration: #{purple $myconf}"
     #pazure RemoteTodo.find(10)
     case ARGV[0]
       when 'list' ;    todo_list()
@@ -130,17 +129,16 @@
       when 'done' ;    todo_done(ARGV[1],true)
       else ;           usage "Unrecognized command: #{ARGV[0]}"
     end
-    #list
-    #show(42)
   end
 
   
   def todo_list(opts={})
     show_only_active = opts.fetch :only_active, true
     puts "# Todo.Index (user: #{blue RemoteTodo.user})"
-    RemoteTodo.find(:all).each{|todo|
+    all = RemoteTodo.find(:all)
+    all.each{|todo|
       puts( todo.show_entry ) unless( show_only_active && ! todo.active )
-    }
+    } if all
   end
   
   def todo_show(id)
