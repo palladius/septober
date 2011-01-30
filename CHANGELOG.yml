@@ -6,7 +6,9 @@
   - working septober CLI (now with only user and pass) and colors!
   - updated 'ric' dependency tu support 'colora' (hence 'debug')
   - Added XML consistent representation for todos and todo (index+show) with some project info
-  - working on authentication and conf '~/.septober.yml' conf..
+  - working on authentication and conf '~/.septober.yml' conf.. OK!
+  - Added API directory. Now all API calls (with HTTP_BASIC) go to API dir.. TODO dry controllers!
+  - Added api_current_user in lib/authentication.rb and in controllers.. and api_session
 1.3.0:
   - Added to todos: hide_until,favorite, progress_status
   - better view/edit/list
