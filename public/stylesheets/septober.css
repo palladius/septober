@@ -48,17 +48,23 @@ a {
 }
 
 /*
-	OverDue Explaination
+	OverDue Explaination column
 */
+TD.todo_due_column {
+	font-style: oblique;
+	font-size: x-small; 
+}
 
 .due_explain_overdue {
-	  background-color: #fcc ; 
+	  background-color: #fee ; 
+
+	color: red;
 }
 .due_explain_close {
-	  background-color: #ffa ; 
+	  background-color: #ffd ; 
 }
 .due_explain_far {
-	/*  background-color: #cfc ; */
-	color: green;
-	font-size: x-small; 
+	/*  background-color: #cfc ; 
+	color: green;*/
+
 }
