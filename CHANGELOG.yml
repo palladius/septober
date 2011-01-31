@@ -3,7 +3,8 @@
 # - ./VERSION
 # - app/helpers/application_helper
 1.3.3:
-  - "In place editing:  rails plugin install git://github.com/rails/in_place_editing.git"
+  - "In place editing:  rails plugin install git://github.com/rails/in_place_editing.git (DOESNT WORK ON RAILS3)"
+  - "Adding tags: https://github.com/jviney/acts_as_taggable_on_steroids.git"
 1.3.2:
   - Cleanup of routes
   - Google maps for todo..

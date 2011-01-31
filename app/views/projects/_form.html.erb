@@ -5,22 +5,26 @@
     <%= f.text_field :name %>
   </p>
   <p>
-  		<%= f.label :color %>
-		<%= render_colored_square( :color => @project.color, :height => 15) %>
+  	<%= f.label :color %>
+	<%= render_colored_square( :color => @project.color, :height => 15) %>
     <span style='color:<%@project.color%>' ><%= f.text_field :color %></span>
   </p>
   <p>
     <%= f.check_box :home_visible %>
     <%= f.label :home_visible %>
-  </p>
-  <p>
+
     <%= f.check_box :public %>
 		<%= f.label :public %>    
-  </p>
-  <p>
     <%= f.check_box :active %>
     <%= f.label :active %>
   </p>
+<p>
+  <div class="field" id="project-magic-tags" >
+    <%= icon('tag') %>
+    <%= f.label t(:magic_tag_list) %><br />
+    <%= f.text_field :magic_tag_list , :size => 70 %>
+  </div>
+</p>
   <p>
     <%= f.label :description %><br />
     <%= f.text_area :description %>
