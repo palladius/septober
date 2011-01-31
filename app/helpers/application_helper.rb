@@ -4,7 +4,7 @@ module ApplicationHelper
     :name => 'Septober',
     :headline => 'Yet another ToDo Application, with simplicity kept in mind. 
       Procrastinators unite.. tomorrow! (op. cit.)',
-    :version =>  File.open(RAILS_ROOT + '/VERSION' ).read ,
+    :version =>  File.open("#{Rails.root}/VERSION" ).read ,  # RAILS_ROOT
     :copyright => 'Copyright 2011-11 Some rights reserved',
     :email => 'riccardo.carlesso@gmail.com',
   }

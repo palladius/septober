@@ -1,40 +1,45 @@
 <% if @todo %>
-
-<h1><%= render_todo_name(@todo) %></h1>
-<p>
-  <%= iconed_link_to "Edit", edit_todo_path(@todo) %> |
-  <%= iconed_link_to "Destroy", @todo, :confirm => 'Are you sure?', :method => :delete %> |
-  <%= iconed_link_to "View All", todos_path %>
-</p>
-<p>
-  <strong>Due:</strong>
-  <%= @todo.due %>
-</p>
-<p>
-  <strong>favorite:</strong>
-  <%= render_icon_favorite( @todo ) %>
-</p>
-<p>
-  <strong>Progress Status:</strong>
-  <%= @todo.progress_status %>%
-</p>
-<p>
-  <strong>Hide Until:</strong>
-  <%= render_todo_hide_until(@todo) %>
-</p>
-<p>
-  <strong>Priority:</strong>
-  <%= render_priority(@todo) %>
-</p>
-<p>
-  <strong>Project:</strong>
-  <%= link_to( render_project(@todo.project), @todo.project ) %>
-</p>
-<hr/>
-<p>
-  <strong>Description:</strong>
-  <%= @todo.description %>
-</p>
+	<h1><%= render_todo_name(@todo) %></h1>
+	<p>
+	  <%= iconed_link_to "Edit", edit_todo_path(@todo) %> |
+	  <%= iconed_link_to "Destroy", @todo, :confirm => 'Are you sure?', :method => :delete %> |
+	  <%= iconed_link_to "View All", todos_path %>
+	</p>
+	<!--
+		<p>(InPlace Test) DOESNT WORK ON RAILS 3, demmit!
+			<%#= in_place_editor_field :todo, :name, {}, :rows => 1 %>
+			<%#= in_place_editor_field :todo, "where", {}, :rows => 1 %>
+	-->
+	<p>
+	  <strong>Due:</strong>
+	  <%= @todo.due %>
+	</p>
+	<p>
+	  <strong>favorite:</strong>
+	  <%= render_icon_favorite( @todo ) %>
+	</p>
+	<p>
+	  <strong>Progress Status:</strong>
+	  <%= @todo.progress_status %>%
+	</p>
+	<p>
+	  <strong>Hide Until:</strong>
+	  <%= render_todo_hide_until(@todo) rescue "Err('#{$!}')"%>
+	</p>
+	<p>
+	  <strong>Priority:</strong>
+	  <%= render_priority(@todo) %>
+	</p>
+	<p>
+	  <strong>Project:</strong>
+	  <%= link_to( render_project(@todo.project), @todo.project ) %>
+	</p>
+	<hr/>
+	<p>
+		<pre>
+	  		<%= @todo.description %>
+		</pre>
+	</p>
 <% else %>
 	<%=t(:todo_not_found)%>: <%= @todo.inspect %>
 <% end %>

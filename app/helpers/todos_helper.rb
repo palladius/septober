@@ -128,9 +128,9 @@ module TodosHelper
   end
   
   def render_todo_hide_until(todo)
-    ret = todo.hide_until || '-'
+    ret = todo.hide_until || '-' # Time.now
     ret += content_tag(:i, " (#{t :in_the_future_particle} #{time_ago_in_words( todo.hide_until )})") if todo.hide_until
-    ret
+    ret.html_safe
   end
   
   def render_duetime(todo,opts={})

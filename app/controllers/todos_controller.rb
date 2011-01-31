@@ -1,6 +1,10 @@
 class TodosController < ApplicationController
   before_filter :login_required 
   helper :riccardo
+  in_place_edit_for :todo, :name 
+  in_place_edit_for :todo, :where
+  in_place_edit_for :todo, :description
+  
   
   def index
     filter_conditions = { :user_id => current_user.id  } 
@@ -19,6 +23,9 @@ class TodosController < ApplicationController
     end
   end
   
+  def set_todo_where
+    raise params.inspect
+  end
 
   def show
     @todo = Todo.find_securely(current_user,params[:id]) rescue nil

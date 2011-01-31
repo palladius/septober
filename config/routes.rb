@@ -31,6 +31,10 @@ Septober::Application.routes.draw do
       post 'quick_create_post'  # TODO!
       get  'quick_create_get'
       get  'procrastinate'
+      # From inlien edit plugin (!!!)
+      #get  'set_todo_name'
+      get  'set_todo_where'
+      #get  'set_todo_description'
     end
   end
   
