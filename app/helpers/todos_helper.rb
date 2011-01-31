@@ -134,6 +134,8 @@ module TodosHelper
   end
   
   def render_duetime(todo,opts={})
+    return '-' unless todo.due
+    # TODO: due could NOT exist!
     style_class = "due_explain_#{todo.due_explaination}"
     time_in_words = time_ago_in_words(todo.due.to_time)
     explaination = todo.overdue? ? "#{time_in_words} ago" : "in #{time_in_words}"

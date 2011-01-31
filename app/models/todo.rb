@@ -25,7 +25,8 @@ class Todo < ActiveRecord::Base
     validates_inclusion_of :progress_status, :in => 0..100, :message => "is a percentage, please go back to school :P"
     
     #  before_save :apply_todo_regex_magic #    RIGHT NOW... TO BECOME => BeforeCreate
-    before_create :apply_todo_regex_magic
+    #before_create :apply_todo_regex_magic
+    after_create :apply_todo_regex_magic
     
     # TODO
     #acts_as_taggable_on :tags        # normal, user created
@@ -99,12 +100,18 @@ class Todo < ActiveRecord::Base
       str = self.name rescue ''
       @due ||= Date.today if str.match /today/i
       @due ||= Date.tomorrow if str.match /tomorrow|domani/i # TODO \<string\>
+      @due ||= Date.today + 7 # in 7 days
       @priority = 1 if str.match /^\-\-|\.\.\.$/ # TODO remove the ++
       @priority = 2 if str.match /^\-|\.\.$/ # TODO remove the ++
       @priority = 4 if str.match /^\+|!$/ # TODO remove the ++
       @priority = 5 if str.match /^\+\+|!!$/ # TODO remove the ++
       @description = I18n.t(:quick_created) unless @description.to_s.length > 0 # alredy created
+      @where = 'Inferred from Current IP TODO :)'
+      where = 'boh' 
       #raise 'cazzo vuoi'
+      self.save rescue 'err'
+
+      return true
     end
     
     def self.public_apply_todo_regex_magic(todo)
@@ -113,7 +120,7 @@ class Todo < ActiveRecord::Base
     end
     
     def self.provision_for_user(user)
-      ver = '1.0.0alpha' # it works!
+      ver = '1.0.1' # it works!
       projects = {}
       #Todo.with_scope(:find => {:conditions => "user_id = #{current_user.id}"},
       #                :create => {:user_id => current_user.id}) do
@@ -132,12 +139,19 @@ class Todo < ActiveRecord::Base
       tail = "--\nAutoProvisioned Todos v.#{ver}"
       Todo.create([
         {:user_id => user.id, :project_id => personal.id, :name => 'Buy milk and condoms' , 
+          :due => Date.today + 14 ,
           :description => tail, :where => "Host: #{Socket.gethostname rescue 'Boh'}" },
         {:user_id => user.id, :project_id => work.id,     :name => 'Organize meeting to your boss by tomorrow!' , 
           :priority => 4, 
+          :due => Date.tomorrow , # TODO may have to make it with a lambda # like:  lambda { Date.tomorrow }
           :description => tail  },
-        {:user_id => user.id, :project_id => septober.id, :name => 'Eventually cleanup the room' , :description => "Something to be done in 1yr time"+tail },
-        {:user_id => user.id, :project_id => septober.id, :name => 'Thank Riccardo for this wonderful application' , :description => "His email is "+ $APP[:email] },
+        {:user_id => user.id, :project_id => septober.id,
+           :name => 'Eventually cleanup the room' , 
+           :due => Date.today + 365 , # next week
+           :description => "Something to be done in 1yr time"+tail },
+        {:user_id => user.id, :project_id => septober.id, 
+          :due => Date.yesterday ,
+          :name => 'Thank Riccardo for this wonderful application' , :description => "His email is "+ $APP[:email] },
       ])
     end
     
