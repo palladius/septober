@@ -34,6 +34,11 @@
 	  <strong>Project:</strong>
 	  <%= link_to( render_project(@todo.project), @todo.project ) %>
 	</p>
+	<p>
+	  <strong>Depends on:</strong>
+	  <%= link_to( render_todo_name(@todo.todo), @todo.todo ) if @todo.todo %>
+	  <%=  @todo.depends_on_id %>
+	</p>
 	<hr/>
 	<p>
 		<pre>

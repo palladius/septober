@@ -13,6 +13,7 @@
     <%= f.label :url %><br />
     <%= f.text_field :url %>
   </p>
+
   <p>
     <%= f.label :active %><br />
     <%= f.check_box :active %>
@@ -44,8 +45,12 @@
     <%= f.datetime_select :hide_until %>
   </p>
   <p>
+    <%= f.label :depends_on %><br />
+    <%#= f.text_field :depends_on_id %>
+    <%= collection_select("todo", :depends_on_id , Todo.find_all_by_user_id_and_active(current_user.id,true, :order => :name) , :id, :name , :include_blank => true ) %>
+  </p>
+  <p>
     <%= f.label :project_id %><br />
-    <%#= collection_select("todo", :project_id , Project.find_all_by_user_id_and_active(current_user.id,true, :order => "id") , :id, :name , :include_blank => false ) %>
     <%= f.collection_select(:project_id , Project.find_all_by_user_id(current_user.id, :order => "id") , :id, :name_and_activity , :include_blank => false ) %>
   </p>
   <p>

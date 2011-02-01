@@ -4,12 +4,13 @@ class Todo < ActiveRecord::Base
   require 'socket'
   
     attr_accessible :name, :description, :active, :due, :user_id, :where, :priority, :project_id, :url,
-      :progress_status, :favorite, :hide_until
+      :progress_status, :favorite, :hide_until, :depends_on_id
     searchable_by :name, :description, :where
     acts_as_carlesso
     
     belongs_to :user
     belongs_to :project
+    belongs_to :todo, :class_name => "Todo", :foreign_key => :depends_on_id
     
     scope :recent, lambda { { :conditions => ['created_at > ?', 1.week.ago] } }
     scope :super_recent, lambda { { :conditions => ['created_at > ?', 1.day.ago] } }
