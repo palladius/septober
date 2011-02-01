@@ -45,7 +45,7 @@
     <%= f.datetime_select :hide_until %>
   </p>
   <p>
-    <%= f.label :depends_on %><br />
+    <%= f.label :depends_on %> (father)<br />
     <%#= f.text_field :depends_on_id %>
     <%= collection_select("todo", :depends_on_id , Todo.find_all_by_user_id_and_active(current_user.id,true, :order => :name) , :id, :name , :include_blank => true ) %>
   </p>
