@@ -33,9 +33,10 @@ class ProjectsController < ApplicationController
   end
 
   def update
+    flash[:notice] = "Riccardo test: params=#{params.inspect}"
     @project = Project.find(params[:id])
     #@project.tag_with(params[:magic_tag_list])
-    @project.tag_with(params[:magic_tag_list]) 
+    #@project.tag_list << params[:magic_tag_list]
     if @project.update_attributes(params[:project])
       flash[:notice] = "Successfully updated project."
       #redirect_to project_url
