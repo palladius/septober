@@ -9,25 +9,30 @@
     <th>Tags</th>
     <th>Options</th>
   </tr>
-  <% for project in @projects %>
+  <% for @project in @projects %>
     <tr>
       <td>
-        <%= render_colored_square( :color => project.color, :height => 15, :title => project.color ) %>
+        <%= render_colored_square( :color => @project.color, :height => 15, :title => @project.color ) %>
       </td>
       <td>
-        <b><%= link_to(render_project(project),project) %></b>
+        <b><%= link_to(render_project(@project),@project) %></b>
       </td>
-      <td><small><%= project.description %></small></td>
-      <td><%= okno(project.home_visible) %></td>
-      <td><%= okno project.public %></td>
-      <td><%= project.magic_tag_list %></td>
       <td>
-          <%#= link_to "Show", project %>
-          <%= iconed_link_to "Edit", edit_project_path(project) %>
-          <%= iconed_link_to "Destroy", project, :confirm => 'Are you sure?', :method => :delete %>
+	 			<small>
+				<%#= @project.description %>
+					<%= in_place_editor_field :project, :description %>
+				</small>
+			</td>
+      <td><%= okno(@project.home_visible) %></td>
+      <td><%= okno @project.public %></td>
+      <td><%= @project.magic_tag_list %></td>
+      <td>
+          <%#= link_to "Show", @project %>
+          <%= iconed_link_to "Edit", edit_project_path(@project) %>
+          <%= iconed_link_to "Destroy", @project, :confirm => 'Are you sure?', :method => :delete %>
       </td>
     </tr>
   <% end %>
 </table>
 
-<p><%= link_to "New Project", new_project_path(project) %></p>
+<p><%= link_to "New Project", new_project_path(@project) %></p>

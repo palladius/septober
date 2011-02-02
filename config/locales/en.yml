@@ -33,6 +33,7 @@ en:
   quick_created: Created though quick creation mask
   mark_as_done: Mark as Done
   ## Project
+  magic_tag_list: Magic tag list
 
   ## Time
   in_the_future_particle: in
@@ -67,6 +68,7 @@ it:
     new_todo: Nuova Voce
     todo_not_found: Voce non trovata
     ## Project
+    magic_tag_list: Lista dei magic tags
     
     ## Time
     in_the_future_particle: tra

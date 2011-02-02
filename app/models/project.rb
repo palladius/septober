@@ -8,8 +8,10 @@ class Project < ActiveRecord::Base
     has_many :todos
     searchable_by :name, :description
     acts_as_carlesso
-    acts_as_taggable_on :magic_tags    
     
+    acts_as_taggable_on :tags        # normal
+    acts_as_taggable_on :magic_tags    
+
     def to_s
       name
     end

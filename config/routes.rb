@@ -17,6 +17,7 @@ Septober::Application.routes.draw do
       post 'set_private'
       post 'set_home'
       post 'set_no_home'
+      post 'set_project_description'
       get "procrastinate"
     end
   end

@@ -1,5 +1,8 @@
 class ProjectsController < ApplicationController
   before_filter :login_required #, :except => [:index, :show]
+  
+  in_place_edit_for :project, :name, :description
+  
   def index
     @projects = Project.find_all_by_user_id(current_user.id)
   end
@@ -32,6 +35,7 @@ class ProjectsController < ApplicationController
   def update
     @project = Project.find(params[:id])
     #@project.tag_with(params[:magic_tag_list])
+    @project.tag_with(params[:magic_tag_list]) 
     if @project.update_attributes(params[:project])
       flash[:notice] = "Successfully updated project."
       #redirect_to project_url
@@ -40,6 +44,10 @@ class ProjectsController < ApplicationController
     else
       render :action => 'edit'
     end
+  end
+  
+  def set_project_description
+    flash[:notice] = "Riccardo test: params=#{params.inspect}"
   end
 
   def destroy
