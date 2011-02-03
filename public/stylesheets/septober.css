@@ -35,16 +35,28 @@ a {
   text-decoration: none ;
 }
 
-/* stuff relative to a Todo */
+/* stuff relative to a Todo 
+	MADE INVISIBLE
+*/
 
 .done_true {
-	color: red;
-	display: none;
-	position: absolute;
+	color: gray;
+/*	display: none;*/
+/*	position: absolute; */	
+	opacity: .1 ;
 }
 
 .done_false {
 	/* color: brown; */
+	opacity: .7;
+}
+
+.stillhidden_true {
+	color: brown; 
+	opacity: .1 ;
+	font-style: oblique;
+}
+.stillhidden_false {
 }
 
 /*

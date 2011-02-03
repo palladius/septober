@@ -1,8 +1,14 @@
-<tr class="todo_line done_<%=todo.done? %> overdue_<%=todo.due_explaination%>" >
+<% 
+	css_tr_classes = ['todo_line']
+ 	css_tr_classes << "done_#{todo.done?}" unless session['todo_filters'].include?('inactive')
+	css_tr_classes << "overdue_#{todo.due_explaination}" 
+	css_tr_classes << "stillhidden_#{todo.still_hidden?}" unless session['todo_filters'].include?('show_hidden')
+%>
+<tr class="<%= css_tr_classes.join(' ') %>" >
   <td width='80' >
     <%= render_todo_action_icons(todo) %>
   </td>
-  <td>
+	<td>
       <%#= link_to(render_todo_name(todo) , edit_todo_path(todo) ) %>
 	  <%= render_todo_name(todo) %>
 	  <br/>
