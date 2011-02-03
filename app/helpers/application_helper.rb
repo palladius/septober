@@ -12,5 +12,5 @@ module ApplicationHelper
   $APP_HEADLINE = $APP[:headline]
   #$APP_VERSION = File.read
   #File.open(RAILS_ROOT + '/VERSION' ).read
-  $debug_info = {}
+  $debug_info ||= {}
 end

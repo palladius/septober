@@ -17,13 +17,22 @@
 		]
 	<%#= RicPlugin.ric_websites_ring rescue "Problems to include ric_websites_ring" %>
 	</p>
+	</small>
+	</div>
 <% if Rails.env == 'development' && $debug_info != {} %>
 	<hr/>
 	<h2>Development Debug Info from <tt>$debug_info</tt></h2>
-	<pre><%= $debug_info.inspect %></pre>
+
+	<table border='0' >
+	<% $debug_info.each do |k,v| %>
+		<tr>
+			<td>
+				<b><%= k %>:</b>
+			<td>
+				<pre><%= v.inspect %></pre>
+	<% end %>
+	</table>
 <% end %>
-</small>
-</div>
 
 <div id="logo">
 	<a href="http://www.palladius.it/" >
