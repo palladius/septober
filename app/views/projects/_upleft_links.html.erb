@@ -1,19 +1,39 @@
 <%
-  @my_projects ||= Project.find_all_by_user_id_and_active(current_user.id, true) rescue []
-  #@my_projects = Project.find_securely(current_user, :all, :conditions => { :active => true} ) #rescue []
+  @my_projects_filters = %w{active inactive due_today show_hidden }
+  existing_params_query_string = params.map{|k,v| "#{k}=#{v}" if k=='add_filter'}.join('&')
+  @default_initial_filters = ['active']
+	
+  def update_session(params)
+	session[:todo_filters] ||= @default_initial_filters # initializer
+	session[:todo_filters] << params[:add_filter] if params[:add_filter]
+	session[:todo_filters].uniq!
+	session[:todo_filters].delete(params[:remove_filter]) if params[:remove_filter]
+	session[:todo_filters]
+	return nil
+  end
+	
+  def new_path(filter)
+	p = params.delete_if{|k,v| k.to_s.match /^(action|controller)$/ } 
+	p = session[:todo_filters].include?( filter.to_s ) ?
+ 		p.merge( {:remove_filter => filter }).delete_if{|k,v| k.match /add_filter/ } : # I have this already
+ 		p.merge( {:add_filter => filter })
+	params_query_string = p.map{|k,v| "#{k}=#{v}" }.join('&')
+  	"/todos?#{params_query_string}"
+  end
 
-
+  update_session(params)
+  $debug_info[:session_todo_filters] = session[:todo_filters].join(', ')
 %>
 <% if logged_in? %>
-<div class='project_synoptic' align='right' style='font-size:x-small' >
-	<%= link_to(image_tag('icons/models/project.png' , :title => 'All projects', :height => 12),projects_url) %>
+<div class='project_options' align='left' style='font-size:x-small' >
 	<b><%= link_to('all', todos_url) if params[:add_project] %></b>
-	<% @my_projects.each do |proj| %>
-		<%= params[:add_project].to_s == proj.to_s ? 
-			content_tag(:b, render_project(proj) ) : # emphasize but unlink
-			link_to(render_project(proj),"/todos?add_project=#{proj.name}")  # linking
+	<% @my_projects_filters.each do |filter| %>
+		<%= session[:todo_filters].include?(filter.to_s) ? 
+			content_tag(:b, link_to(render_filter(filter),new_path(filter)) ) : # emphasize but unlink
+			#link_to(render_filter(filter),"/todos?add_filter=#{filter}&#{existing_params_query_string}")  # linking
+			content_tag(:i, link_to(render_filter(filter),new_path(filter)))  # linking
 		%>
 	<% end %>
-	<%= link_to "+", new_project_path() %>
+	
 </div>
 <% end %>

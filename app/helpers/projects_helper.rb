@@ -6,7 +6,6 @@ module ProjectsHelper
     project_str = project_str.upcase + '(!)' if project.public
     opts[:style] = 'font:bold; filter:alpha(opacity=60) '  if project.home_visible
     opts[:style] = 'font-style:italic'  unless project.home_visible
-    
     opts[:title] ||= "(id=#{project.id}) " + project.description
     render_within_project(project,project_str, opts )
   end
@@ -43,5 +42,9 @@ module ProjectsHelper
     #<tr><td bgcolor="'+color+'"></td></tr>
     #</table></span>'
     #ret .html_safe
+  end
+  
+  def render_filter(filter,opts={})
+    filter
   end
 end
