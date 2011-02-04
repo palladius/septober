@@ -35,11 +35,11 @@ class Api::TodosController < ApplicationController
   end
 
   def create
+    pgreen "DEBUG API::TodoController.create()"
     params[:todo][:user_id] = current_api_user.id
     @todo = Todo.new(params[:todo]) # both HTML and XML :)
     @todo.user_id = current_api_user.id
     @todo.apply_todo_regex_magic()
-    @todo[:project_id] ||= project_find_for_cli(params).id unless @todo[:project_id]
     respond_to do |format|
       format.xml { 
         if @todo.save
@@ -65,13 +65,28 @@ class Api::TodosController < ApplicationController
   end
 
   def update
+    pyellow "DEBUG API::TodoController.update()"
+    # params[:todo][:user_id] = current_api_user.id
+    #raise "why should u call update from API? TODO"
     @todo = Todo.find(params[:id])
-    if @todo.update_attributes(params[:todo])
-      flash[:notice] = "Successfully updated API::todo."
-      redirect_to todos_url
-    else
-      render :action => 'edit'
+    @todo.user_id = current_api_user.id
+    @todo.apply_todo_regex_magic()
+    
+    respond_to do |format|
+      format.xml { 
+        if @todo.save
+          render(:xml => @todo.to_xml,  :status => "201 Created yay") 
+        else
+          render(:xml => @todo.to_xml , :status => "567 Couldnt save it sorry")
+        end
+      }
     end
+    #if @todo.update_attributes(params[:todo])
+    #  flash[:notice] = "Successfully updated API::todo."
+    #  redirect_to todos_url
+    #else
+    #  render :action => 'edit'
+    #end
   end
   
   def toggle; _update_active(:toggled) ; end 

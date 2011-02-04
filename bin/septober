@@ -12,6 +12,10 @@
 	@tags:      development, rcarlesso
   @description:
    septober.heroku.com client to add and list todos!
+   
+  @history:
+   0.9.2 2011-02-04 'add' operation succefully added!   
+   0.9.1 2011-01-18 First version
  ############################################################
 =end
 

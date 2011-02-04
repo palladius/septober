@@ -98,7 +98,8 @@ class Todo < ActiveRecord::Base
     
   # This should do some magic stuff like adding the due to tomorrow if string matches 'by tomorrow' or 'entro domani' and so on..  
     def apply_todo_regex_magic
-      puts "\n\tDEBUG: apply_todo_regex_magic START for: #{self.inspect}"
+      log = []
+      log << "\tDEBUG: apply_todo_regex_magic START for: #{self.inspect}"
       str = self.name rescue ''
       @due ||= Date.today if str.match /today| oggi/i
       @due ||= Date.tomorrow if str.match /tomorrow|domani/i # TODO \<string\>
@@ -108,12 +109,24 @@ class Todo < ActiveRecord::Base
       @priority = 4 if str.match /^\+|!$/ # TODO remove the ++
       @priority = 5 if str.match /^\+\+|!!$/ # TODO remove the ++
       @description = I18n.t(:quick_created) unless @description.to_s.length > 0 # alredy created
+      
+      # PROJECT: This should be done in the regex magic!!!
+      # TODO if the first word matches an existing project, do it!
+      unless attribute_present?('project_id')
+        personal = Project.find_by_name_and_user_id('personal',user.id)
+        log << "PersProject: #{personal.inspect}"
+        self.project_id = personal.id #Project.find_by_name_and_user_id('personal',self.user_id).id
+      end
+      #self.url  = 'test url3' # this works
+      
       @where = 'Inferred from Current IP TODO :)'
       # if i dont find a project, set project to personal
       #raise 'cant call apply_todo_regex_magic without knowing WHO i am (current_user is not available in model dear Ric)' unless self.user_id
       where = 'boh'
       #raise 'test exception'
       #self.save rescue 'err'
+      puts log
+      self.description = self.description + "\n\n---- LOGS: ----\n#{log.join("\n")}"
       return true
     end
     
