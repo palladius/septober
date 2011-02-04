@@ -41,7 +41,7 @@ a {
 
 .done_true {
 	color: gray;
-/*	display: none;*/
+	display: none;
 /*	position: absolute; */	
 	opacity: .1 ;
 }
@@ -54,6 +54,7 @@ a {
 .stillhidden_true {
 	color: brown; 
 	opacity: .1 ;
+	display: none;
 	font-style: oblique;
 }
 .stillhidden_false {
