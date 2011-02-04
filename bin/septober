@@ -25,7 +25,7 @@
   require 'active_resource'
   require 'socket'
   
-  $PROG_VER = '0.9.2'
+  $PROG_VER = '0.9.2b'
   $DEBUG    = false
   
   $myconf = {
