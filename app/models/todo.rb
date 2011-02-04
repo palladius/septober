@@ -59,9 +59,9 @@ class Todo < ActiveRecord::Base
     end
     
     # autodeducts the projects, and other... :)
-    def self.magic_create(str)
-      # autodetect stuff!
-    end
+    #def self.magic_create(str)
+    #  # autodetect stuff!
+    #end
     
     def progress_status?
       progress_status && progress_status > 0 rescue false
@@ -97,6 +97,7 @@ class Todo < ActiveRecord::Base
     end
     
   # This should do some magic stuff like adding the due to tomorrow if string matches 'by tomorrow' or 'entro domani' and so on..  
+		# TODO FACILE: substitute the logs from description to sys_notes
     def apply_todo_regex_magic
       log = []
       begin # catch exceptions
@@ -128,7 +129,7 @@ class Todo < ActiveRecord::Base
         #raise 'test exception'
         #self.save rescue 'err'
         puts log
-        self.description = (self.description || '') + "\n\n---- LOGS: ----\n#{log.join("\n")}"
+        self.sys_notes = (self.sys_notes || '') + "\n\n---- LOGS: ----\n#{log.join("\n")}"
         return true
       rescue Exception => e
         pred "Todo.apply_todo_regex_magic Exception: #{$!}"

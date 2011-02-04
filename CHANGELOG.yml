@@ -2,6 +2,8 @@
 # PS TODO make this DRY, now youve to remember to update as well the following files:
 # - ./VERSION
 # - app/helpers/application_helper
+1.4.0:
+  - Added sys_notes to leave
 1.3.7:
   - Fixed a bug in creation now the magicality works in quick create mask as well!
   - Removed due date now that magical stuff works (you can issue BY TODAY BY TOMORROW and defaults to due in 1 week)
