@@ -136,6 +136,7 @@
     ret = t.save
     puts "ret: #{ret}"
     puts "Todo created successfully:\n  #{t.inspect}" if ret
+    pred "TODO get meaningful explaination from api/todos_controller!"
     #puts "errors: #{ret.errors}"
   end
   
