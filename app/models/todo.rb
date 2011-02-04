@@ -1,10 +1,10 @@
 class Todo < ActiveRecord::Base
-  @@default_procrastination = 7
+    @@default_procrastination = 7
   
-  require 'socket'
+    require 'socket'
   
     attr_accessible :name, :description, :active, :due, :user_id, :where, :priority, :project_id, :url,
-      :progress_status, :favorite, :hide_until, :depends_on_id
+      :progress_status, :favorite, :hide_until, :depends_on_id, :source
     searchable_by :name, :description, :where
     acts_as_carlesso
     
@@ -98,8 +98,9 @@ class Todo < ActiveRecord::Base
     
   # This should do some magic stuff like adding the due to tomorrow if string matches 'by tomorrow' or 'entro domani' and so on..  
     def apply_todo_regex_magic
+      puts "\n\tDEBUG: apply_todo_regex_magic START for: #{self.inspect}"
       str = self.name rescue ''
-      @due ||= Date.today if str.match /today/i
+      @due ||= Date.today if str.match /today| oggi/i
       @due ||= Date.tomorrow if str.match /tomorrow|domani/i # TODO \<string\>
       @due ||= Date.today + 7 # in 7 days
       @priority = 1 if str.match /^\-\-|\.\.\.$/ # TODO remove the ++
@@ -108,10 +109,11 @@ class Todo < ActiveRecord::Base
       @priority = 5 if str.match /^\+\+|!!$/ # TODO remove the ++
       @description = I18n.t(:quick_created) unless @description.to_s.length > 0 # alredy created
       @where = 'Inferred from Current IP TODO :)'
-      where = 'boh' 
-      #raise 'cazzo vuoi'
-      self.save rescue 'err'
-
+      # if i dont find a project, set project to personal
+      #raise 'cant call apply_todo_regex_magic without knowing WHO i am (current_user is not available in model dear Ric)' unless self.user_id
+      where = 'boh'
+      #raise 'test exception'
+      #self.save rescue 'err'
       return true
     end
     

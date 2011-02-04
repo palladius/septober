@@ -36,14 +36,29 @@ class Api::TodosController < ApplicationController
 
   def create
     params[:todo][:user_id] = current_api_user.id
-    @todo = Todo.new(params[:todo])
-    if @todo.save
-      flash[:notice] = "Successfully created todo '#{@todo.to_s}'"
-      redirect_to todos_url
-    else
-      render :action => 'new'
-    end
-  end
+    @todo = Todo.new(params[:todo]) # both HTML and XML :)
+    @todo.user_id = current_api_user.id
+    @todo.apply_todo_regex_magic()
+    @todo[:project_id] ||= project_find_for_cli(params).id unless @todo[:project_id]
+    respond_to do |format|
+      format.xml { 
+        if @todo.save
+          render(:xml => @todo.to_xml, :status => "201 Created yay") 
+        else
+          render(:xml => @todo.to_xml , :status => "567 Couldnt save it sorry")
+        end
+      }
+      format.js # do nothing
+      #format.html { # normal HTML
+      #  if @todo.save
+      #    flash[:notice] = "Successfully created API::todo '#{@todo.to_s}'"
+      #    redirect_to todos_url
+      #  else
+      #    render :action => 'new'
+      #  end
+      #}
+    end #/respond_to
+  end #/create
 
   def edit
     @todo = Todo.find_securely(current_api_user,params[:id])
@@ -52,8 +67,7 @@ class Api::TodosController < ApplicationController
   def update
     @todo = Todo.find(params[:id])
     if @todo.update_attributes(params[:todo])
-      flash[:notice] = "Successfully updated todo."
-      #redirect_to todo_url
+      flash[:notice] = "Successfully updated API::todo."
       redirect_to todos_url
     else
       render :action => 'edit'
@@ -74,6 +88,9 @@ class Api::TodosController < ApplicationController
   end
   
 private
+  def project_find_for_cli(params={})
+    Project.find_by_name('personal') || Project.first
+  end
   #def _update_active(participle,new_active=nil)
   #  # nil = toggle
   #  new_active ||= false # should be the REVERSE... TODO!

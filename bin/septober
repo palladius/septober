@@ -19,6 +19,7 @@
   require 'rubygems'
   require 'ric'
   require 'active_resource'
+  require 'socket'
   
   $PROG_VER = '0.9.2'
   $DEBUG    = false
@@ -120,12 +121,22 @@
     } if all
   end
   
-  def todo_add(str)
-    puts "# Todo.Add(#{str}) (user: #{blue RemoteTodo.user})"
-    t = RemoteTodo.new( :name => 'str', :description => "sent by CLI #{$0} v.#{$PROG_VER}")
+  def todo_add(words_from_argv)
+    puts "# Todo.Add(#{words_from_argv}) (user: #{blue RemoteTodo.user})"
+    t = RemoteTodo.create( 
+      :name => words_from_argv, 
+      :description => "sent by CLI #{$0} v.#{$PROG_VER}, due tomorrow by test", 
+      #:due => Date.tomorrow, 
+      :where => Socket.gethostname,
+      :source => "CLI v.#{$PROG_VER}"
+      #:project_id => 5,
+      #:priority => 4 
+    )
     puts "todo: #{t}"
     ret = t.save
     puts "ret: #{ret}"
+    puts "Todo created successfully:\n  #{t.inspect}" if ret
+    #puts "errors: #{ret.errors}"
   end
   
   def todo_show(id)
