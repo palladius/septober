@@ -20,7 +20,7 @@
   require 'ric'
   require 'active_resource'
   
-  $PROG_VER = '0.9.1'
+  $PROG_VER = '0.9.2'
   $DEBUG    = false
   
   $myconf = {
@@ -31,14 +31,10 @@
     :dflt_config         => '~/.septober.yml' , 
   }
 
-
   class RemoteTodo < ActiveResource::Base
-    #self.site = "http://localhost:3000/"
     self.site = "http://septober.example.com/" # uninitialized
-    #self.user         = 'guest'
-    #self.password     = 'guest'
     self.element_name = 'todo'
-    @@pseudo_config = 'septober: 
+    @@sample_yml_config = 'septober: 
        # YAML file with septober configuration. For more info: http://septober.heroku.com/
        site: "http://localhost:3000/api/"   # or http://septober.heroku.com/api/
        user: guest
@@ -52,17 +48,17 @@
     def self.import_config(file=nil)
       file ||= $myconf[:dflt_config]
       real_file = File.expand_path file
-      puts "Importing config from #{file}.."
+      deb "Importing config from #{file}.."
       if File.exists?(real_file)
         #puts "TODO import from #{file}"
         conf_hash = YAML.load_file(real_file)['septober'] rescue nil
         self.site = conf_hash['site']
         self.user = conf_hash['user']
         self.password = conf_hash['password']
-        puts "Conf imported successuflly: #{blue self.user} @ #{azure self.site}"
+        deb "Conf imported successuflly: #{blue self.user} @ #{azure self.site}"
       else
         pred "Missing file: #{file} !!! Try to do the following:"
-        puts "cat > #{file}\n#{@@pseudo_config rescue "Err#{$!}" }"
+        puts "cat > #{file}\n#{@@sample_yml_config rescue "Err#{$!}" }"
         exit 79
       end
     end
@@ -99,39 +95,22 @@
     end
   end # /RemoteTodo
   
-  RemoteTodo.import_config()
+  
+  #############################
+  # Program start..
   
   def usage(comment=nil)
     puts "#{$0} v.#{$PROG_VER}"
     puts "Usage: #{File.basename $0} [-dhjv] [-c LOGFILE] [--no-colors] OPTIONS"
     puts "  list            # shows a list of your todos yet to complete"
     puts "  show <ID>       # shows details about todo with id=ID"
-    puts "  done <ID>       # sets todo ID to done/resolved"
+    #puts "  done <ID>       # TODO sets todo ID to done/resolved"
+    puts "  add <FREE TEXT> # TODO adds new task in free text"
     #puts "  search <QUERY>  # look for TODOs relating to 'QUERY' string"
     pred comment if comment
     exit 78
   end
 
-  def real_program
-    #debug_on 'Just created script, presuming u need some debug. TODO REMOVE ME when everything works!' if $DEBUG
-      # Maybe you may want to check on ARGV
-    unless ARGV.size > 0
-      usage "Give me at least 1 argument" # Maybe default to list?!? 
-    end
-    # i dont need it for help :)
-    #deb("Hello world from a templated '#{yellow $0 }'")
-    #deb "+ Depured args: #{azure ARGV}"
-    #deb "+ Your configuration: #{purple $myconf}"
-    #pazure RemoteTodo.find(10)
-    case ARGV[0]
-      when 'list' ;    todo_list()
-      when 'show' ;    todo_show(ARGV[1])
-      when 'done' ;    todo_done(ARGV[1],true)
-      else ;           usage "Unrecognized command: #{ARGV[0]}"
-    end
-  end
-
-  
   def todo_list(opts={})
     show_only_active = opts.fetch :only_active, true
     puts "# Todo.Index (user: #{blue RemoteTodo.user})"
@@ -139,6 +118,14 @@
     all.each{|todo|
       puts( todo.show_entry ) unless( show_only_active && ! todo.active )
     } if all
+  end
+  
+  def todo_add(str)
+    puts "# Todo.Add(#{str}) (user: #{blue RemoteTodo.user})"
+    t = RemoteTodo.new( :name => 'str', :description => "sent by CLI #{$0} v.#{$PROG_VER}")
+    puts "todo: #{t}"
+    ret = t.save
+    puts "ret: #{ret}"
   end
   
   def todo_show(id)
@@ -149,19 +136,34 @@
   
   def todo_done(id,done_or_undone=true)
     puts "# Todo.Done(#{id}) (user: #{blue RemoteTodo.user})"
-    pred "To Be implemented Yet"
+    pred "To Be implemented Yet :("
   end
   
   def todo_search(q)
     puts "# Todo.Search('#{q}') (user: #{blue RemoteTodo.user})"
     pred "To Be implemented Yet"
   end
-
-  def main()
-    #init
-    #lib_autoinit # if u dont like the autoinit, uncomment init :)
-    real_program 
+  
+  def init
+    RemoteTodo.import_config()
   end
 
-  #lib_automain(__FILE__)
-  main
+  def main()
+    init()
+      # Maybe you may want to check on ARGV
+    unless ARGV.size > 0
+      usage "Give me at least 1 argument" # Maybe default to list?!? 
+    end
+    # i dont need it for help :)
+    case ARGV[0]
+      when 'list' ;    todo_list()
+      when 'show' ;    todo_show(ARGV[1])
+      when 'done' ;    todo_done(ARGV[1],true)
+      when 'add'  ;    todo_add(ARGV[1..-1].join(' ')) # all except last one
+      else ;           usage "Unrecognized command: #{ARGV[0]}"
+    end
+  end
+
+#########################################################
+# real program...
+main()
