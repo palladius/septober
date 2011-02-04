@@ -14,11 +14,13 @@
    septober.heroku.com client to add and list todos!
    
   @history:
-   0.9.3 2011-02-04 better 'list'    
-   0.9.2 2011-02-04 'add' operation succefully added!   
-   0.9.1 2011-01-18 First version
+    0.9.4 2011-02-04 added 'done' action (and 'delete' ?)    
+    0.9.3 2011-02-04 better 'list'    
+    0.9.2 2011-02-04 'add' operation succefully added!   
+    0.9.1 2011-01-18 First version
  ############################################################
 =end
+  $PROG_VER = '0.9.4'
 
   require 'optparse'       
   require 'rubygems'
@@ -26,15 +28,14 @@
   require 'active_resource'
   require 'socket'
   
-  $PROG_VER = '0.9.3'
   $DEBUG    = false
   
-  $myconf = {
+  $opts = {
     :app_name            => 'septober client',
-    :foo_arr             => %w{ bar baz },
     :hello               => 'Welcome to this terrific application',
     :septober_url        => 'http://septober.heroku.com/' , 
     :dflt_config         => '~/.septober.yml' , 
+    :local               => false ,
   }
 
   class RemoteTodo < ActiveResource::Base
@@ -54,12 +55,13 @@
     #                        :verify_mode  => OpenSSL::SSL::VERIFY_PEER}
     
     def self.import_config(file=nil)
-      file ||= $myconf[:dflt_config]
+      file ||= $opts[:dflt_config]
       real_file = File.expand_path file
       deb "Importing config from #{file}.."
       if File.exists?(real_file)
-        #puts "TODO import from #{file}"
-        conf_hash = YAML.load_file(real_file)['septober'] rescue nil
+        #puts "TODO import from #{file} (local=#{$opts[:local]})"
+        sub_conf = $opts[:local] ? 'septober_local' : 'septober'
+        conf_hash = YAML.load_file(real_file)[sub_conf] rescue nil
         self.site = conf_hash['site']
         self.user = conf_hash['user']
         self.password = conf_hash['password']
@@ -85,22 +87,19 @@
         when 'overdue' ; :red 
         when 'close' ;   :yellow 
         when 'far' ;     :green 
+        else ; :gray
+        #default ; :gray
       end
       return colora(mycolor, override_explaination || due_explaination)
     end
     
     def priority_str(priority)
       case priority.to_s
-        when '1'
-          return '--'
-        when '2'
-          return '-'
-        when '3'
-          return ' '
-        when '4'
-          return '!'
-        when '5'
-          return '!!'
+        when '1' ; return '--'
+        when '2' ; return '-'
+        when '3' ; return ' '
+        when '4' ; return '!'
+        when '5' ; return '!!'
       end
       return "'?' #{priority}"
     end
@@ -125,19 +124,25 @@
   
   def usage(comment=nil)
     puts "#{$0} v.#{$PROG_VER}"
-    puts "Usage: #{File.basename $0} [-dhjv] [-c LOGFILE] [--no-colors] OPTIONS"
-    puts "  list            # shows a list of your todos yet to complete"
-    puts "  show <ID>       # shows details about todo with id=ID"
-    #puts "  done <ID>       # TODO sets todo ID to done/resolved"
-    puts "  add <FREE TEXT> # TODO adds new task in free text"
+    puts "Usage: #{File.basename $0} [-dhjv] [--local] [--no-colors] OPTIONS"
+    puts "  add <FREE TEXT> # V adds new task in free text with some magic.."
+    puts "  delete <ID>     # T delete ticket.ID (DONT USE IF U CAN!)"
+    puts "  list            # V shows a list of your todos yet to complete"
+    puts "  show <ID>       # V shows details about todo with id=ID"
+    puts "  done <ID>       # T posts ticket.ID :done (resolved)"
+    puts "  mail <ID>       # T mail to yourself ticket.ID !!!"
     #puts "  search <QUERY>  # look for TODOs relating to 'QUERY' string"
     pred comment if comment
     exit 78
   end
+  
+  def bannerino(desc)
+    "#Todo #{white desc.to_s} (user: #{blue RemoteTodo.user}@#{blue RemoteTodo.site})"
+  end
 
   def todo_list(opts={})
     show_only_active = opts.fetch :only_active, true
-    puts "# Todo.Index (user: #{blue RemoteTodo.user})"
+    puts bannerino( "Index" )
     all = RemoteTodo.find(:all)
     all.each{|todo|
       puts( todo.show_entry ) unless( show_only_active && ! todo.active )
@@ -145,7 +150,7 @@
   end
   
   def todo_add(words_from_argv)
-    puts "# Todo.Add(#{words_from_argv}) (user: #{blue RemoteTodo.user})"
+    puts bannerino( "Add(#{words_from_argv})" )
     t = RemoteTodo.create( 
       :name => words_from_argv, 
       :description => "sent by CLI #{$0} v.#{$PROG_VER}, due tomorrow by test", 
@@ -155,7 +160,7 @@
       #:project_id => 5,
       #:priority => 4 
     )
-    puts "todo: #{t}"
+    deb "DEB todo: #{t}"
     ret = t.save
     if t.errors 
       pred "Some errors: '#{t.errors.full_messages}'"
@@ -172,13 +177,31 @@
   
   def todo_show(id)
     todo = RemoteTodo.find(id)
-    puts "# Todo.Show(#{id}) (user: #{blue RemoteTodo.user})"
+    puts bannerino("Show(#{id})")
     puts( todo.show_full_entry )
   end
   
   def todo_done(id,done_or_undone=true)
-    puts "# Todo.Done(#{id}) (user: #{blue RemoteTodo.user})"
-    pred "To Be implemented Yet :("
+    puts bannerino("Done(#{id})")
+    todo_generic_put(id,:done)
+  end
+  
+  def todo_generic_put(action,id,opts={})
+    puts bannerino("GenericAction(#{action},#{id})")
+    #pred "To Be implemented Yet :("
+    begin
+      todo = RemoteTodo.find(id)
+    rescue ActiveResource::ResourceNotFound
+      puts "Sorry ResourceNotFound: #{red $!}" 
+      exit 11
+    rescue   ActiveResource::ServerError
+        puts "Sorry ServerError: #{red $!}" 
+        exit 12
+    end
+    pgreen todo
+    # todo is good
+    puts "Todo.#{id} ok: #{green( todo.to_s )}"
+    todo 
   end
   
   def todo_search(q)
@@ -187,6 +210,17 @@
   end
   
   def init
+    #$opts = {}
+    optparse = OptionParser.new do |opts|
+      opts.banner = "#{$0} v.#{$PROG_VER}\n Usage: #{File.basename $0} [add|list|done|del] [args]"
+      opts.on( '-c', '--config', 'uses a different configfile from: '+$opts[:dflt_config] ) {  $opts[:jabba] = true  }
+      opts.on( '-d', '--debug', 'enables debug (DFLT=false)' )  {  $opts[:debug] = true  }
+      opts.on( '-h', '--help', 'Display this screen' )          {  puts(opts); exit 1 }
+      opts.on( '-j', '--jabba', 'Activates my Jabber powerful CLI' ) {  $opts[:jabba] = true  }
+      opts.on( '-l', '--local', 'uses local instead' )    {  $opts[:local] = true }
+      opts.on( '-v', '--verbose', 'Output more information' )   { $opts[:verbose] = true}
+    end
+    optparse.parse! 
     RemoteTodo.import_config()
   end
 

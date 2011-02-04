@@ -14,8 +14,8 @@ class Api::TodosController < ApplicationController
       :limit => 20
     respond_to do |format|
       format.html 
-      format.xml  { render_todos_xml_or_json :xml,  @todos } # :due_explaination
-      format.json { render_todos_xml_or_json :json, @todos }
+      format.xml  #{ render :xml,  @todos } # :due_explaination
+      #format.json { render_todos_xml_or_json :json, @todos }
     end
   end
   
@@ -24,9 +24,9 @@ class Api::TodosController < ApplicationController
     @todo = Todo.find_securely(current_api_user,params[:id]) rescue nil
     respond_to do |format|
       format.html 
-      #format.xml  { render :xml  => @todo, $XML_TODO_OPTS } # :include => [:project] , :methods => [:due_explaination] }
-      format.xml  { render_todos_xml_or_json :xml ,  @todo }
-      format.json { render_todos_xml_or_json :json , @todo }
+      format.xml  { render :xml  => @todo } # :include => [:project] , :methods => [:due_explaination] }
+      #format.xml  { render_todos_xml_or_json :xml ,  @todo }
+      #format.json { render_todos_xml_or_json :json , @todo }
     end
   end
 
@@ -154,27 +154,5 @@ private
     #end
     # return user || login_required # passing to Ryan Bates thing..
   end
-  
-=begin
-  #  to DRY the methods for TODOS index and TODO show..
-  protocol: :xml or :json
-  
-  Possible options:  
-  - :only=>['id','title'] (either on master model or submodels) to restrict explicitally
-  - :include for DB relationships
-  - :methods for custom model methods
-  - for all the rest, there is mastercard. ehm, no, there is explicit XML builder in the view... or here :)
 
-   Resources:
-   - http://stackoverflow.com/questions/4363870/rails-json-rendering-ambiguous-table-column-names
-   
-=end
-  def render_todos_xml_or_json(protocol, object_s) # object(s)
-    render protocol => object_s, 
-      :include => {
-        :project=> {:only => [:name, :color ] } 
-      }, 
-      :methods => [:due_explaination] 
-  end
-  
 end #/TodosController
