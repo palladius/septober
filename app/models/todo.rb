@@ -113,7 +113,7 @@ class Todo < ActiveRecord::Base
       # PROJECT: This should be done in the regex magic!!!
       # TODO if the first word matches an existing project, do it!
       unless attribute_present?('project_id')
-        personal = Project.find_by_name_and_user_id('personal',user.id)
+        personal = Project.find_by_name_and_user_id('personal',self.user_id)
         log << "PersProject: #{personal.inspect}"
         self.project_id = personal.id #Project.find_by_name_and_user_id('personal',self.user_id).id
       end

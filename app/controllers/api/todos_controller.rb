@@ -43,9 +43,9 @@ class Api::TodosController < ApplicationController
     respond_to do |format|
       format.xml { 
         if @todo.save
-          render(:xml => @todo.to_xml, :status => "201 Created yay") 
+          render(:xml => @todo.to_xml, :status => "201 Created yay", :message => "Yay API TOdo created id=TODO") 
         else
-          render(:xml => @todo.to_xml , :status => "567 Couldnt save it sorry")
+          render(:xml => @todo.to_xml , :status => "569 Couldnt save it sorry", :message => "ERROR API TOdo NOT created id=TODO")
         end
       }
       format.js # do nothing
@@ -77,7 +77,7 @@ class Api::TodosController < ApplicationController
         if @todo.save
           render(:xml => @todo.to_xml,  :status => "201 Created yay") 
         else
-          render(:xml => @todo.to_xml , :status => "567 Couldnt save it sorry")
+          render(:xml => @todo.to_xml , :status => "568 Couldnt save it sorry", :message => "XML Update Err: TODO")
         end
       }
     end

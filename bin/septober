@@ -39,6 +39,8 @@
   class RemoteTodo < ActiveResource::Base
     self.site = "http://septober.example.com/" # uninitialized
     self.element_name = 'todo'
+    self.timeout = 5
+    #self.proxy = nil
     @@sample_yml_config = 'septober: 
        # YAML file with septober configuration. For more info: http://septober.heroku.com/
        site: "http://localhost:3000/api/"   # or http://septober.heroku.com/api/
@@ -138,9 +140,16 @@
     )
     puts "todo: #{t}"
     ret = t.save
-    puts "ret: #{ret}"
-    puts "Todo created successfully:\n  #{t.inspect}" if ret
-    pred "TODO get meaningful explaination from api/todos_controller!"
+    if t.errors 
+      pred "Some errors: '#{t.errors.full_messages}'"
+    end
+    #puts "save returned: #{ret}"
+    if ret
+      pgreen "Todo created successfully:\n  #{t.inspect}" 
+    else
+      pred "Some error saving todo: #{t.inspect}"
+    end
+    pgray "TODO get meaningful explaination from api/todos_controller!"
     #puts "errors: #{ret.errors}"
   end
   
