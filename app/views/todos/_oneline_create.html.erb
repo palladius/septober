@@ -1,11 +1,16 @@
 <%
   @quick_todo = Todo.new
+	# description = 'Welcome to quick add. Try the following titles:
+	# 	"Improtant ticket!!"
+	# 	"--low pri ticket"
+	# 	"call mum by tomorrow"
+	# 	...
+	# '
 %>
 <div class='todo_oneline' >
 <%= form_for @quick_todo do |f| %>
   <%= f.error_messages %>
-  <p>
-    <%#= t(:quick_create) %>
+  <p><%#= t(:quick_create) %>
     <%= f.text_field :name %>
     Prio: <%= f.select :priority, 1..5, :default => 3 %>
     Proj: <%= f.collection_select(:project_id , Project.find_all_by_user_id_and_active(current_user.id,true, :order => "id") , :id, :name , :include_blank => false ) rescue "((ProjErr: #{$!}))" %>
