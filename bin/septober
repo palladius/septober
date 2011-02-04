@@ -1,4 +1,4 @@
-#!/usr/bin/env ruby -wKU
+#!/usr/bin/env ruby 
 
 =begin
   ############################################################
@@ -65,7 +65,7 @@
         self.site = conf_hash['site']
         self.user = conf_hash['user']
         self.password = conf_hash['password']
-        deb "Conf imported successuflly: #{blue self.user} @ #{azure self.site}"
+        deb "Conf imported successuflly: #{blue self.user}@#{self.site}"
       else
         pred "Missing file: #{file} !!! Try to do the following:"
         puts "cat > #{file}\n#{@@sample_yml_config rescue "Err#{$!}" }"
@@ -137,7 +137,7 @@
   end
   
   def bannerino(desc)
-    "#Todo #{white desc.to_s} (user: #{blue RemoteTodo.user}@#{blue RemoteTodo.site})"
+    "#Todo #{white desc.to_s} (user: #{blue RemoteTodo.user}@#{cyan RemoteTodo.site.to_s.split('/')[2] })"
   end
 
   def todo_list(opts={})
@@ -182,26 +182,27 @@
   end
   
   def todo_done(id,done_or_undone=true)
-    puts bannerino("Done(#{id})")
+    todo_generic_put(id,:done)
+  end
+  def todo_toggle(id,done_or_undone=true)
     todo_generic_put(id,:done)
   end
   
-  def todo_generic_put(action,id,opts={})
+  def todo_generic_put(id,action,opts={})
     puts bannerino("GenericAction(#{action},#{id})")
-    #pred "To Be implemented Yet :("
     begin
       todo = RemoteTodo.find(id)
+      puts "Todo.#{id} ok #{green action}: #{yellow( todo.to_s )}"
+      todo.put(action, :my_action => action, :from_cli_in_test_ric => Socket.gethostname ) # test stuff
     rescue ActiveResource::ResourceNotFound
       puts "Sorry ResourceNotFound: #{red $!}" 
       exit 11
     rescue   ActiveResource::ServerError
-        puts "Sorry ServerError: #{red $!}" 
-        exit 12
+      puts "Sorry ServerError: #{red $!}" 
+      exit 12
     end
-    pgreen todo
     # todo is good
-    puts "Todo.#{id} ok: #{green( todo.to_s )}"
-    todo 
+    #todo.put(:generic_action, :my_action => action)
   end
   
   def todo_search(q)

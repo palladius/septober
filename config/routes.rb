@@ -39,6 +39,17 @@ Septober::Application.routes.draw do
     end
   end
   
+  namespace :api do
+    resources :todos do
+      member do
+        put  'done'     #  lynx --dump http://localhost:3000/api/todos/7.xml -auth=guest:guest
+        #get  'done'
+        #post 'done'
+       # put :generic_action
+      #  get 'toggle'
+      end
+    end
+  end
   
   # TODO put into resource
   #match "/todos/:id/toggle"        => 'todos#toggle'
@@ -108,11 +119,11 @@ Septober::Application.routes.draw do
   #   end
 
   # Sample resource route within a namespace:
-  namespace :api do
-  #     # Directs /admin/products/* to Admin::ProductsController
-  #     # (app/controllers/admin/products_controller.rb)
-    resources :todos
-  end
+  #namespace :api do
+  ##     # Directs /admin/products/* to Admin::ProductsController
+  ##     # (app/controllers/admin/products_controller.rb)
+  #  resources :todos
+  #end
 
   namespace :admin do
   #     # Directs /admin/products/* to Admin::ProductsController

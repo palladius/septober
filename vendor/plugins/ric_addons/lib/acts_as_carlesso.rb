@@ -16,7 +16,7 @@ module ActiveRecord #:nodoc:
       
       module ClassMethods
         def acts_as_carlesso
-          puts "ActsAsCarlesso v#{@@acts_as_carlesso_version rescue "Err('#{$!}')"}: Eppur si muove!"
+          #puts "ActsAsCarlesso v#{@@acts_as_carlesso_version rescue "Err('#{$!}')"}: Eppur si muove!"
           #  has_many :taggings, :as => :taggable, :dependent => :destroy, :include => :tag
           #  has_many :tags, :through => :taggings
           #  before_save :save_cached_tag_list

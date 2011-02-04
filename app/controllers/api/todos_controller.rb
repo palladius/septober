@@ -14,19 +14,17 @@ class Api::TodosController < ApplicationController
       :limit => 20
     respond_to do |format|
       format.html 
-      format.xml  #{ render :xml,  @todos } # :due_explaination
-      #format.json { render_todos_xml_or_json :json, @todos }
+      format.xml  { render_todos_xml_or_json :xml,  @todos } # :due_explaination
+      format.json { render_todos_xml_or_json :json, @todos }
     end
   end
-  
 
   def show
     @todo = Todo.find_securely(current_api_user,params[:id]) rescue nil
     respond_to do |format|
       format.html 
-      format.xml  { render :xml  => @todo } # :include => [:project] , :methods => [:due_explaination] }
-      #format.xml  { render_todos_xml_or_json :xml ,  @todo }
-      #format.json { render_todos_xml_or_json :json , @todo }
+      format.xml  { render_todos_xml_or_json :xml,  @todo } # :include => [:project] , :methods => [:due_explaination] }
+      format.json { render_todos_xml_or_json :json , @todo }
     end
   end
 
@@ -49,14 +47,6 @@ class Api::TodosController < ApplicationController
         end
       }
       format.js # do nothing
-      #format.html { # normal HTML
-      #  if @todo.save
-      #    flash[:notice] = "Successfully created API::todo '#{@todo.to_s}'"
-      #    redirect_to todos_url
-      #  else
-      #    render :action => 'new'
-      #  end
-      #}
     end #/respond_to
   end #/create
 
@@ -83,7 +73,6 @@ class Api::TodosController < ApplicationController
     end
     #if @todo.update_attributes(params[:todo])
     #  flash[:notice] = "Successfully updated API::todo."
-    #  redirect_to todos_url
     #else
     #  render :action => 'edit'
     #end
@@ -99,29 +88,29 @@ class Api::TodosController < ApplicationController
     @todo = Todo.find(params[:id])
     @todo.destroy
     flash[:notice] = "Successfully destroyed todo."
-    redirect_to todos_url
+    #redirect_to todos_url
   end
   
 private
   def project_find_for_cli(params={})
     Project.find_by_name('personal') || Project.first
   end
-  #def _update_active(participle,new_active=nil)
-  #  # nil = toggle
-  #  new_active ||= false # should be the REVERSE... TODO!
-  #  # copy the data from edit
-  #  #@todo = Todo.find(params[:id])
-  #  @todo = Todo.find_securely(current_user, params[:id])
-  #  if @todo.update_attributes( :active => new_active )
-  #    flash[:notice] = "Successfully '#{participle}' todo ##{params[:id]}"
-  #    redirect_to todos_url
-  #  else
-  #    render :action => 'edit'
-  #  end
-  #end
+  def _update_active(participle,new_active=nil)
+    # nil = toggle
+    new_active ||= false # should be the REVERSE... TODO!
+    # copy the data from edit
+    #@todo = Todo.find(params[:id])
+    @todo = Todo.find_securely(current_api_user, params[:id])
+    if @todo.update_attributes( :active => new_active )
+      flash[:notice] = "Successfully '#{participle}' todo ##{params[:id]}"
+      #redirect_to todos_url
+    else
+      render :action => 'edit'
+    end
+  end
   
   #def _update_field(field_name,new_val)
-  #  @todo = Todo.find_securely(current_user,params[:id])
+  #  @todo = Todo.find_securely(current_api_user,params[:id])
   #  if @todo.update_attributes( field_name.to_sym => new_val )
   #    flash[:notice] = "Successfully set '#{field_name}'='#{new_val}' for Todo ##{params[:id]}: '#{@todo}'"
   #    redirect_to todos_url
@@ -154,5 +143,26 @@ private
     #end
     # return user || login_required # passing to Ryan Bates thing..
   end
+  
+  
+=begin
+  # to DRY the methods for TODOS index and TODO show..
+  protocol: :xml or :json
+  Possible options:
+  - :only=>['id','title'] (either on master model or submodels) to restrict explicitally
+  - :include for DB relationships
+  - :methods for custom model methods
+  - for all the rest, there is mastercard. ehm, no, there is explicit XML builder in the view... or here :)
+
+  Resources:
+  - http://stackoverflow.com/questions/4363870/rails-json-rendering-ambiguous-table-column-names
+=end
+    def render_todos_xml_or_json(protocol, object_s) # object(s)
+      render protocol => object_s,
+        :include => {
+          :project=> {:only => [:name, :color ] }
+        },
+        :methods => [:due_explaination]
+    end  
 
 end #/TodosController
