@@ -35,6 +35,10 @@
 	  <%= link_to( render_project(@todo.project), @todo.project ) %>
 	</p>
 	<p>
+	  <strong>Where:</strong>
+	  <%= (@todo.where) rescue "Err('#{$!}')"%>
+	</p>
+	<p>
 	  <strong>Depends on (father):</strong>
 	  <%= link_to( render_todo_name(@todo.todo), @todo.todo ) if @todo.todo %>
 	  <%#= @todo.depends_on_id %>

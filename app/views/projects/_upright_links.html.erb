@@ -1,8 +1,6 @@
 <%
   @my_projects ||= Project.find_all_by_user_id_and_active(current_user.id, true) rescue []
   #@my_projects = Project.find_securely(current_user, :all, :conditions => { :active => true} ) #rescue []
-
-
 %>
 <% if logged_in? %>
 <div class='project_synoptic' align='right' style='font-size:x-small' >

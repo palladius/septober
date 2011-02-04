@@ -9,7 +9,9 @@
     <%= f.text_field :name %>
     Prio: <%= f.select :priority, 1..5, :default => 3 %>
     Proj: <%= f.collection_select(:project_id , Project.find_all_by_user_id_and_active(current_user.id,true, :order => "id") , :id, :name , :include_blank => false ) rescue "((ProjErr: #{$!}))" %>
-    Due: <%= f.date_select(:due) rescue "((DueErr: #{$!}))" %>
+<!--
+    Due: <%#= f.date_select(:due) rescue "((DueErr: #{$!}))" %>
+-->
 <%= f.submit 'Add Todo' %></p>
 <% end if logged_in? %>
 </div>

@@ -26,8 +26,8 @@ class Todo < ActiveRecord::Base
     validates_inclusion_of :progress_status, :in => 0..100, :message => "is a percentage, please go back to school :P"
     
     #  before_save :apply_todo_regex_magic #    RIGHT NOW... TO BECOME => BeforeCreate
-    #before_create :apply_todo_regex_magic
-    after_create :apply_todo_regex_magic
+    before_create :apply_todo_regex_magic
+    #after_create :apply_todo_regex_magic
     
     # TODO
     #acts_as_taggable_on :tags        # normal, user created
@@ -99,35 +99,41 @@ class Todo < ActiveRecord::Base
   # This should do some magic stuff like adding the due to tomorrow if string matches 'by tomorrow' or 'entro domani' and so on..  
     def apply_todo_regex_magic
       log = []
-      log << "\tDEBUG: apply_todo_regex_magic START for: #{self.inspect}"
-      str = self.name rescue ''
-      @due ||= Date.today if str.match /today| oggi/i
-      @due ||= Date.tomorrow if str.match /tomorrow|domani/i # TODO \<string\>
-      @due ||= Date.today + 7 # in 7 days
-      @priority = 1 if str.match /^\-\-|\.\.\.$/ # TODO remove the ++
-      @priority = 2 if str.match /^\-|\.\.$/ # TODO remove the ++
-      @priority = 4 if str.match /^\+|!$/ # TODO remove the ++
-      @priority = 5 if str.match /^\+\+|!!$/ # TODO remove the ++
-      @description = I18n.t(:quick_created) unless @description.to_s.length > 0 # alredy created
+      begin # catch exceptions
+        log << "\tDEBUG: apply_todo_regex_magic START for: #{self.inspect}"
+        str = self.name rescue ''
+        @due = Date.today if str.match /today| oggi/i
+        self.due = Date.tomorrow if str.match /tomorrow|domani/i # TODO \<string\>
+        self.due = Date.yesterday if str.match /yesterday| ieri/i 
+        @due ||= Date.today + 7 unless attribute_present?('due') # in 7 days
+        # TODO and priority = 3
+        self.priority = 1 if str.match /^\-\-|\.\.\.$/ # TODO remove the ++
+        self.priority = 2 if str.match /^\-|\.\.$/ # TODO remove the ++
+        self.priority = 4 if str.match /^\+|!$/ # TODO remove the ++
+        self.priority = 5 if str.match /^\+\+|!!$/ # TODO remove the ++
+        self.description = I18n.t(:quick_created) unless attribute_present?('description') # alredy created
       
-      # PROJECT: This should be done in the regex magic!!!
-      # TODO if the first word matches an existing project, do it!
-      unless attribute_present?('project_id')
-        personal = Project.find_by_name_and_user_id('personal',self.user_id)
-        log << "PersProject: #{personal.inspect}"
-        self.project_id = personal.id #Project.find_by_name_and_user_id('personal',self.user_id).id
+        # PROJECT: This should be done in the regex magic!!!
+        # TODO if the first word matches an existing project, do it!
+        unless attribute_present?('project_id')
+          personal = Project.find_by_name_and_user_id('personal',self.user_id)
+          log << "PersProject: #{personal.inspect}"
+          self.project_id = personal.id #Project.find_by_name_and_user_id('personal',self.user_id).id
+        end
+        #self.url  = 'test url3' # this works
+        @where = 'Inferred from Current IP TODO :)'
+        # if i dont find a project, set project to personal
+        #raise 'cant call apply_todo_regex_magic without knowing WHO i am (current_user is not available in model dear Ric)' unless self.user_id
+        where = 'boh'
+        #raise 'test exception'
+        #self.save rescue 'err'
+        puts log
+        self.description = (self.description || '') + "\n\n---- LOGS: ----\n#{log.join("\n")}"
+        return true
+      rescue Exception => e
+        pred "Todo.apply_todo_regex_magic Exception: #{$!}"
+        return false
       end
-      #self.url  = 'test url3' # this works
-      
-      @where = 'Inferred from Current IP TODO :)'
-      # if i dont find a project, set project to personal
-      #raise 'cant call apply_todo_regex_magic without knowing WHO i am (current_user is not available in model dear Ric)' unless self.user_id
-      where = 'boh'
-      #raise 'test exception'
-      #self.save rescue 'err'
-      puts log
-      self.description = self.description + "\n\n---- LOGS: ----\n#{log.join("\n")}"
-      return true
     end
     
     def self.public_apply_todo_regex_magic(todo)
