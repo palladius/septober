@@ -20,30 +20,48 @@
   
 # Features 
   
-  Language: RubyOnRails v 3.0.3
-  Authentication: `Nifty::Authentication`
-  Models:
-    Users (from nifty)
-    Todo:
-    Projects:
+  - Language: RoR 3 !!!
+  
+		Multi-Project todos.
+
+  - Quick create supports some regex ("buy milks by tomorrow!!" automatically sets the due date AND raises priority by 2)
+
+  - A working CLI thru simple API (messy code but simple use) and a simple script: `bin/septober`:
+    - supports colors from project color thanks to 'ric' gem :)
+		- supports adding, listing and marking as done
+		- regex
+    that is ready to go in development AND in production on my heroku small server..
+
+  Todos have the property of:
+  - bookmark, dependencies, procrastinate, hide_until date, where they are, ...
+
+  Projects can be hidden in home page if you want 
+
+## CLI
+
+	<img src='https://github.com/palladius/septober/blob/master/doc/CliScreenshot.png' height='100' />
+
+	bin/septober list
+	bin/septober add Buy the milk by tomorrow!!
+	bin/septober show 45
+	bin/septober done 45
 
 # BUGS
 
-- Search engine is broken
+- Search engine is still broken (see search addon!)
 - Add DONE Ajax button... (add 3 routes to todos: toggle, resolve, unr-esolve )
-- The provisioning on User creation is broken, although if i call it from console it works perfectly! Sigh...
 
 # TODO
 
 - Add Facebook login!
     
-## Add to GitHUb ==
+## Add to GitHUb 
     
     git remote add origin git@github.com:palladius/septober.git
     git push origin master
       
-    == TODO ==
-    
+### TODO 
+  
     Things to add to this mirabolant script:
     - remove todos (They're app specific, consider them a proof of concept)
     - ask for root password on create (more security)
