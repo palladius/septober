@@ -36,7 +36,8 @@
     - Quick create supports some regex ("buy milks by tomorrow!!" automatically sets the due date AND raises priority by 2)
 
 ## CLI
-<img src='https://github.com/palladius/septober/blob/master/doc/CliScreenshot.png' height='100' />
+
+<img src="https://github.com/palladius/septober/raw/master/doc/CliScreenshot.png" width="300" alt="Screenshot for Septober CLI" align='right' />
 
 Usage (for use of bin/septober guides you thru the creation of "~/.septober.yml" conf file):
 

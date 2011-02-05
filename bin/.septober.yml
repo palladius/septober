@@ -1,5 +1,10 @@
-# sample configuration file
+# the local can be summoned via --local if u r too lazy to change the labels ;)
+# YAML file with septober configuration. For more info: http://septober.heroku.com/
+septober_local: 
+  site: "http://localhost:3000/api/"        # development
+  user: guest
+  password: guest
 septober:
- user: guest
- pass: guest
- url:  'http://localhost:3000/'
+  site: "http://septober.heroku.com/api/"   # Riccardo production
+  user: YOUR_USER
+  password: YOUR_PASS
