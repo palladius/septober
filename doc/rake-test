@@ -8,86 +8,86 @@ Adding Path: [1;35m/Users/riccardo/git/septober/vendor/plugins/ric_admin/lib/ap
 Loaded suite /usr/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake/rake_test_loader
 Started
 EEEEEEEEEEEEEEEE
-Finished in 0.475131 seconds.
+Finished in 0.503948 seconds.
 
   1) Error:
 test_should_be_valid(ProjectTest):
-ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:14:03', '2011-02-06 18:14:03', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
+ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:25:16', '2011-02-06 18:25:16', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
     
 
   2) Error:
 test_should_be_valid(TodoTest):
-ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:14:03', '2011-02-06 18:14:03', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
+ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:25:16', '2011-02-06 18:25:16', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
     
 
   3) Error:
 test_authenticate_bad_password(UserTest):
-ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:14:03', '2011-02-06 18:14:03', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
+ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:25:16', '2011-02-06 18:25:16', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
     
 
   4) Error:
 test_authenticate_bad_username(UserTest):
-ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:14:03', '2011-02-06 18:14:03', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
+ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:25:16', '2011-02-06 18:25:16', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
     
 
   5) Error:
 test_authenticate_by_email(UserTest):
-ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:14:03', '2011-02-06 18:14:03', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
+ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:25:16', '2011-02-06 18:25:16', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
     
 
   6) Error:
 test_authenticate_by_username(UserTest):
-ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:14:03', '2011-02-06 18:14:03', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
+ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:25:16', '2011-02-06 18:25:16', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
     
 
   7) Error:
 test_generate_password_hash_and_salt_on_create(UserTest):
-ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:14:03', '2011-02-06 18:14:03', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
+ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:25:16', '2011-02-06 18:25:16', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
     
 
   8) Error:
 test_require_matching_password_confirmation(UserTest):
-ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:14:03', '2011-02-06 18:14:03', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
+ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:25:16', '2011-02-06 18:25:16', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
     
 
   9) Error:
 test_require_password(UserTest):
-ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:14:03', '2011-02-06 18:14:03', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
+ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:25:16', '2011-02-06 18:25:16', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
     
 
  10) Error:
 test_require_username(UserTest):
-ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:14:03', '2011-02-06 18:14:03', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
+ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:25:16', '2011-02-06 18:25:16', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
     
 
  11) Error:
 test_require_well_formed_email(UserTest):
-ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:14:03', '2011-02-06 18:14:03', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
+ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:25:16', '2011-02-06 18:25:16', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
     
 
  12) Error:
 test_valid(UserTest):
-ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:14:03', '2011-02-06 18:14:03', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
+ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:25:16', '2011-02-06 18:25:16', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
     
 
  13) Error:
 test_validate_odd_characters_in_username(UserTest):
-ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:14:03', '2011-02-06 18:14:03', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
+ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:25:16', '2011-02-06 18:25:16', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
     
 
  14) Error:
 test_validate_password_length(UserTest):
-ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:14:03', '2011-02-06 18:14:03', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
+ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:25:16', '2011-02-06 18:25:16', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
     
 
  15) Error:
 test_validate_uniqueness_of_email(UserTest):
-ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:14:03', '2011-02-06 18:14:03', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
+ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:25:16', '2011-02-06 18:25:16', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
     
 
  16) Error:
 test_validate_uniqueness_of_username(UserTest):
-ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:14:03', '2011-02-06 18:14:03', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
+ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:25:16', '2011-02-06 18:25:16', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
     
 
 16 tests, 0 assertions, 0 failures, 16 errors
@@ -97,176 +97,176 @@ Adding Path: [1;35m/Users/riccardo/git/septober/vendor/plugins/ric_admin/lib/ap
 Loaded suite /usr/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake/rake_test_loader
 Started
 EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
-Finished in 1.225211 seconds.
+Finished in 1.344357 seconds.
 
   1) Error:
 test_should_get_about(PagesControllerTest):
-ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:14:11', '2011-02-06 18:14:11', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
+ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:25:25', '2011-02-06 18:25:25', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
     
 
   2) Error:
 test_should_get_docs(PagesControllerTest):
-ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:14:11', '2011-02-06 18:14:11', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
+ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:25:25', '2011-02-06 18:25:25', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
     
 
   3) Error:
 test_should_get_index(PagesControllerTest):
-ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:14:11', '2011-02-06 18:14:11', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
+ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:25:26', '2011-02-06 18:25:26', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
     
 
   4) Error:
 test_should_get_search(PagesControllerTest):
-ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:14:11', '2011-02-06 18:14:11', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
+ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:25:26', '2011-02-06 18:25:26', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
     
 
   5) Error:
 test_create_invalid(ProjectsControllerTest):
-ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:14:11', '2011-02-06 18:14:11', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
+ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:25:26', '2011-02-06 18:25:26', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
     
 
   6) Error:
 test_create_valid(ProjectsControllerTest):
-ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:14:11', '2011-02-06 18:14:11', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
+ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:25:26', '2011-02-06 18:25:26', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
     
 
   7) Error:
 test_destroy(ProjectsControllerTest):
-ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:14:11', '2011-02-06 18:14:11', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
+ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:25:26', '2011-02-06 18:25:26', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
     
 
   8) Error:
 test_edit(ProjectsControllerTest):
-ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:14:11', '2011-02-06 18:14:11', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
+ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:25:26', '2011-02-06 18:25:26', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
     
 
   9) Error:
 test_index(ProjectsControllerTest):
-ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:14:11', '2011-02-06 18:14:11', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
+ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:25:26', '2011-02-06 18:25:26', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
     
 
  10) Error:
 test_new(ProjectsControllerTest):
-ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:14:11', '2011-02-06 18:14:11', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
+ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:25:26', '2011-02-06 18:25:26', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
     
 
  11) Error:
 test_show(ProjectsControllerTest):
-ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:14:11', '2011-02-06 18:14:11', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
+ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:25:26', '2011-02-06 18:25:26', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
     
 
  12) Error:
 test_update_invalid(ProjectsControllerTest):
-ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:14:11', '2011-02-06 18:14:11', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
+ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:25:26', '2011-02-06 18:25:26', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
     
 
  13) Error:
 test_update_valid(ProjectsControllerTest):
-ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:14:12', '2011-02-06 18:14:12', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
+ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:25:26', '2011-02-06 18:25:26', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
     
 
  14) Error:
 test_create_invalid(SessionsControllerTest):
-ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:14:12', '2011-02-06 18:14:12', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
+ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:25:26', '2011-02-06 18:25:26', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
     
 
  15) Error:
 test_create_valid(SessionsControllerTest):
-ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:14:12', '2011-02-06 18:14:12', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
+ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:25:26', '2011-02-06 18:25:26', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
     
 
  16) Error:
 test_new(SessionsControllerTest):
-ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:14:12', '2011-02-06 18:14:12', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
+ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:25:26', '2011-02-06 18:25:26', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
     
 
  17) Error:
 test_cannot_see_someone_elses_todo(TodosControllerTest):
-ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:14:12', '2011-02-06 18:14:12', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
+ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:25:26', '2011-02-06 18:25:26', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
     
 
  18) Error:
 test_create_invalid(TodosControllerTest):
-ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:14:12', '2011-02-06 18:14:12', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
+ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:25:26', '2011-02-06 18:25:26', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
     
 
  19) Error:
 test_create_valid(TodosControllerTest):
-ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:14:12', '2011-02-06 18:14:12', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
+ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:25:26', '2011-02-06 18:25:26', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
     
 
  20) Error:
 test_destroy(TodosControllerTest):
-ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:14:12', '2011-02-06 18:14:12', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
+ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:25:26', '2011-02-06 18:25:26', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
     
 
  21) Error:
 test_edit(TodosControllerTest):
-ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:14:12', '2011-02-06 18:14:12', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
+ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:25:26', '2011-02-06 18:25:26', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
     
 
  22) Error:
 test_index(TodosControllerTest):
-ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:14:12', '2011-02-06 18:14:12', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
+ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:25:26', '2011-02-06 18:25:26', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
     
 
  23) Error:
 test_new(TodosControllerTest):
-ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:14:12', '2011-02-06 18:14:12', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
+ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:25:26', '2011-02-06 18:25:26', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
     
 
  24) Error:
 test_show(TodosControllerTest):
-ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:14:12', '2011-02-06 18:14:12', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
+ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:25:26', '2011-02-06 18:25:26', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
     
 
  25) Error:
 test_update_invalid(TodosControllerTest):
-ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:14:12', '2011-02-06 18:14:12', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
+ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:25:26', '2011-02-06 18:25:26', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
     
 
  26) Error:
 test_update_valid(TodosControllerTest):
-ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:14:12', '2011-02-06 18:14:12', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
+ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:25:26', '2011-02-06 18:25:26', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
     
 
  27) Error:
 test_create_invalid(UsersControllerTest):
-ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:14:12', '2011-02-06 18:14:12', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
+ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:25:26', '2011-02-06 18:25:26', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
     
 
  28) Error:
 test_create_valid(UsersControllerTest):
-ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:14:12', '2011-02-06 18:14:12', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
+ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:25:27', '2011-02-06 18:25:27', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
     
 
  29) Error:
 test_edit(UsersControllerTest):
-ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:14:12', '2011-02-06 18:14:12', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
+ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:25:27', '2011-02-06 18:25:27', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
     
 
  30) Error:
 test_edit_without_user(UsersControllerTest):
-ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:14:12', '2011-02-06 18:14:12', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
+ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:25:27', '2011-02-06 18:25:27', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
     
 
  31) Error:
 test_new(UsersControllerTest):
-ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:14:12', '2011-02-06 18:14:12', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
+ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:25:27', '2011-02-06 18:25:27', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
     
 
  32) Error:
 test_update_invalid(UsersControllerTest):
-ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:14:12', '2011-02-06 18:14:12', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
+ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:25:27', '2011-02-06 18:25:27', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
     
 
  33) Error:
 test_update_valid(UsersControllerTest):
-ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:14:12', '2011-02-06 18:14:12', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
+ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:25:27', '2011-02-06 18:25:27', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
     
 
  34) Error:
 test_update_without_user(UsersControllerTest):
-ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:14:12', '2011-02-06 18:14:12', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
+ActiveRecord::StatementInvalid: SQLite3::SQLException: table users has no column named password: INSERT INTO "users" ("facebook_id", "created_at", "updated_at", "admin", "username", "id", "password", "email") VALUES ('riccardo_test', '2011-02-06 18:25:27', '2011-02-06 18:25:27', 'f', 'guest', 750230071, 'testfixture_guest', 'guest@example.com')
     
 
 34 tests, 0 assertions, 0 failures, 34 errors
