@@ -3,6 +3,8 @@
 # - ./VERSION
 # - app/helpers/application_helper
 1.5.1:
+  - Added "photo_url" as well to projects 
+1.5.0:
   - Added "system" to projects (for undeletable projects), dflt to false
 1.4.1:
   - boh
