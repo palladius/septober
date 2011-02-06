@@ -1,0 +1,15 @@
+<%
+	# Copied by RBates nifty authentication => generated into lib/controller_authentication.rb
+	# and extracted here as a first test
+%>
+<% if true || current_user  %>
+	<% if logged_in? %>
+	  VVelcome <b><%= link_to (current_user.username.capitalize, edit_current_user_path, :title => "RicPlugin: User number ##{current_user.id}", :class => 'user') %></b>.
+	  <%= link_to "Log out", logout_path %>
+	<% else %>
+	  <%= link_to "Sign up", signup_path %> or
+	  <%= link_to "log in", login_path %>
+	<% end %>
+<% else %>
+  Sorry no CurrentUser present :(
+<% end %>

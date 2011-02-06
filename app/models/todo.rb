@@ -162,13 +162,19 @@ class Todo < ActiveRecord::Base
           :due => Date.tomorrow , # TODO may have to make it with a lambda # like:  lambda { Date.tomorrow }
           :description => tail  },
         {:user_id => user.id, :project_id => septober.id,
-           :name => 'Eventually cleanup the room' , 
+           :name => 'Cleanup the room' , 
            :due => Date.today + 365 , # next week
            :hide_until => Time.now + 86400 * 7 ,
            :description => "Something to be done in 1yr time, hidden again for the next year!"+tail },
         {:user_id => user.id, :project_id => personal.id,
               :name => 'Buy new shoes by saturday!' , 
               :due => Date.today + 30 , # next week
+              :where => 'Grafton St, Dublin, Ireland',
+              :description => "Something to be done in 1yr time"+tail },
+        {:user_id => user.id, :project_id => septober.id,
+              :name => 'Drink guinness with friends' , 
+              :due  => Date.today + 30 , # next week
+              :where => 'The Duke, Dublin, Ireland',
               :description => "Something to be done in 1yr time"+tail },
         {:user_id => user.id, :project_id => septober.id, 
           :due => Date.yesterday ,
