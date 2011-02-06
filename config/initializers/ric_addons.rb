@@ -22,4 +22,4 @@ $APP = {
   :author      => 'Riccardo Carlesso <riccardo.carlesso@gmail.com>'
 }
 
-$APP[:license] = File.open("#{Rails.root}/LICENZE" ).read rescue "No LICENSE file found. Please add it to the root directory and Ill load it automatically for you ;)"
+$APP[:license] = File.open("#{Rails.root}/LICENSE" ).read rescue "No /LICENSE file found. Please add it to the root directory and Ill load it automatically for you ;)"

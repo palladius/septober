@@ -1,10 +1,9 @@
 Septober::Application.routes.draw do
 
-  get "pages/index"
-  get "pages/docs"
-  get "pages/about"
-  get "pages/search"
-
+  %w{ index docs about search license}.each do |page_action| 
+    get "pages/#{page_action}"
+  end
+  
   match 'user/edit' => 'users#edit', :as => :edit_current_user
   match 'signup' => 'users#new', :as => :signup
   match 'logout' => 'sessions#destroy', :as => :logout

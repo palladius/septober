@@ -2,6 +2,8 @@
 # PS TODO make this DRY, now youve to remember to update as well the following files:
 # - ./VERSION
 # - app/helpers/application_helper
+1.5.2:
+  - Added license and fixed with my name
 1.5.1:
   - Added "photo_url" as well to projects 
 1.5.0:

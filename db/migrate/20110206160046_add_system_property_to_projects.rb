@@ -13,8 +13,7 @@ class AddSystemPropertyToProjects < ActiveRecord::Migration
   end
 
   def self.down
-    #remove_column :projects, :asdasdasdasd rescue "Maybe there isnt yet... no worries"
-    #remove_column :projects, :photo_url  rescue "Maybe there isnt yet... no worries 2"
-    remove_column :projects, :system     rescue 'Chissene'
+    remove_column :projects, :photo_url # rescue "Maybe there isnt yet... no worries 2"
+    remove_column :projects, :system    # rescue 'Chissene'
   end
 end
