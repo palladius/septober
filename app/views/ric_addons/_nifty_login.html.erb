@@ -3,11 +3,9 @@
 	# and extracted here as a first test
 %>
 <% if true || current_user  %>
-<!--
-	<small>{<a href='https://github.com/palladius/ric_addressbook/tree/master/vendor/plugins/ric_plugin'>RicPlugin v.TODO</a>}</small>
--->
+
 	<% if logged_in? %>
-	  RP.Wilkommen <b><%= link_to (current_user.username.capitalize, edit_current_user_path, :title => "RicPlugin: User number ##{current_user.id}", :class => 'user') %></b>.
+	  VVelcome <b><%= link_to (current_user.username.capitalize, edit_current_user_path, :title => "RicPlugin: User number ##{current_user.id}", :class => 'user') %></b>.
 	  <%= link_to "Log out", logout_path %>
 	<% else %>
 	  <%= link_to "Sign up", signup_path %> or
