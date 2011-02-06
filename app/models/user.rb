@@ -20,6 +20,10 @@ class User < ActiveRecord::Base
   def to_s
     username
   end
+  #alias :username :name
+  def name
+    username
+  end
   
   # to be called after create!
   def provision_projects_after_create()
