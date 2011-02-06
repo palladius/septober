@@ -8,6 +8,8 @@ class Project < ActiveRecord::Base
     has_many :todos
     searchable_by :name, :description
     acts_as_carlesso
+    scope :publics,  lambda { { :conditions => ['public = ?', true  ] } }
+    scope :public,  lambda { { :conditions => ['public = ?', true  ] } }
     
     acts_as_taggable_on :tags        # normal
     acts_as_taggable_on :magic_tags    

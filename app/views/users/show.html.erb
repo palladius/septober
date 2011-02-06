@@ -1,0 +1,14 @@
+<h1><%= render_user(@user) %></h1>
+
+
+<p> Todos: <b><%= @user.todos.active.count %></b>/<%= @user.todos.count %> (<%= @user.todos.overdue.count %> overdue )
+<p> Projects: <b><%= @user.projects.count %></b> (<%= @user.projects.public.count %> public)
+<p> Friends: TODO
+<p> Admin?: <b><%= @user.admin? ? 'admin!!' : '-' %></b> 
+	
+<%# if @user.projects.public %>
+<h2>Public Projects</h2>
+
+<% @user.projects.public.each do |project| %>
+	- <%= render_project(project) %> (<b><%= project.todos.active.count %></b>/<%= project.todos.count %> todos) <br/>
+<%end%>

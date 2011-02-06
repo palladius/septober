@@ -1,6 +1,8 @@
 <%
   $debug_info[:sessions] = session
-  @base_models = %w{todos projects ric_addons#index }
+  #@base_models = %w{todos projects ric_addons#index }
+  #@base_models ||= %w{ ric_addons#how_to_add_base_models }
+  @base_models ||= %w{ ric_addons#how_to_add_base_models }
 %>
 <!--
 <img src='/images/logo-banner.png' width='100%' alt='alt' 

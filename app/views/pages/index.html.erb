@@ -1,0 +1,16 @@
+<h1>Pages Index</h1>
+
+<h2>App</h2>
+  <div class='pages_index_app_synoptic' >
+    <% $APP.each do |k,v| %>
+      <b><%=k%></b>. <%=v.inspect %> <br/>
+    <% end %>
+  </div>
+
+<h2>Users Stats</h2>
+  <div class="pages_index_usersinfo" >
+    <% User.all.each do |user|  %>
+    	- <%=render_user( user)%> (<b><%=user.todos.count %></b> tasks) <br/>
+    <% end %>
+    - Tasks in the system: <%= Todo.all.count %>
+  </div>

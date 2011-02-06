@@ -15,6 +15,8 @@ class Todo < ActiveRecord::Base
     scope :recent, lambda { { :conditions => ['created_at > ?', 1.week.ago] } }
     scope :super_recent, lambda { { :conditions => ['created_at > ?', 1.day.ago] } }
     scope :overdue,  lambda { { :conditions => ['due > ?', Time.now ] } }
+    scope :active,  lambda { { :conditions => ['active = ?', true  ] } }
+    scope :done,    lambda { { :conditions => ['active = ?', false ] } }
     # More here: http://railscasts.com/episodes/15-fun-with-find-conditions
     # Task.find_all_by_priority(1..3)
     scope :relevant, lambda { { :conditions => ['priority in ?', 1..3 ] } }

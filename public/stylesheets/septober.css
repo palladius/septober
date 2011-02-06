@@ -81,3 +81,11 @@ TD.todo_due_column {
 	color: green;*/
 
 }
+
+.user , A.user {
+  border: none;
+  text-decoration: none ;
+  color: #E56717 ; /* dark orange */
+  font: normal 100% ;
+  font-family: Arial, "MS Trebuchet", sans-serif;
+}
