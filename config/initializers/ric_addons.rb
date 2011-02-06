@@ -19,7 +19,7 @@ $APP = {
   #:license     => File.open("#{Rails.root}/LICENSE" ).read ,  # Add something like 
   :copyright   => 'Copyright 2011-11 A few rights reserved (see LICENSE)',
   # :email       => '',
-  :author      => 'Riccardo Carlesso <riccardo.carlesso@gmail.com>'
+  :author      => 'Riccardo Carlesso <riccardo.carlesso@gmail.com>',
 }
 
 $APP[:license] = File.open("#{Rails.root}/LICENSE" ).read rescue "No /LICENSE file found. Please add it to the root directory and Ill load it automatically for you ;)"

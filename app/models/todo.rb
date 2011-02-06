@@ -145,27 +145,18 @@ class Todo < ActiveRecord::Base
     end
     
     def self.provision_for_user(user)
-      ver = '1.0.1' # it works!
+      ver = '1.0.2' # it works!
+      # 1.0.1 was broken because i removed :eamil field!
       projects = {}
-      #Todo.with_scope(:find => {:conditions => "user_id = #{current_user.id}"},
-      #                :create => {:user_id => current_user.id}) do
-      # user_posts = Post.find(:all)
-      #Project.with_scope(
-      #  :find => {:conditions => "user_id = #{user.id}"},
-      #  :create => {:user_id => user.id}
-      #) do
-      #  %w{ personal work septober }.each { |pname| 
-      #    projects[pname.to_sym] = Project.find_by_name(pname)
-      #  }
-      #end
       personal = Project.find_by_name_and_user_id('personal',user.id)
       work     = Project.find_by_name_and_user_id('work',    user.id)
       septober = Project.find_by_name_and_user_id('septober',user.id)
       tail = "--\nAutoProvisioned Todos v.#{ver}"
       Todo.create([
-        {:user_id => user.id, :project_id => personal.id, :name => 'Buy milk and condoms' , 
+        {:user_id => user.id, :project_id => personal.id, :name => 'Go shopping' , 
           :due => Date.today + 14 ,
-          :description => tail, :where => "Host: #{Socket.gethostname rescue 'Boh'}" },
+          :where => "Tesco, Parnell St, Dublin",
+          :description => "Buy Milk, Coffee, Toilet Paper, tomato, shrimps, peas, cream \n #{tail}", :where => "Host: #{Socket.gethostname rescue 'Boh'}" },
         {:user_id => user.id, :project_id => work.id,     :name => 'Organize meeting to your boss by tomorrow!' , 
           :priority => 4, 
           :due => Date.tomorrow , # TODO may have to make it with a lambda # like:  lambda { Date.tomorrow }
@@ -173,10 +164,15 @@ class Todo < ActiveRecord::Base
         {:user_id => user.id, :project_id => septober.id,
            :name => 'Eventually cleanup the room' , 
            :due => Date.today + 365 , # next week
-           :description => "Something to be done in 1yr time"+tail },
+           :hide_until => Time.now + 86400 * 7 ,
+           :description => "Something to be done in 1yr time, hidden again for the next year!"+tail },
+        {:user_id => user.id, :project_id => personal.id,
+              :name => 'Buy new shoes by saturday!' , 
+              :due => Date.today + 30 , # next week
+              :description => "Something to be done in 1yr time"+tail },
         {:user_id => user.id, :project_id => septober.id, 
           :due => Date.yesterday ,
-          :name => 'Thank Riccardo for this wonderful application' , :description => "His email is "+ $APP[:email] },
+          :name => 'Thank Riccardo for this wonderful application' , :description => "His email is #{$APP[:author] rescue "Dunno"}" },
       ])
     end
     
