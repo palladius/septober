@@ -6,6 +6,7 @@
     <th>Description</th>
     <th>Home?</th>
     <th>Public</th>
+    <th>System</th>
     <th>Tags</th>
     <th>Options</th>
   </tr>
@@ -24,7 +25,8 @@
 				</small>
 			</td>
       <td><%= okno(@project.home_visible) %></td>
-      <td><%= okno @project.public %></td>
+      <td><%= okno @project.public? %></td>
+      <td><%= okno @project.system? %></td>
       <td><%= @project.magic_tag_list %></td>
       <td>
           <%#= link_to "Show", @project %>

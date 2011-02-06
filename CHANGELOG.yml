@@ -2,6 +2,10 @@
 # PS TODO make this DRY, now youve to remember to update as well the following files:
 # - ./VERSION
 # - app/helpers/application_helper
+1.5.1:
+  - Added "system" to projects (for undeletable projects), dflt to false
+1.4.1:
+  - boh
 1.4.0:
   - Added sys_notes to leave
 1.3.7:

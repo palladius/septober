@@ -23,16 +23,24 @@ class Project < ActiveRecord::Base
     end
     
     def self.provision_for_user(user)
-      ver = '0.2.1'
+      ver = '0.2.2 (added)'
+      # 0.2.2: added :system => true for these
+      # 0.2.1: boh
       tail = "--\nAutoProvisioned Projects v.#{ver}"
       Project.create([
-        { :name => 'personal' , :description => "Your personal stuff"+tail,                   :color => :orange, :user_id => user.id },
-        { :name => 'work'     , :description => "Your work or school stuff"+tail,             :color => :green,  :user_id => user.id },
-        { :name => 'septober' , :description => "Personal (family, love, hobbies, ...)"+tail, :color => :gray,   :user_id => user.id },
+        { :name => 'personal' , :description => "Your personal stuff"+tail,                   :system => true, :color => :orange, :user_id => user.id },
+        { :name => 'work'     , :description => "Your work or school stuff"+tail,             :system => true, :color => :green,  :user_id => user.id },
+        { :name => 'septober' , :description => "Personal (family, love, hobbies, ...)"+tail, :system => true, :color => :gray,   :user_id => user.id },
       #  { :name => 'family'   , :description => "AutoProvisioned Projects v.#{ver}", :color => :purple, :user_id => user.id },
       #  { :name => 'love'     , :description => "AutoProvisioned Projects v.#{ver}", :color => :pink,   :user_id => user.id },
       ])
     end
     
+    def self.default(user)
+      projects = user.projects
+      # return 'inbox'    if you find it.
+      # return 'personal' if you find it.
+      # return exception
+    end
 
 end
