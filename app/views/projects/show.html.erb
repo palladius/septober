@@ -1,4 +1,8 @@
-<% title "Project" %>
+<% title "#{@project.name}" %>
+
+<div align='right' class='floating_right' >
+	<%= render_project_icon( @project, :height => 75 ) %>
+</div>
 
 <p>
   <strong>Name:</strong>

@@ -12,11 +12,14 @@
   <p>
     <%= f.check_box :home_visible %>
     <%= f.label :home_visible %>
-
     <%= f.check_box :public %>
-		<%= f.label :public %>    
+    <%= f.label :public %>    
     <%= f.check_box :active %>
     <%= f.label :active %>
+  </p>
+  <p>
+    <%= f.label      :photo_url %><br />
+    <%= f.text_field :photo_url %>
   </p>
 <p>
   <div class="field" id="project-magic-tags" >

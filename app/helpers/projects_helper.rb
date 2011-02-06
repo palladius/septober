@@ -44,6 +44,11 @@ module ProjectsHelper
     #ret .html_safe
   end
   
+  def render_project_icon(project, opts={})
+    icon = project.photo_url ||  'default.png'
+    image_tag("/images/icons/projects/#{icon}", opts )
+  end
+  
   def render_filter(filter,opts={})
     filter
   end

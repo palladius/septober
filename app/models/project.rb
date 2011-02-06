@@ -1,5 +1,6 @@
 class Project < ActiveRecord::Base
-    attr_accessible :name, :description, :color, :active, :user_id, :home_visible, :public
+    attr_accessible :name, :description, :color, :active, :user_id, :home_visible, :public , :photo_url # system is NOT accessible!!
+    
     # only one 'personal' of a name per user..
     validates_format_of :name, :with => /^[a-z_]+$/, :message => "is invalid (only lowercase letters and _)"
     validates_uniqueness_of :name, :scope => :user_id, 

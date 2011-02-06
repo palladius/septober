@@ -2,14 +2,8 @@
   $debug_info[:sessions] = session
   #@base_models = %w{todos projects ric_addons#index }
   #@base_models ||= %w{ ric_addons#how_to_add_base_models }
-  @base_models ||= %w{ ric_addons#how_to_add_base_models }
+  @base_models = $APP.fetch :base_models , %w{ ric_addons#how_to_add_base_models }
 %>
-<!--
-<img src='/images/logo-banner.png' width='100%' alt='alt' 
-	style="opacity:0.4;filter:alpha(opacity=40)"
-	title='banner title for APP_NAME_TODO' 
->
--->
 <table border='0' width='100%' class='header_table' 
 	BACKGROUND="/images/logo-banner.png"
 	style="opacity:0.7;filter:alpha(opacity=50);background-repeat:no-repeat;"

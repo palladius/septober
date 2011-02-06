@@ -23,6 +23,7 @@ ActiveRecord::Schema.define(:version => 20110206160046) do
     t.boolean  "home_visible", :default => true
     t.boolean  "public",       :default => false
     t.boolean  "system",       :default => false
+    t.string   "photo_url"
   end
 
   create_table "taggings", :force => true do |t|
