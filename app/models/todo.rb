@@ -5,7 +5,7 @@ class Todo < ActiveRecord::Base
   
     attr_accessible :name, :description, :active, :due, :user_id, :where, :priority, :project_id, :url,
       :progress_status, :favorite, :hide_until, :depends_on_id, :source
-    searchable_by :name, :description, :where
+    searchable_by :name, :description # , :where forbidden until u fix the search!
     acts_as_carlesso
     
     belongs_to :user

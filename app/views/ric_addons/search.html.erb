@@ -15,13 +15,14 @@
   if @entries.size > 0
 %>
 	<p>
-		<b><%= link_to( pluralize( @entries.size, model.to_s) , "/#{model.to_s.pluralize}/" )%> with  '<%= @query_string %>':</b>
+		<b><%= link_to( pluralize( @entries.size, model.to_s) , "/#{model.to_s.pluralize.downcase}/" )%> with  '<%= @query_string %>':</b>
 	<% @entries.each { |entry|	%>
 		<%= link_to( (entry.to_html.html_safe rescue entry.to_s), entry) %>,
 	<%	} %>
 	.</p>
 <% else %>
-	<p>Sorry, nothing found for <%=model %> (Query was: <tt><%=model.search_conditions(@query_string).inspect%></tt>).
+	<p>Sorry, nothing found for <%=model %>.
+		<!-- (Query was: <tt><%=model.search_conditions(@query_string).inspect%></tt>). -->
 <% end
 	rescue Exception => e
 	 %>

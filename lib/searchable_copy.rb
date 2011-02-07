@@ -40,9 +40,15 @@ module SearchableCopy
     or_frags = [] # OR fragments
     count = 1     # to keep count on the symbols and OR fragments
 
+    field_connector = '`' # on sqlite
+    #TODO on mysql and other
+
     words.each do |word|
+      # on sqlite this works:
       like_frags = [fields].flatten.map { |f| "LOWER(`#{f}`) LIKE :word#{count}" }
+      # on pgsql MAYBE this works but not on sqlite:
       #like_frags = [fields].flatten.map { |f| "LOWER('#{f}') LIKE :word#{count}" }
+      like_frags = [fields].flatten.map { |f| "LOWER(#{f}) LIKE :word#{count}" }
       or_frags << "(#{like_frags.join(" OR ")})"
       binds["word#{count}".to_sym] = "%#{word.to_s.downcase}%"
       count += 1
