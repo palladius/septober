@@ -1,0 +1,7 @@
+#!/usr/bin/env ruby
+
+# taken from: https://rails.lighthouseapp.com/projects/8994/tickets/4249-rails-runner-cant-be-used-in-shebang-lines
+
+path_to_rails = File.dirname(File.expand_path(__FILE__))
+exec("#{path_to_rails}/rails runner #{ARGV[0]}")
+
