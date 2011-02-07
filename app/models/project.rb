@@ -15,7 +15,7 @@ class Project < ActiveRecord::Base
     scope :owned_by, lambda {|user| { :conditions => ['user_id = ?', user.id] } }
     
     acts_as_taggable_on :tags        # normal
-    acts_as_taggable_on :magic_tags    
+    acts_as_taggable_on :magic_tags  # for system stuff
 
     def to_s
       name

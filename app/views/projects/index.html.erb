@@ -7,7 +7,8 @@
     <th>Home?</th>
     <th>Public</th>
     <th>System</th>
-    <th>Tags</th>
+    <th>Normal Tags</th>
+    <th>Magic Tags</th>
     <th>Options</th>
   </tr>
   <% for @project in @projects %>
@@ -29,7 +30,8 @@
       <td><%= okno(@project.home_visible) %></td>
       <td><%= okno @project.public? %></td>
       <td><%= okno @project.system? %></td>
-      <td><%= @project.magic_tag_list %></td>
+      <td><span class='tag'><%= @project.tag_list %></span></td>
+      <td><span class='magic_tag'><%= @project.magic_tag_list %></span></td>
       <td>
           <%#= link_to "Show", @project %>
           <%= iconed_link_to "Edit", edit_project_path(@project) %>
