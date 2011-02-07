@@ -29,7 +29,8 @@ module Searchable
     count = 1     # to keep count on the symbols and OR fragments
 
     words.each do |word|
-      like_frags = [fields].flatten.map { |f| "LOWER(#{f}) LIKE :word#{count}" }
+      #like_frags = [fields].flatten.map { |f| "LOWER(#{f}) LIKE :word#{count}" }
+      like_frags = [fields].flatten.map { |f| "#{f} LIKE :word#{count}" }
       or_frags << "(#{like_frags.join(" OR ")})"
       binds["word#{count}".to_sym] = "%#{word.to_s.downcase}%"
       count += 1
