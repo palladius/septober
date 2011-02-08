@@ -2,6 +2,9 @@
 # PS TODO make this DRY, now youve to remember to update as well the following files:
 # - ./VERSION
 # - app/helpers/application_helper
+1.6.0:
+ - added photo_url to todos as well. Where would i go without a pic every now and then??
+ - rempoved bin/septober (now for good put into ric gem! Lets do this experiment!)
 1.5.5:
   - fixed search. Now it has ONLY MY TODOS (goes with current user)
   - and supports bad fields like 'where'
