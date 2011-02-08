@@ -1,5 +1,5 @@
 class ApplicationController < ActionController::Base
   include ControllerAuthentication
-  include Searchable
+  include SearchableCopy
   protect_from_forgery
 end

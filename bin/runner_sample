@@ -1,0 +1,3 @@
+
+rails runner "pwhite :user_mon ; puts Todo.search_for_user(User.first,'mon'); pwhite :mon_for_all ; puts Todo.search('mon'); pgreen 'fine'";
+

@@ -71,11 +71,6 @@ class Api::TodosController < ApplicationController
         end
       }
     end
-    #if @todo.update_attributes(params[:todo])
-    #  flash[:notice] = "Successfully updated API::todo."
-    #else
-    #  render :action => 'edit'
-    #end
   end
   
   def toggle; _update_active(:toggled) ; end 
@@ -109,15 +104,6 @@ private
     end
   end
   
-  #def _update_field(field_name,new_val)
-  #  @todo = Todo.find_securely(current_api_user,params[:id])
-  #  if @todo.update_attributes( field_name.to_sym => new_val )
-  #    flash[:notice] = "Successfully set '#{field_name}'='#{new_val}' for Todo ##{params[:id]}: '#{@todo}'"
-  #    redirect_to todos_url
-  #  else
-  #    render :action => 'edit'
-  #  end
-  #end
   
   # episode 95 for Remote app with authentication
   # Episode 82 for multiple auth...

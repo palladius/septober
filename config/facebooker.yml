@@ -1,11 +1,10 @@
 # preso dalle mie FB apps qui: 
-# http://www.facebook.com/developers/apps.php?app_id=132433213441193&ret=2
+# http://www.facebook.com/developers/apps.php?app_id=178997375475443
 
-# RicAddressBook, for http://ricaddressbook.heroku.com/
-production:      # RicAddressbook : http://www.facebook.com/developers/editapp.php?app_id=142767805780655
-  app_id:  142767805780655
-  secret:  fd916d4969bfc609ac55941e2612e0d2
-  api_key: adbe6a7f9df20d33923c108a5e1ce60d
+production:      # Septober : http://www.facebook.com/developers/editapp.php?app_id=178997375475443
+  app_id:  178997375475443
+  secret:  742d2c5abe0380eae9ec1864a154399f
+  api_key: 929983e95ffffbedd4f7b83542ee43b2
 development:     # RicAddressbook Localhost http://www.facebook.com/developers/editapp.php?app_id=192913460722379#
   app_id:  192913460722379
   secret:  f46dc58cf314df1e0099dc7a489add28

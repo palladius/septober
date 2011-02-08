@@ -3,21 +3,21 @@
 # Every model will be searchable...
 module Searchable
 
-  def searchable_by(*column_names)
+  def searchable_by22(*column_names)
     @search_columns = []
     [column_names].flatten.each { |name| 
       @search_columns << name
     }
   end
 
-  def search(query, fields=nil, options={})
+  def search22(query, fields=nil, options={})
     with_scope :find => { :conditions => search_conditions(query,fields) } do
       find :all, options
     end
   end
 
   # quite arab to me, interesting though. I think it builds a query based on AND and OR!!!
-  def search_conditions(query, fields=nil)
+  def search_conditions22(query, fields=nil)
     return nil if query.blank?
     fields ||= @search_columns
 
@@ -29,7 +29,7 @@ module Searchable
     count = 1     # to keep count on the symbols and OR fragments
 
     words.each do |word|
-      like_frags = [fields].flatten.map { |f| "LOWER(#{f}) LIKE :word#{count}" }
+      like_frags = [fields].flatten.map { |f| "LOWER('#{f}') LIKE :word#{count}" }
       or_frags << "(#{like_frags.join(" OR ")})"
       binds["word#{count}".to_sym] = "%#{word.to_s.downcase}%"
       count += 1

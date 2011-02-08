@@ -11,8 +11,8 @@ module RiccardoHelper
       #h "</table>"
   #end
   
-  def render_user(u)
-    content_tag :span, link_to(u,u), :class => :user
+  def render_user(u, opts={})
+    content_tag :span, link_to(u,u,opts), :class => :user
   end
   
   def icon(name,opts={})

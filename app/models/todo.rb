@@ -5,7 +5,7 @@ class Todo < ActiveRecord::Base
   
     attr_accessible :name, :description, :active, :due, :user_id, :where, :priority, :project_id, :url,
       :progress_status, :favorite, :hide_until, :depends_on_id, :source
-    searchable_by :name, :description, :where
+    searchable_by :name, :description # , :where forbidden until u fix the search!
     acts_as_carlesso
     
     belongs_to :user
@@ -20,6 +20,8 @@ class Todo < ActiveRecord::Base
     # More here: http://railscasts.com/episodes/15-fun-with-find-conditions
     # Task.find_all_by_priority(1..3)
     scope :relevant, lambda { { :conditions => ['priority in ?', 1..3 ] } }
+    #scope :automine, lambda { { :conditions => ['user_id = ?', current_user.id  ] } }
+    scope :owned_by, lambda {|user| { :conditions => ['user_id = ?', user.id] } }
     
     validates_uniqueness_of :name, :scope => :user_id, :message => "for this user is already created! (Cant have duplicate Todos)"
     validates_associated :project, :user
@@ -32,8 +34,8 @@ class Todo < ActiveRecord::Base
     #after_create :apply_todo_regex_magic
     
     # TODO
-    #acts_as_taggable_on :tags        # normal, user created
-    #acts_as_taggable_on :system_tags # system created
+    acts_as_taggable_on :tags        # normal, user created
+    acts_as_taggable_on :system_tags # system created
 
     def to_s
       name.capitalize

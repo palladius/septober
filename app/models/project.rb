@@ -7,13 +7,15 @@ class Project < ActiveRecord::Base
       :message => "for this user is already taken! (Cant have duplicate Projects)"
     belongs_to :user
     has_many :todos
-    searchable_by :name, :description
+    searchable_by :name # , :description
     acts_as_carlesso
-    scope :publics,  lambda { { :conditions => ['public = ?', true  ] } }
+    scope :publics, lambda { { :conditions => ['public = ?', true  ] } }
     scope :public,  lambda { { :conditions => ['public = ?', true  ] } }
+    scope :made_by, lambda {|user| { :conditions => ['user_id = ?', user.id  ] } }
+    scope :owned_by, lambda {|user| { :conditions => ['user_id = ?', user.id] } }
     
     acts_as_taggable_on :tags        # normal
-    acts_as_taggable_on :magic_tags    
+    acts_as_taggable_on :magic_tags  # for system stuff
 
     def to_s
       name
