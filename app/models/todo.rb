@@ -136,7 +136,7 @@ class Todo < ActiveRecord::Base
         #end
         
         # for the moment, only accepts ONE tag... just to test it
-        if str.match /(@\w+)/
+        if str.match /@(\w+)/
           tag = $1
           puts "DEB tag found! #{blue tag}"
           self.tag_list << tag.to_s
