@@ -43,6 +43,10 @@
 	  <%= (@todo.where) rescue "Err('#{$!}')"%>
 	</p>
 	<p>
+	  <strong>URL:</strong>
+	  <%= @todo.url rescue "ErrURL('#{$!}')"%>
+	</p>
+	<p>
 	  <strong>Depends on (father):</strong>
 	  <%= link_to( render_todo_name(@todo.todo), @todo.todo ) if @todo.todo %>
 	  <%#= @todo.depends_on_id %>
