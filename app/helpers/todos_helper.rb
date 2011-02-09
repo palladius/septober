@@ -114,6 +114,7 @@ module TodosHelper
     icons << render_priority_icon(todo.priority)
     icons << image_tag("icons/todo/overdue.png", :title => 'Overdue!', :height => 12) if todo.overdue?
     icons << link_to(image_tag("ric_addons/icons/website.png", :title => "Website: #{todo.url}", :height => height), todo.url) if todo.url?
+    icons << link_to(image_tag("ric_addons/icons/photo_url.png", :title => "Picture: #{todo.photo_url}", :height => height), todo.photo_url) if todo.photo_url?
     icons << image_tag("icons/todo/favorite.png", :title => "You must like this", :height => height) if todo.favorite?
     icons << image_tag("icons/todo/hidden.png", :title => "Hidden Until: #{todo.hide_until}", :height => height) if todo.still_hidden?
     

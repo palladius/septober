@@ -7,6 +7,8 @@
 
 module RicAddonsHelper
   
+  $anonymnous_default_path ||= "/photos/default.png"
+  
   def okno(bool,opts={})
     bool = !!bool #force to boolean :)
     icon_name = bool ? 'done.png' : 'destroy.png'
@@ -14,11 +16,15 @@ module RicAddonsHelper
     image_tag("ric_addons/icons/#{icon_name}", opts )
   end
 
+  # "aaa.png" =>
+  # "/aaa.png" => "RAILS_URL/images/aaa.png" # correct, but adds /images
+  # "aaa.png" =>  adds
   def photo_real_url(model, opts={})
+    image_dir = opts.fetch :image_dir, '/photos/' # contacts
     my_photo_url = model.photo_url rescue '' # default_model.png
-    my_photo_url ||= "default.png" 
-    my_photo_url = $anonymnous_default_path if ( my_photo_url.to_s  == '' )
-    my_photo_url = 'contacts/'  + my_photo_url unless my_photo_url.match(/^http:\/\/|^\//) # i.e. http://www.faceboo.com/myphoto.jpg
+    my_photo_url ||= "default.png"
+    #my_photo_url = $anonymnous_default_path if ( my_photo_url.to_s  == '' )
+    my_photo_url =  image_dir + my_photo_url unless my_photo_url.match(/^http:\/\/|^\//) # i.e. http://www.faceboo.com/myphoto.jpg
     my_photo_url = '/images'    + my_photo_url if my_photo_url.match(/^\//)                      # i.e. /icons/... is local
     my_photo_url 
   end
