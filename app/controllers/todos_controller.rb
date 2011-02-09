@@ -45,7 +45,7 @@ class TodosController < ApplicationController
     params[:todo][:user_id] = current_user.id
     @todo = Todo.new(params[:todo])
     if @todo.save
-      flash[:notice] = "Successfully created todo '#{@todo.to_s}'"
+      flash[:notice] = "Successfully created todo ##{@todo.id} '#{@todo.to_s}'"
       redirect_to todos_url
     else
       render :action => 'new'

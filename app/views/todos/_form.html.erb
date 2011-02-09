@@ -13,7 +13,10 @@
     <%= f.label :url %><br />
     <%= f.text_field :url %>
   </p>
-
+  <p>
+    <%= f.label :photo_url %><br />
+    <%= f.text_field :photo_url %>
+  </p>
   <p>
     <%= f.label :active %><br />
     <%= f.check_box :active %>
@@ -24,11 +27,10 @@
   </p>
   <p>
     <%= f.label :priority %><br />
-		<% [1,2,3,4,5].each do |prio| %>
-		  <%= render_priority_icon(prio) %>
-    	<%= f.radio_button("priority", prio ) %>
-			<%= priority_name(prio) %>
-			<br/>
+    <% [1,2,3,4,5].each do |prio| %>
+      <%= render_priority_icon(prio) %>
+      <%= f.radio_button("priority", prio ) %>
+        <%= priority_name(prio) %> <br/>
     <% end %>
     <%#= f.range_field :priority %>
   </p>

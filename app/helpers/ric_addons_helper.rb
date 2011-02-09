@@ -13,5 +13,20 @@ module RicAddonsHelper
     opts[:height] ||= 20
     image_tag("ric_addons/icons/#{icon_name}", opts )
   end
+
+  def photo_real_url(model, opts={})
+    my_photo_url = model.photo_url rescue '' # default_model.png
+    my_photo_url ||= "default.png" 
+    my_photo_url = $anonymnous_default_path if ( my_photo_url.to_s  == '' )
+    my_photo_url = 'contacts/'  + my_photo_url unless my_photo_url.match(/^http:\/\/|^\//) # i.e. http://www.faceboo.com/myphoto.jpg
+    my_photo_url = '/images'    + my_photo_url if my_photo_url.match(/^\//)                      # i.e. /icons/... is local
+    my_photo_url 
+  end
+  
+  def render_photo_url(model, opts={})
+    model_type = model.class.to_s
+    height = opts.fetch( :height, 100 )
+    image_tag(photo_real_url(model), :height => height , :alt => "Photo for #{model_type}: '#{model}'")
+  end
   
 end

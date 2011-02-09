@@ -118,6 +118,18 @@ class Todo < ActiveRecord::Base
         self.priority = 5 if str.match /^\+\+|!!$/ # TODO remove the ++
         self.description = I18n.t(:quick_created) unless attribute_present?('description') # alredy created
       
+        # Autopopulate the URL:
+        if str.match(/ (http(s)?:\/\/\S+)($|\s)/) # URL in the middle between spaces OR 
+          self.url = $1  # http:/... separated with spaces
+          log << "URL correctly parsed: '#{$1}'"
+          self.name = self.name.gsub($1,' (URL) ')
+        end
+        # doiesnt work properly yet
+        #if str.match /(@|at) (\S+)/  # "@ Vatican" or "at vatican" Note that if two spaces only the first is taken (TODO maybe until $ ?)
+        #  regexed_place = $3
+        #  self.where = regexed_place
+        #  log << "A place has been found: #{regexed_place}"
+        #end
         # PROJECT: This should be done in the regex magic!!!
         # TODO if the first word matches an existing project, do it!
         unless attribute_present?('project_id')

@@ -1,4 +1,8 @@
 <% if @todo %>
+	<div class='photo_right' align='right' >
+		<%= render_todo_action_icons(@todo) %>
+		<%= render_photo_url(@todo) %>
+	</div>
 	<h1><%= render_todo_name(@todo) %></h1>
 	<p>
 	  <%= iconed_link_to "Edit", edit_todo_path(@todo) %> |
