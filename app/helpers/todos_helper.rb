@@ -42,7 +42,8 @@ module TodosHelper
     ret += content_tag(:span, " (hide for: #{time_ago_in_words(todo.hide_until) })", :class => :small_hide_until ) if todo.still_hidden?
     ret += content_tag(:span, " #{todo.progress_status}%", :class => :progress_status_small) if todo.progress_status?
       # long
-    ret += content_tag(:span, ' ' + truncate_words(todo.description), :class => :description_snippet, :style => 'font-size: xx-small; color: grey')
+    ret += content_tag(:span, ' ' + truncate_words(todo.description), :class => :todo_description_snippet) # , :style => 'font-size: xx-small; color: grey')
+    ret += render_tags(todo)
     ret.html_safe
   end
   
@@ -129,7 +130,7 @@ module TodosHelper
   end
   
   def render_todo_hide_until(todo)
-    ret = todo.hide_until || '-' # Time.now
+    ret = todo.hide_until.to_s || '-' # Time.now
     ret += content_tag(:i, " (#{t :in_the_future_particle} #{time_ago_in_words( todo.hide_until )})") if todo.hide_until
     ret.html_safe
   end

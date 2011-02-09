@@ -11,7 +11,7 @@ Septober::Application.routes.draw do
 
   resources :sessions
   resources :users
-  #resources :todos
+  resources :tags
   
   resources :projects do
     resources :todos # how do I select only the sub_project stuff?!? 

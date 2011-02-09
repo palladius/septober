@@ -18,22 +18,19 @@
   <td class='todo_due_column due_column_<%todo.due_explaination%>' align='right' >
     <%= render_duetime(todo) %>
 	<%= link_to(
-			image_tag("icons/todo/procrastinate-grey.png",
-   			   :mouseover => "icons/todo/procrastinate.png"  ,
-			   :height => 25
-			), "/todos/#{todo.id}/procrastinate" ,
-			:title => "Procrastinate a week or so.."
-    )%>
+			  image_tag("icons/todo/procrastinate-grey.png", :mouseover => "icons/todo/procrastinate.png", :height => 25), 
+			  "/todos/#{todo.id}/procrastinate" ,
+			  :title => "Procrastinate a week or so.."
+			)%>
 		<%= link_to(
-				image_tag("icons/todo/sleep.png",
-	   		  :mouseover => "icons/todo/sleep-sheep.png"  ,
-				   :height => 25
-				), "/todos/#{todo.id}/sleep?hide_until_days=5" ,
-				:title => "Hide Until next week or so.."
-	    )%>
+					image_tag("icons/todo/sleep.png",:mouseover => "icons/todo/sleep-sheep.png"  ,:height => 25),
+					"/todos/#{todo.id}/sleep?hide_until_days=5" ,
+					:title => "Hide Until next week or so.."
+				) 
+		%>
   </td>
   <td align='right' ><small>
-      <%= iconed_link_to( "Undone", "/todos/#{todo.id}/undone", :short => true ) rescue "ToggleRoutigErr (#{$!})" if todo.done?  %>
+      <%= iconed_link_to "Undone", "/todos/#{todo.id}/undone", :short => true rescue "ToggleRoutigErr (#{$!})" if todo.done?  %>
       <%= iconed_link_to "Show", todo, :short => true  %>
       <%= iconed_link_to "Edit", edit_todo_path(todo), :short => true  %>
       <%= iconed_link_to "Destroy", todo, :confirm => 'Are you sure you want to delete this? You know you can mark it as done as well? ARE YOU SURE?', :method => :delete, :title => 'Are you sure u want to delete this ticket and not rather mark it as done?!?', :short => true %>

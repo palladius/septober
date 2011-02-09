@@ -59,7 +59,7 @@ class TodosController < ApplicationController
   def update
     @todo = Todo.find(params[:id])
     if @todo.update_attributes(params[:todo])
-      flash[:notice] = "Successfully updated todo."
+      flash[:notice] = "Successfully updated todo ##{@todo.id}"
       #redirect_to todo_url
       redirect_to todos_url
     else
@@ -79,16 +79,18 @@ class TodosController < ApplicationController
     n_days = params.fetch( :procrastinate_days, 7 )
     _update_field(:due,Date.today + n_days )
   end
+  
+  # sleep = hide_until
   def sleep
     # hide_untile by Time.now + 8.days
     n_days = params.fetch( :hide_until_days, 8 )
-    _update_field(:hide_until, Time.now + n_days.days )
+    _update_field(:hide_until, Time.now + n_days.to_i.days )
   end
   
   def destroy
     @todo = Todo.find(params[:id])
     @todo.destroy
-    flash[:notice] = "Successfully destroyed todo."
+    flash[:notice] = "Successfully destroyed todo ##{@todo.id}."
     redirect_to todos_url
   end
   
@@ -110,7 +112,7 @@ private
   def _update_field(field_name,new_val)
     @todo = Todo.find_securely(current_user,params[:id])
     if @todo.update_attributes( field_name.to_sym => new_val )
-      flash[:notice] = "Successfully set '#{field_name}'='#{new_val}' for Todo ##{params[:id]}: '#{@todo}'"
+      flash[:notice] = "Successfully set '#{field_name}'='#{new_val}' for Todo ##{params[:id]}"
       redirect_to todos_url
     else
       render :action => 'edit'

@@ -9,14 +9,13 @@
 	  <%= iconed_link_to "Destroy", @todo, :confirm => 'Are you sure?', :method => :delete %> |
 	  <%= iconed_link_to "View All", todos_path %>
 	</p>
-	<!--
-		<p>(InPlace Test) DOESNT WORK ON RAILS 3, demmit!
-			<%#= in_place_editor_field :todo, :name, {}, :rows => 1 %>
-			<%#= in_place_editor_field :todo, "where", {}, :rows => 1 %>
-	-->
 	<p>
 	  <strong>Due:</strong>
 	  <%= @todo.due %>
+	</p>
+	<p>
+	  <strong>Tags:</strong>
+	  <%= render_tags(@todo) %>
 	</p>
 	<p>
 	  <strong>favorite:</strong>
@@ -28,7 +27,7 @@
 	</p>
 	<p>
 	  <strong>Hide Until:</strong>
-	  <%= render_todo_hide_until(@todo) rescue "Err('#{$!}')"%>
+	  <%= render_todo_hide_until(@todo) %>
 	</p>
 	<p>
 	  <strong>Priority:</strong>
@@ -37,6 +36,7 @@
 	<p>
 	  <strong>Project:</strong>
 	  <%= link_to( render_project(@todo.project), @todo.project ) %>
+	  (<%= iconed_link_to "Edit", edit_project_path(@project) %>)
 	</p>
 	<p>
 	  <strong>Where:</strong>
@@ -64,7 +64,7 @@
 		</pre>
 	</p>
 	<hr/>
-	<p>
+	<p class='todo-system-notes'>
 		<tt>
 	  		<%= @todo.sys_notes %>
 		</tt>
