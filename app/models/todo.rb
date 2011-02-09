@@ -134,6 +134,14 @@ class Todo < ActiveRecord::Base
         #  self.where = regexed_place
         #  log << "A place has been found: #{regexed_place}"
         #end
+        
+        # for the moment, only accepts ONE tag... just to test it
+        if str.match /(@\w+)/
+          tag = $1
+          puts "DEB tag found! #{blue tag}"
+          self.tag_list << tag.to_s
+          # TODO remove the tag
+        end
         # PROJECT: This should be done in the regex magic!!!
         # TODO if the first word matches an existing project, do it!
         unless attribute_present?('project_id')
@@ -163,7 +171,9 @@ class Todo < ActiveRecord::Base
     end
     
     def self.provision_for_user(user)
-      ver = '1.0.2' # it works!
+      ver = '1.0.3' # it works!
+      # 1.0.3 added guinness photo_url
+      # 1.0.2 ???
       # 1.0.1 was broken because i removed :eamil field!
       projects = {}
       personal = Project.find_by_name_and_user_id('personal',user.id)
@@ -185,15 +195,16 @@ class Todo < ActiveRecord::Base
            :hide_until => Time.now + 86400 * 7 ,
            :description => "Something to be done in 1yr time, hidden again for the next year!"+tail },
         {:user_id => user.id, :project_id => personal.id,
-              :name => 'Buy new shoes by saturday!' , 
-              :due => Date.today + 30 , # next week
-              :where => 'Grafton St, Dublin, Ireland',
-              :description => "Something to be done in 1yr time"+tail },
+           :name => 'Buy new shoes by saturday!' , 
+           :due => Date.today + 30 , # next week
+           :where => 'Grafton St, Dublin, Ireland',
+           :description => "Something to be done in 1yr time"+tail },
         {:user_id => user.id, :project_id => septober.id,
-              :name => 'Drink guinness with friends' , 
-              :due  => Date.today + 30 , # next week
-              :where => 'The Duke, Dublin, Ireland',
-              :description => "Something to be done in 1yr time"+tail },
+           :name => 'Drink guinness with friends' , 
+           :photo_url => 'http://adsoftheworld.com/files/images/guinness-april-fool.preview.jpg',
+           :due  => Date.today + 30 , # next week
+           :where => 'The Duke, Dublin, Ireland',
+           :description => "Something to be done in 1yr time"+tail },
         {:user_id => user.id, :project_id => septober.id, 
           :due => Date.yesterday ,
           :name => 'Thank Riccardo for this wonderful application' , :description => "His email is #{$APP[:author] rescue "Dunno"}" },
@@ -211,4 +222,10 @@ class Todo < ActiveRecord::Base
         find(whatever,opts)
       end
     end
+
+    # removing sys_notes! Cool!
+    #def to_xml
+    #   super(:except => [:sys_notes] )
+    #end
+      
 end

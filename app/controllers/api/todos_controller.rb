@@ -23,7 +23,7 @@ class Api::TodosController < ApplicationController
     @todo = Todo.find_securely(current_api_user,params[:id]) rescue nil
     respond_to do |format|
       format.html 
-      format.xml  { render_todos_xml_or_json :xml,  @todo } # :include => [:project] , :methods => [:due_explaination] }
+      format.xml  { render_todos_xml_or_json :xml,   @todo } # :include => [:project] , :methods => [:due_explaination] }
       format.json { render_todos_xml_or_json :json , @todo }
     end
   end
@@ -148,7 +148,8 @@ private
         :include => {
           :project=> {:only => [:name, :color ] }
         },
-        :methods => [:due_explaination]
+        :methods => [:due_explaination, :tag_list] ,
+        :except => [:sys_notes]
     end  
 
 end #/TodosController
