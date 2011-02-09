@@ -2,6 +2,10 @@
 # PS TODO make this DRY, now youve to remember to update as well the following files:
 # - ./VERSION
 # - app/helpers/application_helper
+1.6.2:
+  - ran migration on heroku.
+  - added skleep/postpone
+  - fixed photo_url
 1.6.1:
   - parsing URL! Https very cool
   - much betre test (with user password in fixture from 33 to 13 errors!)

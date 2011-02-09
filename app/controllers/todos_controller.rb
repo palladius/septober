@@ -79,6 +79,11 @@ class TodosController < ApplicationController
     n_days = params.fetch( :procrastinate_days, 7 )
     _update_field(:due,Date.today + n_days )
   end
+  def sleep
+    # hide_untile by Time.now + 8.days
+    n_days = params.fetch( :hide_until_days, 8 )
+    _update_field(:hide_until, Time.now + n_days.days )
+  end
   
   def destroy
     @todo = Todo.find(params[:id])

@@ -27,19 +27,13 @@ Septober::Application.routes.draw do
   end
   resources :todos do
     member do
-      #get 'short'
-      get  'done'
-      get  'undone'
-      get  'toggle'
-      get  'set_priority'
-      get  'set_bookmark'
-      post 'quick_create_post'  # TODO!
-      get  'quick_create_get'
-      get  'procrastinate'
-      # From inlien edit plugin (!!!)
-      #get  'set_todo_name'
-      get  'set_todo_where'
-      #get  'set_todo_description'
+      %w{sleep done undone toggle procrastinate set_priority set_bookmark quick_create_get set_todo_where
+        }.each do |todo_peculiar_action|
+        get(todo_peculiar_action.to_s )
+      end
+      %w{quick_create_post}.each do |todo_post_action|
+        post todo_post_action  # TODO!
+      end
     end
   end
   

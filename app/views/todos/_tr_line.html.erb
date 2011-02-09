@@ -20,16 +20,16 @@
 	<%= link_to(
 			image_tag("icons/todo/procrastinate-grey.png",
    			   :mouseover => "icons/todo/procrastinate.png"  ,
-			   :height => 30
+			   :height => 25
 			), "/todos/#{todo.id}/procrastinate" ,
 			:title => "Procrastinate a week or so.."
     )%>
 		<%= link_to(
-				image_tag("icons/todo/hide-grey.png",
-	   			   :mouseover => "icons/todo/procrastinate.png"  ,
-				   :height => 30
-				), "/todos/#{todo.id}/procrastinate" ,
-				:title => "Procrastinate a week or so.."
+				image_tag("icons/todo/sleep.png",
+	   		  :mouseover => "icons/todo/sleep-sheep.png"  ,
+				   :height => 25
+				), "/todos/#{todo.id}/sleep?hide_until_days=5" ,
+				:title => "Hide Until next week or so.."
 	    )%>
   </td>
   <td align='right' ><small>
