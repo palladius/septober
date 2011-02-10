@@ -1,7 +1,7 @@
 module ProjectsHelper
   
-  @@colors = %w{ red yellow green magenta cyan blue grey }.sort
-  @@colors2 = @@colors.map{|c| [c,c] } # [['green', 'green'], ['giallo', 'giallo'], ['red', 'rosso2']]   
+  @@colors = %w{ red yellow green magenta cyan blue grey orange }.sort
+  @@colors2 = @@colors.map{|c| [c,c] } # TBD in the future translate [['green', 'green'], ['giallo', 'giallo'], ['red', 'rosso2']]   
   
   # on_the_spot_edit @project, :name
   def render_project(project,opts={})
@@ -13,12 +13,22 @@ module ProjectsHelper
     render_within_project(project,project_str, opts )
   end
   
-  # TODO refactor
+  # TODO refactor!!!
   def render_within_project(project, str, opts={})
     #opts[:color] = project.color
     opts[:style] = "color:#{project.color}"
     opts[:class] = "project homevisible_#{project.home_visible} public_#{project.public} active_#{project.active}"
-    content_tag(:span, on_the_spot_edit(project, :name) , opts )
+    #content_tag(:span, on_the_spot_edit(project, :name) , opts )
+    content_tag(:span, str , opts )
+  end
+  
+  # yield version to support edit in place!!!
+  def with_project_color_do(project, stuff, opts={})
+    opts[:style] = "color:#{project.color}"
+    opts[:class] = "project homevisible_#{project.home_visible} public_#{project.public} active_#{project.active}"
+    #content_tag(:span, on_the_spot_edit(project, :name) , opts )
+    raise "I need a block!" unless block_given?
+    content_tag(:span, yield , opts )
   end
   
   def render_editable_color( project)

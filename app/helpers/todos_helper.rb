@@ -12,7 +12,10 @@ module TodosHelper
       #{}"Description: '#{todo.description}'",
       todo.description
       ].join("\n")
-    coloured_todo = render_within_project(todo.project,todo.to_s.capitalize) rescue "TodoErr('#{$!}')"
+    coloured_todo = render_within_project(todo.project,on_the_spot_edit(todo, :name, :tooltip => todo.description ) ) rescue "TodoErr('#{$!}')"
+    #coloured_todo = with_project_color_do(todo.project,todo.to_s.capitalize) { 
+    #  on_the_spot_edit(todo, :name )
+    #}
     ret = content_tag( (todo.active ? :b : :s) , coloured_todo , :title => title , :alt => :alt , :class => "todo") # , :id => "todo_#{todo.id}")
     return ret
   end
@@ -40,9 +43,12 @@ module TodosHelper
     ret += content_tag(:span, render_where(todo), :class => :where_small) if todo.where?
     ret += content_tag(:span, " (OverDue: #{time_ago_in_words(Time.now - todo.due)  rescue todo.due})", :class => :small_overdue ) if todo.overdue?
     ret += content_tag(:span, " (hide for: #{time_ago_in_words(todo.hide_until) })", :class => :small_hide_until ) if todo.still_hidden?
-    ret += content_tag(:span, " #{todo.progress_status}%", :class => :progress_status_small) if todo.progress_status?
+    #ret += content_tag(:span, " #{todo.progress_status}%", :class => :progress_status_small) if todo.progress_status?
+    ret += content_tag(:span, " #{on_the_spot_edit(todo, :progress_status)}%".html_safe, :class => :progress_status_small) if todo.progress_status?
+    
       # long
-    ret += content_tag(:span, ' ' + truncate_words(todo.description), :class => :todo_description_snippet) # , :style => 'font-size: xx-small; color: grey')
+    #ret += content_tag(:span, ' ' + truncate_words(todo.description), :class => :todo_description_snippet)
+    ret += content_tag(:span, (' ' + on_the_spot_edit(todo, :description, :tooltip => 'Edit Description')).html_safe, :class => :todo_description_snippet) 
     ret += render_tags(todo)
     ret.html_safe
   end
