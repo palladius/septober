@@ -1,6 +1,6 @@
 <h1><%= render_user(@user) %></h1>
 
-
+<p> Email: <%= on_the_spot_edit @user, :email %>
 <p> Todos: <b><%= @user.todos.active.count %></b>/<%= @user.todos.count %> (<%= @user.todos.overdue.count %> overdue )
 <p> Projects: <b><%= @user.projects.count %></b> (<%= @user.projects.public.count %> public)
 <p> Friends: TODO

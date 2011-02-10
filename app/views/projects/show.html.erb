@@ -18,6 +18,10 @@ TEST
 <p>
   <strong>Description:</strong>
   <%= @project.description %>
+  TAEdit ((
+	<%= on_the_spot_edit @project, :description, :type => :textarea, :rows => 10, :columns => 55 %>
+
+	))
 </p>
 <p>
   <strong>Color:</strong>
