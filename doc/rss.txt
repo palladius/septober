@@ -1,0 +1,1 @@
+To Debug Locally: watch  "wget -O - wget http://guest:guest@localhost:3000/api/todos/rss.xml 2>&1"
