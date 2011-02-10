@@ -2,6 +2,8 @@
 # PS TODO make this DRY, now youve to remember to update as well the following files:
 # - ./VERSION
 # - app/helpers/application_helper
+1.6.5:
+  - API/RSS works! Yay! 
 1.6.4:
   - Adding In-Place editing!
 1.6.3:

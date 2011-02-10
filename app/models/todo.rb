@@ -222,6 +222,15 @@ class Todo < ActiveRecord::Base
         find(whatever,opts)
       end
     end
+    
+    # for RSS
+    def title
+      name
+    end
+    
+    def content
+      description
+    end
 
     # removing sys_notes! Cool!
     #def to_xml

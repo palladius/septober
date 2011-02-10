@@ -52,6 +52,7 @@ Septober::Application.routes.draw do
   end
   
   namespace :api do
+    get "todos/rss"        => "todos#rss"
     resources :todos do
       member do
         put  'done'     #  lynx --dump http://localhost:3000/api/todos/7.xml -auth=guest:guest
@@ -62,6 +63,9 @@ Septober::Application.routes.draw do
       end
     end
   end
+  
+  
+  
   
   # TODO put into resource
   #match "/todos/:id/toggle"        => 'todos#toggle'

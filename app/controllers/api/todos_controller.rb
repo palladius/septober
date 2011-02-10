@@ -53,6 +53,14 @@ class Api::TodosController < ApplicationController
   def edit
     @todo = Todo.find_securely(current_api_user,params[:id])
   end
+  
+  def rss
+    #@todos = Todo.find(:all, :order => "id DESC", :limit => 20)
+    @user  = current_api_user
+    @todos = Todo.find_securely(current_api_user, :all, :order => "id DESC", :limit => 20)
+    render :layout => false
+    response.headers["Content-Type"] = "application/xml; charset=utf-8"
+  end
 
   def update
     pyellow "DEBUG API::TodoController.update()"

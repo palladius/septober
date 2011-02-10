@@ -1,5 +1,5 @@
-<%
 # http://paulsturgess.co.uk/todos/show/13-creating-an-rss-feed-in-ruby-on-rails
+# wget -O - wget http://localhost:3000/api/rss.xml
 
 xml.instruct!
 
@@ -21,4 +21,3 @@ xml.rss "version" => "2.0", "xmlns:dc" => "http://purl.org/dc/elements/1.1/" do
 
  end
 end
-%>
