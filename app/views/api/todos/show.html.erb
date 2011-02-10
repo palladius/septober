@@ -1,0 +1,5 @@
+<% if @todo %>
+	<%= render :partial => "todos/show"  %>
+<% else %>
+	<%=t(:todo_not_found)%>: <%= @todo.inspect %>
+<% end %>

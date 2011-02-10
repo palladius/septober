@@ -224,11 +224,10 @@ class Todo < ActiveRecord::Base
     end
     
     # for RSS
-    def title
+    def rss_title
       name
     end
-    
-    def content
+    def rss_content
       description
     end
 

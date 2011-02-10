@@ -6,16 +6,18 @@ xml.instruct!
 xml.rss "version" => "2.0", "xmlns:dc" => "http://purl.org/dc/elements/1.1/" do
  xml.channel do
 
-   xml.title       "paulsturgess.co.uk todos"
+   xml.title       "Septober Todos for '#{@user}'"
    xml.link        url_for :only_path => false, :controller => 'todos'
-   xml.description "paulsturgess.co.uk Ruby on Rails todos"
+   xml.description "Riccardo Carlesso Ruby on Rails todos for user '#{@user}' @ PLACE_TODO"
 
    @todos.each do |todo|
      xml.item do
-       xml.title       todo.title
+       @url = "/todos/#{todo.id}"
+       xml.title       todo.rss_title
        xml.link        url_for :only_path => false, :controller => 'todos', :action => 'show', :id => todo.id
-       xml.description todo.content
-       xml.guid        url_for :only_path => false, :controller => 'todos', :action => 'show', :id => todo.id
+       #xml.link        @url 
+       xml.description todo.rss_content
+       xml.guid        @url
      end
    end
 
