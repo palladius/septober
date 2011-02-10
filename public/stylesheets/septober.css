@@ -108,11 +108,11 @@ A.tag {
 	color: grey
 }
 
-.floating_right {
+.floating_right , .photo_right {
 	float: right; 
 	padding-top: 1em; 
 	padding-left: 1em; 
 	padding-bottom: 1em; 
 	width: 12em; 
-	background: #eef;
+/*	background: #eef;*/
 }

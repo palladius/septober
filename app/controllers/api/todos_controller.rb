@@ -57,7 +57,7 @@ class Api::TodosController < ApplicationController
   def rss
     #@todos = Todo.find(:all, :order => "id DESC", :limit => 20)
     @user  = current_api_user
-    @todos = Todo.find_securely(current_api_user, :all, :order => "id DESC", :limit => 20)
+    @todos = Todo.active.find_securely(current_api_user, :all, :order => "id DESC", :limit => 20)
     render :layout => false
     response.headers["Content-Type"] = "application/xml; charset=utf-8"
   end

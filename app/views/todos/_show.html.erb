@@ -1,7 +1,7 @@
 <% if @todo %>
 	<div class='photo_right' align='right' >
 		<%= render_todo_action_icons(@todo) rescue "ErrWithActionsIcons: #{$!}" %>
-		<%= render_photo_url(@todo) rescue "ErrWithPhotorl: #{$!}" %>
+		<%= render_photo_url(@todo) if @todo.photo_url? %>
 	</div>
 	<h1><%= render_todo_name(@todo) %></h1>
 	<p>

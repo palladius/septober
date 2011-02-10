@@ -228,7 +228,7 @@ class Todo < ActiveRecord::Base
       name
     end
     def rss_content
-      description
+      "<h2>Description</h2><p>#{description}</p><img src='#{photo_url}' alt='This is a test to embed a picture inside the content' />"
     end
 
     # removing sys_notes! Cool!
