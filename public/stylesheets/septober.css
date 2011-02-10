@@ -107,3 +107,12 @@ A.tag {
 	font-size: xx-small; 
 	color: grey
 }
+
+.floating_right {
+	float: right; 
+	padding-top: 1em; 
+	padding-left: 1em; 
+	padding-bottom: 1em; 
+	width: 12em; 
+	background: black;
+}

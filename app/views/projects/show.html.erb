@@ -1,31 +1,25 @@
-<% title "#{@project.name}" %>
-
 <div align='right' class='floating_right' >
 	<%= render_project_icon( @project, :height => 75 ) %>
 </div>
-
-TEST
-(
-	<%= on_the_spot_edit @project, :color, :type => :select, :data => [[1, 'good'], [2, 'mediocre'], [3, 'bad']] %>
-)
+<% title "#{@project.name.capitalize}" %>
+<p>
+  <%= link_to "Edit", edit_project_path(@project) %> |
+  <%= link_to "Destroy", @project, :confirm => 'Are you sure?', :method => :delete %> |
+  <%= link_to "View All", projects_path %>
+</p>
 <p>
   <strong>Name:</strong>
-  <%#= @project.name %>
-  OnTheSpot( 
-		<%= on_the_spot_edit @project, :name %>
-	)
+	<%= on_the_spot_edit @project, :name %>
 </p>
 <p>
   <strong>Description:</strong>
-  <%= @project.description %>
-  TAEdit ((
 	<%= on_the_spot_edit @project, :description, :type => :textarea, :rows => 10, :columns => 55 %>
-
-	))
 </p>
 <p>
   <strong>Color:</strong>
-  <%= @project.color %>
+  <%= render_editable_color @project %>
+	<%#= on_the_spot_edit @project, :color, :type => :select, :data => [[1, 'good'], [2, 'mediocre'], [3, 'bad']] %>
+	<%#= on_the_spot_edit @project, :color, :type => :select, :data => [['green', 'green'], ['giallo', 'giallo'], ['red', 'rosso']] %>
 </p>
 <p>
   <strong>Active:</strong>
@@ -44,8 +38,3 @@ TEST
   <tt class='tag' ><%= @project.magic_tags.join(', ') %></tt>
 </p>
 
-<p>
-  <%= link_to "Edit", edit_project_path(@project) %> |
-  <%= link_to "Destroy", @project, :confirm => 'Are you sure?', :method => :delete %> |
-  <%= link_to "View All", projects_path %>
-</p>

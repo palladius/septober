@@ -1,7 +1,10 @@
 module ProjectsHelper
   
+  @@colors = %w{ red yellow green magenta cyan blue grey }.sort
+  @@colors2 = @@colors.map{|c| [c,c] } # [['green', 'green'], ['giallo', 'giallo'], ['red', 'rosso2']]   
+  
+  # on_the_spot_edit @project, :name
   def render_project(project,opts={})
-    #content_tag(:font, project.to_s,  :color => project.color)
     project_str = project.to_s
     project_str = project_str.upcase + '(!)' if project.public
     opts[:style] = 'font:bold; filter:alpha(opacity=60) '  if project.home_visible
@@ -15,9 +18,12 @@ module ProjectsHelper
     #opts[:color] = project.color
     opts[:style] = "color:#{project.color}"
     opts[:class] = "project homevisible_#{project.home_visible} public_#{project.public} active_#{project.active}"
-    content_tag(:span, str, opts )
+    content_tag(:span, on_the_spot_edit(project, :name) , opts )
   end
   
+  def render_editable_color( project)
+	  on_the_spot_edit @project, :color, :type => :select, :data => @@colors2
+  end
   # Try this instead: #
   # <span style="background:#FF0000">&nbsp;&nbsp;&nbsp;&nbsp;</span>
   
