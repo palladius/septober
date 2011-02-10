@@ -17,7 +17,7 @@ xml.rss "version" => "2.0", "xmlns:dc" => "http://purl.org/dc/elements/1.1/" do
        xml.link        url_for :only_path => false, :controller => 'todos', :action => 'show', :id => todo.id
        #xml.link        @url 
        xml.description todo.rss_content
-       xml.guid        @url
+       xml.guid        url_for :only_path => false, :controller => 'todos', :action => 'show', :id => todo.id
      end
    end
 
