@@ -14,6 +14,9 @@ Septober::Application.routes.draw do
   resources :tags
   
   resources :projects do
+    collection do
+      post :update_attribute_on_the_spot
+    end
     resources :todos # how do I select only the sub_project stuff?!? 
     member do
       #get 'short'
@@ -26,6 +29,9 @@ Septober::Application.routes.draw do
     end
   end
   resources :todos do
+    collection do
+      post :update_attribute_on_the_spot
+    end
     member do
       %w{sleep done undone toggle procrastinate set_priority set_bookmark quick_create_get set_todo_where
         }.each do |todo_peculiar_action|

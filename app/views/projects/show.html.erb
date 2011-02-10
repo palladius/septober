@@ -4,9 +4,16 @@
 	<%= render_project_icon( @project, :height => 75 ) %>
 </div>
 
+TEST
+(
+	<%= on_the_spot_edit @project, :color, :type => :select, :data => [[1, 'good'], [2, 'mediocre'], [3, 'bad']] %>
+)
 <p>
   <strong>Name:</strong>
-  <%= @project.name %>
+  <%#= @project.name %>
+  OnTheSpot( 
+		<%= on_the_spot_edit @project, :name %>
+	)
 </p>
 <p>
   <strong>Description:</strong>

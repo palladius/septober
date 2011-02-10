@@ -7,3 +7,6 @@ gem "ric" #, '0.11.3'  # at least 0.11.3 todo
 gem "mocha", :group => :test
 gem "bcrypt-ruby", :require => "bcrypt"
 gem 'acts-as-taggable-on'
+
+gem "on_the_spot" # for inplace editing, thx BMA!
+

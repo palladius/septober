@@ -1,10 +1,10 @@
 class TodosController < ApplicationController
   before_filter :login_required 
   helper :riccardo
-  in_place_edit_for :todo, :name 
-  in_place_edit_for :todo, :where
-  in_place_edit_for :todo, :description
-  
+  #in_place_edit_for :todo, :name 
+  #in_place_edit_for :todo, :where
+  #in_place_edit_for :todo, :description
+  can_edit_on_the_spot
   
   def index
     filter_conditions = { :user_id => current_user.id  } 

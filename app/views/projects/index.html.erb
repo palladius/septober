@@ -21,10 +21,12 @@
       </td>
       <td>
         <b><%= link_to(render_project(@project), @project) %></b>
+					(Autoedit: <%= on_the_spot_edit @project, :name %>)
         <br/>
         <small><i>
-          <%= @project.description %>
+          <%#= @project.description %>
           <%#= in_place_editor_field :project, :description %>
+          AutoEdit: <%= on_the_spot_edit @project, :description %>
         </i></small>
       </td>
       <td><%= okno(@project.home_visible) %></td>
