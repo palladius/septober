@@ -16,4 +16,36 @@ module TagsHelper
     obj.tags.map{|tag| render_tag(tag, opts) }.join(' ').html_safe
   end
   
+  def get_tagger(tagging,opts={})
+    return nil unless tagging.tagger_type && tagging.tagger_id
+    case tagging.tagger_type
+      when 'User'; return User.find(tagging.tagger_id)
+      when 'Tag'; return Tag.find(tagging.tagger_id)
+      else ; raise "Unknown TAgger type: #{tagging.tagger_type}"
+    end
+  end
+  
+  def render_tagging_tagger(tagging,opts={})
+    # Since tagging.tagger doesnt work, but it could be done... if i knew more about polymoprhisms...
+    return '-' unless tagging.tagger_type && tagging.tagger_id
+    tagger = get_tagger(tagging)
+    link_to(get_tagger)
+  end
+  
+  def render_tagging(obj,opts={})
+    str = '' 
+    str += content_tag(:span, 
+      ('[' + icon('tagging')  + 'Tagging ' + link_to("##{obj.id}",obj.tag) + '] ').html_safe ,
+      :class => :tagging 
+    ) if opts.fetch :include_tagging, true
+    str +=  icon('../../icons/models/todo') + 
+      link_to(
+        obj.taggable, 
+        obj.taggable, 
+        :class => obj.taggable.class.to_s.downcase 
+      ) 
+    str +=  " (by #{render_tagging_tagger(obj)})" if opts.fetch :include_tagger,false
+    content_tag(:span, str.html_safe,  :class => :tagging ).html_safe
+  end
+  
 end

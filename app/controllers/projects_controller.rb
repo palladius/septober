@@ -1,8 +1,7 @@
 class ProjectsController < ApplicationController
   before_filter :login_required #, :except => [:index, :show]
   
-  #in_place_edit_for :project, :name, :description
-  can_edit_on_the_spot
+  #TODO-REPUT can_edit_on_the_spot
   
   def index
     @projects = Project.find_all_by_user_id(current_user.id)

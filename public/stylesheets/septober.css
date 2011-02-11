@@ -99,6 +99,11 @@ TD.todo_due_column {
 	font: 75% "Lucida Grande", "Trebuchet MS", Verdana, sans-serif;
 }
 
+.tagging {
+	color: indigo ;
+	font: 95% "Lucida Grande", "Trebuchet MS", Verdana, sans-serif;
+}
+
 A.tag {
 	color: darkorange;
 }

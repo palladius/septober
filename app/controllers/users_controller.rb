@@ -1,7 +1,7 @@
 class UsersController < ApplicationController
   before_filter :login_required, :except => [:new, :create]
   
-  can_edit_on_the_spot
+  #TODO_REPUT can_edit_on_the_spot
 
   def new
     @user = User.new

@@ -1,20 +1,27 @@
 one:
-  name: Personal
+  name: personal
   description: root personal things
   color: yellow
   active: true
   user_id: 1
 
 two:
-  name: Work
+  name: work
   description: root work stuff
   color: green
   active: true
   user_id: 1
 
 three:
-    name: Shopping
+    name: shopping
     description: MyText
     color: green
     active: true
     user_id: 1
+    
+someone_elses:
+  name: personal
+  description: "Someone else's project"
+  color: green
+  active: true
+  user_id: 1

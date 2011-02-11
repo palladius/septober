@@ -1,8 +1,9 @@
 class TodosController < ApplicationController
   before_filter :login_required 
   helper :riccardo
-
-  can_edit_on_the_spot
+  
+  include FakeStuff
+  #TODO-REPUT can_edit_on_the_spot
   
   def index
     filter_conditions = { :user_id => current_user.id  } 

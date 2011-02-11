@@ -104,6 +104,24 @@ class Todo < ActiveRecord::Base
       url.to_s.length > 4 # spannometrically
     end
     
+=begin
+  TODO: put in tags helper
+
+  should transform "parse this @a @bbbb difficult string @ccc" into two things:
+  [
+    "parse this difficult string " ,
+    %w{ @a @bbbb @ccc }
+  ]
+
+=end    
+    def self.extract_tags_and_depure(str)
+      words = str.split(/ /)
+      #COOL n DRY: tag_match = lambda{|word| w.match /^@/ }
+      tags = words.select{|w| w.match /^@/ }.map{|tag| tag.gsub(/^@/,'')}
+      depured_str = words.select{|w| ! w.match /^@/ }.join(' ')
+      [depured_str,tags]
+    end
+    
   # This should do some magic stuff like adding the due to tomorrow if string matches 'by tomorrow' or 'entro domani' and so on..  
 		# TODO FACILE: substitute the logs from description to sys_notes
     def apply_todo_regex_magic
@@ -136,12 +154,19 @@ class Todo < ActiveRecord::Base
         #end
         
         # for the moment, only accepts ONE tag... just to test it
-        if str.match /@(\w+)/
-          tag = $1
-          puts "DEB tag found! #{blue tag}"
+        #if str.match /@(\w+)/
+        #  tag = $1
+        #  puts "DEB tag found! #{blue tag}"
+        #  self.tag_list << tag.to_s
+        #  # TODO remove the tag
+        #end
+        
+        depured_str, mytags = extract_tags_and_depure(str)
+        str = depured_str
+        mytags.each{|tag|
           self.tag_list << tag.to_s
-          # TODO remove the tag
-        end
+        }
+        
         # PROJECT: This should be done in the regex magic!!!
         # TODO if the first word matches an existing project, do it!
         unless attribute_present?('project_id')

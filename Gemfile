@@ -8,6 +8,6 @@ gem "mocha", :group => :test
 gem "bcrypt-ruby", :require => "bcrypt"
 gem 'acts-as-taggable-on'
 
-gem "jquery-rails"
-gem "on_the_spot" # https://github.com/nathanvda/on_the_spot    for inplace editing, thx BMA!
+#gem "jquery-rails"
+#gem "on_the_spot" # https://github.com/nathanvda/on_the_spot    for inplace editing, thx BMA!
 

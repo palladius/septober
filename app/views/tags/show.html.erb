@@ -1,0 +1,6 @@
+<% title "Tag: #{@tag}" %>
+
+<%# render collection= render %>
+<% @taggings.each do |tagging|  %>	
+	<li class='tagging' ><%= render_tagging tagging %></li>
+<% end %>
