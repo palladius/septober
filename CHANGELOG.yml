@@ -2,6 +2,9 @@
 # PS TODO make this DRY, now youve to remember to update as well the following files:
 # - ./VERSION
 # - app/helpers/application_helper
+1.6.6:
+  - Tag/Taggings
+  - Introduced stuff that breaks ajax/jquiry (i dont have the gems in the plane)
 1.6.5:
   - API/RSS works! Yay! 
 1.6.4:

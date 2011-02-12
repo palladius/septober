@@ -1,6 +1,8 @@
 module ApplicationHelper
   # moved to ric_addons.rb
   
+  #TODO pull from conf/application.yml
+  
   $APP[:name]     = 'Septober'
   $APP[:headline] = 'Yet another ToDo Application, with simplicity kept in mind. 
   #    Procrastinators unite.. tomorrow! (op. cit.)'

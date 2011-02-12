@@ -31,8 +31,12 @@ module ProjectsHelper
     content_tag(:span, yield , opts )
   end
   
+  def render_editable_project( project)
+	  on_the_spot_edit project, :name, :type => :select, :data => Project.owned_by(current_user).all.map{|p| [p.id,p.name]}
+  end
+  
   def render_editable_color( project)
-	  on_the_spot_edit @project, :color, :type => :select, :data => @@colors2
+	  on_the_spot_edit project, :color, :type => :select, :data => @@colors2
   end
   # Try this instead: #
   # <span style="background:#FF0000">&nbsp;&nbsp;&nbsp;&nbsp;</span>

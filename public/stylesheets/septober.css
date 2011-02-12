@@ -19,6 +19,11 @@
 	color: purple;
 }
 
+.second_row {
+	font-size: xx-small; 
+	color: navy;
+}
+
 div#logo a {
 /*	display: none;
 	position: absolute;

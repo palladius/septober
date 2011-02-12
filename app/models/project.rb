@@ -11,7 +11,7 @@ class Project < ActiveRecord::Base
     acts_as_carlesso
     scope :publics, lambda { { :conditions => ['public = ?', true  ] } }
     scope :public,  lambda { { :conditions => ['public = ?', true  ] } }
-    scope :made_by, lambda {|user| { :conditions => ['user_id = ?', user.id  ] } }
+    scope :made_by,  lambda {|user| { :conditions => ['user_id = ?', user.id  ] } }
     scope :owned_by, lambda {|user| { :conditions => ['user_id = ?', user.id] } }
     
     acts_as_taggable_on :tags        # normal

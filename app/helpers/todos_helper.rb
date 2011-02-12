@@ -37,11 +37,13 @@ module TodosHelper
     # , 
   end
   
+  # This renders the second line after a todo name in todo Index
   def render_todo_second_row(todo,opts={})
     ret = ''
       # short things
     ret += content_tag(:span, render_where(todo), :class => :where_small) if todo.where?
     ret += content_tag(:span, " (OverDue: #{time_ago_in_words(Time.now - todo.due)  rescue todo.due})", :class => :small_overdue ) if todo.overdue?
+    ret += render_editable_project(todo.project)
     ret += content_tag(:span, " (hide for: #{time_ago_in_words(todo.hide_until) })", :class => :small_hide_until ) if todo.still_hidden?
     #ret += content_tag(:span, " #{todo.progress_status}%", :class => :progress_status_small) if todo.progress_status?
     ret += content_tag(:span, " #{on_the_spot_edit(todo, :progress_status)}%".html_safe, :class => :progress_status_small) if todo.progress_status?
@@ -50,7 +52,9 @@ module TodosHelper
     #ret += content_tag(:span, ' ' + truncate_words(todo.description), :class => :todo_description_snippet)
     ret += content_tag(:span, (' ' + on_the_spot_edit(todo, :description, :tooltip => 'Edit Description')).html_safe, :class => :todo_description_snippet) 
     ret += render_tags(todo)
-    ret.html_safe
+    
+    #ret.html_safe
+    return content_tag(:span, ret.html_safe, :class => :second_row )
   end
   
   ### AAHAHAAHH super! TODO put in ric_addons
