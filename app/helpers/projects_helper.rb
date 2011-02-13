@@ -32,7 +32,8 @@ module ProjectsHelper
   end
   
   def render_editable_project( project)
-	  on_the_spot_edit project, :name, :type => :select, :data => Project.owned_by(current_user).all.map{|p| [p.id,p.name]}
+    str = on_the_spot_edit( project, :name, :type => :select, :data => Project.owned_by(current_user).all.map{|p| [p.id,p.name]})
+    content_tag(:span, "[#{str}]", :class => :project)
   end
   
   def render_editable_color( project)
