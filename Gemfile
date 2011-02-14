@@ -11,3 +11,6 @@ gem "jquery-rails"                                # For InPlaceEditing
 gem "on_the_spot"                                 # .. https://github.com/nathanvda/on_the_spot 
 
 gem 'wirble', :groups => [:development,:test]
+
+# If you are developing actively, try this:
+#gem "ric", :path => "~/git/ric"
