@@ -5,7 +5,7 @@
 class RicAddonsController < ApplicationController
   layout 'ric_addons_app'
   #render_ric_app
-  #before_filter :login_required #, :except => [:index, :show]
+  before_filter :login_required #, :except => [:index, :show]
   
   before_filter :set_subpages
   def set_subpages

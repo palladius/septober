@@ -25,7 +25,6 @@ Septober::Application.routes.draw do
     end
     resources :todos # how do I select only the sub_project stuff?!? 
     member do
-      #get 'short'
       post 'set_public'
       post 'set_private'
       post 'set_home'
@@ -56,22 +55,10 @@ Septober::Application.routes.draw do
     resources :todos do
       member do
         put  'done'     #  lynx --dump http://localhost:3000/api/todos/7.xml -auth=guest:guest
-        #get  'done'
-        #post 'done'
-       # put :generic_action
-      #  get 'toggle'
       end
     end
   end
   
-  
-  
-  
-  # TODO put into resource
-  #match "/todos/:id/toggle"        => 'todos#toggle'
-  #match "/todos/:id/done"          => 'todos#done'
-  #match "/todos/:id/undone"        => 'todos#undone'
-  #match "/todos/:id/set_priority"  => 'todos#set_priority'
   
   #####################################
   ### RicAddons::Routes
@@ -88,26 +75,13 @@ Septober::Application.routes.draw do
   ### /RicAddons::Routes
   ####################################
   
-  # The priority is based upon order of creation:
-  # first created -> highest priority.
 
-  # Sample of regular route:
-  #   match 'products/:id' => 'catalog#view'
-  # Keep in mind you can assign values other than :controller and :action
-
-  # Sample of named route:
-  #   match 'products/:id/purchase' => 'catalog#purchase', :as => :purchase
-  # This route can be invoked with purchase_url(:id => product.id)
-
-  # Sample resource route (maps HTTP verbs to controller actions automatically):
-  #   resources :products
   resources :projects do
     member do
-  #       get 'short'
-  #       post 'toggle'
       get :procrastinate
     end
   end
+  
   # Sample resource route with options:
   #   resources :products do
   #     member do

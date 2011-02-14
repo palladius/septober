@@ -1,7 +1,7 @@
 class ProjectsController < ApplicationController
   before_filter :login_required #, :except => [:index, :show]
   
-  #TODO-REPUT can_edit_on_the_spot
+  can_edit_on_the_spot
   
   def index
     @projects = Project.find_all_by_user_id(current_user.id)
@@ -17,7 +17,6 @@ class ProjectsController < ApplicationController
 
   def create
     params[:project][:user_id] = current_user.id
-    #params[:project][:description] = 'ovverridden by ctrler!'
     @project = Project.new(params[:project])
     if @project.save
       flash[:notice] = "Successfully created project."

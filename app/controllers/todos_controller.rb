@@ -2,8 +2,6 @@ class TodosController < ApplicationController
   before_filter :login_required 
   helper :riccardo
   
-  #include FakeStuff
-  #TODO-REPUT 
   can_edit_on_the_spot
   
   def index

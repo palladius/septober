@@ -22,17 +22,21 @@ module ProjectsHelper
     content_tag(:span, str , opts )
   end
   
+  # DOESNT WORK!
+  # But maybe try this: http://seanbehan.com/programming/yield-a-block-within-rails-helper-method-with-multiple-content_tags-using-concat/
   # yield version to support edit in place!!!
-  def with_project_color_do(project, stuff, opts={})
-    opts[:style] = "color:#{project.color}"
-    opts[:class] = "project homevisible_#{project.home_visible} public_#{project.public} active_#{project.active}"
-    #content_tag(:span, on_the_spot_edit(project, :name) , opts )
-    raise "I need a block!" unless block_given?
-    content_tag(:span, yield , opts )
-  end
+  #def with_project_color_do(project, stuff, opts={})
+  #  opts[:style] = "color:#{project.color}"
+  #  opts[:class] = "project homevisible_#{project.home_visible} public_#{project.public} active_#{project.active}"
+  #  #content_tag(:span, on_the_spot_edit(project, :name) , opts )
+  #  raise "I need a block!" unless block_given?
+  #  #content_tag(:span, yield , opts )
+  #  yield
+  #end
   
   def render_editable_project( project )
-    str = on_the_spot_edit( project, :name, :type => :select, :data => Project.owned_by(current_user).all.map{|p| [p.id,p.name]})
+    #str = on_the_spot_edit( project, :name, :type => :select, :data => Project.owned_by(current_user).all.map{|p| [p.name,p.name]})
+    str = project.name
     content_tag(:span, "[#{str}]".html_safe, :class => :project)
   end
   
