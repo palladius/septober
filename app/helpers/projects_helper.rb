@@ -31,7 +31,7 @@ module ProjectsHelper
     content_tag(:span, yield , opts )
   end
   
-  def render_editable_project( project)
+  def render_editable_project( project )
     str = on_the_spot_edit( project, :name, :type => :select, :data => Project.owned_by(current_user).all.map{|p| [p.id,p.name]})
     content_tag(:span, "[#{str}]".html_safe, :class => :project)
   end

@@ -42,7 +42,7 @@
 Usage (for use of bin/septober guides you thru the creation of "~/.septober.yml" conf file):
 
 	bin/septober list
-	bin/septober add Buy the milk by tomorrow!!
+	bin/septober add 'Buy the milk by tomorrow!!'
 	bin/septober show 45
 	bin/septober done 45
 
