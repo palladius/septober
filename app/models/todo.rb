@@ -172,6 +172,8 @@ class Todo < ActiveRecord::Base
         mytags.each{|tag|
           self.tag_list << tag.to_s
         }
+        self.name = depured_str
+
         
         # PROJECT: This should be done in the regex magic!!!
         # TODO if the first word matches an existing project, do it!
