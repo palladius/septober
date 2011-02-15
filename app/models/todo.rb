@@ -185,11 +185,10 @@ class Todo < ActiveRecord::Base
         #self.url  = 'test url3' # this works
         @where = 'Inferred from Current IP TODO :)'
         # if i dont find a project, set project to personal
-        #raise 'cant call apply_todo_regex_magic without knowing WHO i am (current_user is not available in model dear Ric)' unless self.user_id
         where = 'boh'
         #raise 'test exception'
         #self.save rescue 'err'
-        puts log
+        puts log if Rails.env == 'development'
         self.sys_notes = (self.sys_notes || '') + "\n\n---- LOGS: ----\n#{log.join("\n")}"
         return true
       rescue Exception => e

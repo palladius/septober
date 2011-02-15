@@ -15,6 +15,10 @@ class UserTest < ActiveSupport::TestCase
     User.delete_all
   end
 
+  def users_fixtures_must_all_be_valid
+    User.assert_all_valid()
+  end
+  
   def test_valid
     assert new_user.valid?
   end

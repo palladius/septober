@@ -10,4 +10,30 @@ class ActiveSupport::TestCase
   fixtures :all
 
   # Add more helper methods to be used by all tests here...
+  
+  def assert_valid(record, comment=nil)
+    assert record.valid?, "assert_valid failed: ''#{comment}''\n" + record.errors.full_messages.join("\n")
+  end
+  
 end
+
+
+class Array
+  def to_s
+    "TestArray[ #{ join ', ' } ]"
+  end
+end
+
+class ActiveRecord::Base  
+  
+  def errorz
+    self.errors.full_messages.join( '; ' )
+  end
+  
+  def self.assert_all_valid
+    self.find(:all).each do |obj| 
+      assert obj.valid? , "AR::#{obj.class} ''#{obj}'' is not valid: #{obj.errors.full_messages.join( ', ' )}"
+    end
+    
+  end
+end  

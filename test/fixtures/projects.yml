@@ -25,3 +25,10 @@ someone_elses:
   color: green
   active: true
   user: guest
+  
+testz:
+  name: test_project
+  description: "Test user project called Testz"
+  color: gray
+  active: true
+  user: test

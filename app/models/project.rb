@@ -1,14 +1,18 @@
 class Project < ActiveRecord::Base
     attr_accessible :name, :description, :color, :active, :user_id, :home_visible, :public , :photo_url # system is NOT accessible!!
     
-    # only one 'personal' of a name per user..
-    validates_format_of :name, :with => /^[a-z_]+$/, :message => "is invalid (only lowercase letters and _)"
-    validates_uniqueness_of :name, :scope => :user_id, 
-      :message => "for this user is already taken! (Cant have duplicate Projects)"
     belongs_to :user
     has_many :todos
     searchable_by :name # , :description
     acts_as_carlesso
+
+    # only one 'personal' of a name per user..
+    validates_format_of :name, :with => /^[a-z0-9_]+$/, :message => "is invalid (only lowercase letters and _ and digits)"
+    validates_uniqueness_of :name, :scope => :user_id, 
+      :message => "for this user is already taken! (Cant have duplicate Projects)"
+    validates_associated  :user
+    validates_presence_of :user
+
     scope :publics, lambda { { :conditions => ['public = ?', true  ] } }
     scope :public,  lambda { { :conditions => ['public = ?', true  ] } }
     scope :made_by,  lambda {|user| { :conditions => ['user_id = ?', user.id  ] } }
