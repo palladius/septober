@@ -3,25 +3,25 @@ one:
   description: root personal things
   color: yellow
   active: true
-  user_id: 1
+  user: root
 
 two:
   name: work
   description: root work stuff
   color: green
   active: true
-  user_id: 1
+  user: root
 
 three:
-    name: shopping
-    description: MyText
-    color: green
-    active: true
-    user_id: 1
+  name: shopping
+  description: MyText
+  color: green
+  active: true
+  user: guest
     
 someone_elses:
   name: personal
   description: "Someone else's project"
   color: green
   active: true
-  user_id: 1
+  user: guest

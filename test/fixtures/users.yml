@@ -11,8 +11,8 @@ root:
 guest:
   username: guest
   email: guest@example.com
-  #password: testfixture_guest
-  password_hash: 3488f5f7efecab14b91eb96169e5e1ee518a569f
-  password_salt: bef65e058905c379436d80d1a32e7374b139e7b0
+  #password: guest (works!)
+  password_hash: "$2a$10$5IfnUaRxPLGwt6UNaCZxOObcBo.BoDU4mWHb8Jziz1B8U2PeZ0feW"
+  password_salt: "$2a$10$5IfnUaRxPLGwt6UNaCZxOO"
   facebook_id: riccardo_test
   admin: false

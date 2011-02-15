@@ -1,0 +1,7 @@
+
+rm db/test.sqlite3
+rake db:migrate RAILS_ENV=test
+rake db:seed RAILS_ENV=test
+rake db:fixtures:load  RAILS_ENV=test
+rails server -e test
+

@@ -2,3 +2,11 @@
     
     git remote add origin git@github.com:palladius/septober.git
     git push origin master
+
+
+### Test
+
+$ bin/test-server
+#rake db:migrate RAILS_ENV=test
+#rake db:fixtures:load  RAILS_ENV=test
+#rails server -e test

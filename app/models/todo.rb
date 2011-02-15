@@ -115,11 +115,17 @@ class Todo < ActiveRecord::Base
 
 =end    
     def self.extract_tags_and_depure(str)
-      words = str.split(/ /)
-      #COOL n DRY: tag_match = lambda{|word| w.match /^@/ }
-      tags = words.select{|w| w.match /^@/ }.map{|tag| tag.gsub(/^@/,'')}
-      depured_str = words.select{|w| ! w.match /^@/ }.join(' ')
-      [depured_str,tags]
+      begin
+        words = str.split(/ /)
+        #COOL n DRY: tag_match = lambda{|word| w.match /^@/ }
+        tags = words.select{|w| w.match /^@/ }.map{|tag| tag.gsub(/^@/,'')}
+        depured_str = words.select{|w| ! w.match /^@/ }.join(' ')
+        return [depured_str,tags]        
+      rescue Exception => e
+        puts "\n\tException!! #{e}"
+        return [str, [] ]
+      end
+      
     end
     
   # This should do some magic stuff like adding the due to tomorrow if string matches 'by tomorrow' or 'entro domani' and so on..  
@@ -161,7 +167,7 @@ class Todo < ActiveRecord::Base
         #  # TODO remove the tag
         #end
         
-        depured_str, mytags = extract_tags_and_depure(str)
+        depured_str, mytags = Todo.extract_tags_and_depure(str)
         str = depured_str
         mytags.each{|tag|
           self.tag_list << tag.to_s

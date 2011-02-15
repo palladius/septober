@@ -13,5 +13,5 @@ two:
   active: true
   due: 2011-12-25
   priority: 2
-  user_id: 2
+  user: guest
   project_id: 2
