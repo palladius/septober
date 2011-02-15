@@ -30,9 +30,9 @@ class ActiveRecord::Base
     self.errors.full_messages.join( '; ' )
   end
   
-  def self.assert_all_valid
+  def self.assert_all_valid(test_class)
     self.find(:all).each do |obj| 
-      assert obj.valid? , "AR::#{obj.class} ''#{obj}'' is not valid: #{obj.errors.full_messages.join( ', ' )}"
+      test_class.assert obj.valid? , "AR::#{obj.class} ''#{obj}'' is not valid: #{obj.errors.full_messages.join( ', ' )}"
     end
     
   end
