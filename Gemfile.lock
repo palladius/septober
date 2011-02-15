@@ -45,6 +45,7 @@ GEM
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
     mime-types (1.16)
+    mocha (0.9.12)
     nifty-generators (0.4.4)
     on_the_spot (0.0.6)
       json_pure (>= 1.4.6)
@@ -85,6 +86,7 @@ DEPENDENCIES
   acts-as-taggable-on
   bcrypt-ruby
   jquery-rails
+  mocha
   nifty-generators
   on_the_spot
   rails (= 3.0.3)

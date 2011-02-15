@@ -1,0 +1,144 @@
+(in /Users/riccardo/git/septober)
+[RicAddons] [1;33mRiccardo plugin hook v.0.4.1 on 20110122, yay![0m
+[RicAddons] [1;33mRiccardo plugin hook v.0.4.1 on 20110122, yay![0m
+Loaded suite /opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake/rake_test_loader
+Started
+.F.EFEEE+ Creating projects for new user 'foobar'..
++ Creating projects for new user 'foobar'..
+..+ Creating projects for new user 'foo'..
++ Creating projects for new user 'foo'..
+.+ Creating projects for new user 'foobar'..
++ Creating projects for new user 'foobar'..
+.+ Creating projects for new user 'foo'..
++ Creating projects for new user 'foo'..
+........+ Creating projects for new user 'foo'..
++ Creating projects for new user 'foo'..
+.+ Creating projects for new user 'uniquename'..
++ Creating projects for new user 'uniquename'..
+.
+Finished in 2.060473 seconds.
+
+  1) Failure:
+test_Project_with_name_and_user_should_be_valid(ProjectTest)
+    [/test/test_helper.rb:15:in `assert_valid'
+     /test/unit/project_test.rb:17:in `test_Project_with_name_and_user_should_be_valid']:
+assert_valid failed: ''A test project should be valid (total users = TestArray[ root, test, guest ])''
+User can't be blank.
+<false> is not true.
+
+  2) Error:
+test_validate_all_fixtures(ProjectTest):
+NoMethodError: undefined method `assert' for #<Class:0x1032aa860>
+    /test/test_helper.rb:35:in `assert_all_valid'
+    /test/test_helper.rb:34:in `each'
+    /test/test_helper.rb:34:in `assert_all_valid'
+    /test/unit/project_test.rb:10:in `test_validate_all_fixtures'
+
+  3) Failure:
+test_should_be_valid(TagsRiccardoTest) [/test/unit/tags_riccardo_test.rb:9]:
+<false> is not true.
+
+  4) Error:
+test_todo_should_parse_tag_appropriately(TagsRiccardoTest):
+NoMethodError: undefined method `parse_tags' for #<TagsRiccardoTest:0x102e68d88>
+    /test/unit/tags_riccardo_test.rb:15:in `test_todo_should_parse_tag_appropriately'
+
+  5) Error:
+test_A_TODO_with_project_belonging_to_other_user_should_NOT_be_valid(TodoTest):
+NameError: undefined local variable or method `guest' for #<TodoTest:0x102e6c8e8>
+    /test/unit/todo_test.rb:30:in `test_A_TODO_with_project_belonging_to_other_user_should_NOT_be_valid'
+
+  6) Error:
+test_A_TODO_with_project_belonging_to_user_should_be_valid(TodoTest):
+NameError: undefined local variable or method `guest' for #<TodoTest:0x102e6c8c0>
+    /test/unit/todo_test.rb:20:in `test_A_TODO_with_project_belonging_to_user_should_be_valid'
+
+22 tests, 21 assertions, 2 failures, 4 errors
+[RicAddons] [1;33mRiccardo plugin hook v.0.4.1 on 20110122, yay![0m
+Loaded suite /opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake/rake_test_loader
+Started
+....FEFFFFFFF...Serena asked me to do this..
+FFEFFFFFFF.+ Creating projects for new user '#<User:0x1038aaf58>'..
++ Creating projects for new user '#<User:0x1038aaf58>'..
+.......
+Finished in 1.473163 seconds.
+
+  1) Failure:
+test_create_invalid(ProjectsControllerTest) [/test/functional/projects_controller_test.rb:22]:
+expecting <"new"> but rendering with <"">
+
+  2) Error:
+test_create_valid(ProjectsControllerTest):
+ActionController::RoutingError: No route matches {:action=>"show", :controller=>"projects"}
+    /test/functional/projects_controller_test.rb:28:in `test_create_valid'
+
+  3) Failure:
+test_destroy(ProjectsControllerTest) [/test/functional/projects_controller_test.rb:51]:
+Expected response to be a redirect to <http://test.host/projects> but was a redirect to <http://test.host/login>.
+
+  4) Failure:
+test_edit(ProjectsControllerTest) [/test/functional/projects_controller_test.rb:33]:
+expecting <"edit"> but rendering with <"">
+
+  5) Failure:
+test_index(ProjectsControllerTest) [/test/functional/projects_controller_test.rb:6]:
+expecting <"index"> but rendering with <"">
+
+  6) Failure:
+test_new(ProjectsControllerTest) [/test/functional/projects_controller_test.rb:16]:
+expecting <"new"> but rendering with <"">
+
+  7) Failure:
+test_show(ProjectsControllerTest) [/test/functional/projects_controller_test.rb:11]:
+expecting <"show"> but rendering with <"">
+
+  8) Failure:
+test_update_invalid(ProjectsControllerTest) [/test/functional/projects_controller_test.rb:39]:
+expecting <"edit"> but rendering with <"">
+
+  9) Failure:
+test_update_valid(ProjectsControllerTest) [/test/functional/projects_controller_test.rb:45]:
+Expected response to be a redirect to <http://test.host/projects/113629430> but was a redirect to <http://test.host/login>.
+
+ 10) Failure:
+test_cannot_see_someone_elses_todo(TodosControllerTest) [/test/functional/todos_controller_test.rb:57]:
+<false> is not true.
+
+ 11) Failure:
+test_create_invalid(TodosControllerTest) [/test/functional/todos_controller_test.rb:22]:
+expecting <"new"> but rendering with <"">
+
+ 12) Error:
+test_create_valid(TodosControllerTest):
+ActionController::RoutingError: No route matches {:action=>"show", :controller=>"todos"}
+    /test/functional/todos_controller_test.rb:28:in `test_create_valid'
+
+ 13) Failure:
+test_destroy(TodosControllerTest) [/test/functional/todos_controller_test.rb:51]:
+Expected response to be a redirect to <http://test.host/todos> but was a redirect to <http://test.host/login>.
+
+ 14) Failure:
+test_edit(TodosControllerTest) [/test/functional/todos_controller_test.rb:33]:
+expecting <"edit"> but rendering with <"">
+
+ 15) Failure:
+test_index(TodosControllerTest) [/test/functional/todos_controller_test.rb:6]:
+expecting <"index"> but rendering with <"">
+
+ 16) Failure:
+test_new(TodosControllerTest) [/test/functional/todos_controller_test.rb:16]:
+expecting <"new"> but rendering with <"">
+
+ 17) Failure:
+test_show(TodosControllerTest) [/test/functional/todos_controller_test.rb:11]:
+expecting <"show"> but rendering with <"">
+
+ 18) Failure:
+test_update_invalid(TodosControllerTest) [/test/functional/todos_controller_test.rb:39]:
+expecting <"edit"> but rendering with <"">
+
+ 19) Failure:
+test_update_valid(TodosControllerTest) [/test/functional/todos_controller_test.rb:45]:
+Expected response to be a redirect to <http://test.host/todos/298486374> but was a redirect to <http://test.host/login>.
+
+34 tests, 39 assertions, 17 failures, 2 errors
