@@ -3,7 +3,7 @@ require 'test_helper'
 class UserTest < ActiveSupport::TestCase
   def new_user(attributes = {})
     attributes[:username] ||= 'foo'
-    attributes[:email] ||= 'foo@example.com'
+    attributes[:email]    ||= 'foo@example.com'
     attributes[:password] ||= 'abc123'
     attributes[:password_confirmation] ||= attributes[:password]
     user = User.new(attributes)
