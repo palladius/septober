@@ -1,5 +1,7 @@
 # Include hook code here
 
+# Manually modified
+
 $RIC_ADDONS_HISTORY = [ # Array of Hash style
   { :ver => '0.4.1',  :date =>'20110122', :desc => 'Compiles!' } ,
   { :ver => '0.3.2',  :date =>'20110122', :desc => 'Moved jeweler in right place. Added skel/ wonderful dir' } ,
@@ -15,21 +17,8 @@ $RIC_ADDONS_DATE =  $RIC_ADDONS_HISTORY.first[:date] # version
 require File.dirname(__FILE__) + '/lib/acts_as_carlesso'
 require 'ric_addons'
 require File.dirname(__FILE__) + '/lib/searchable'
-#require 'searchable'
 
-### Deprecated...
-#require "routing"
-#ActionController::Routing::RouteSet::Mapper.send :include, RicAddons::Routing::MapperExtensions
-
-#### controllrs/helpers/views:
-# NON VA!
-### %w{ models controllers helpers }.each do |dir|
-###   path = File.join(RAILS_ROOT, 'vendor' 'plugin', 'ric_addons' 'skel', 'app', dir)
-###   $LOAD_PATH << path
-###   Dependencies.load_paths << path
-###   Dependencies.load_once_paths.delete(path)
-### end
 
 # copied from Chad Fowler book pag.239
 puts IO.read( File.join(directory, 'README') ) rescue "Some error"
-puts RicAddons.yellow("Riccardo plugin hook v.#{$RIC_ADDONS_VER} on #{$RIC_ADDONS_DATE}, yay!") rescue "ric_addons v#{$RIC_ADDONS_VER}: Errors with yellow :-("
+#puts RicAddons.yellow("Riccardo plugin hook v.#{$RIC_ADDONS_VER} on #{$RIC_ADDONS_DATE}, yay!") rescue "ric_addons v#{$RIC_ADDONS_VER}: Errors with yellow :-("

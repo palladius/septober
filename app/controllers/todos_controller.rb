@@ -87,7 +87,7 @@ class TodosController < ApplicationController
   
   def destroy
     @todo = Todo.find(params[:id])
-    @todo.destroy
+    @todo.destroy 
     flash[:notice] = "Successfully destroyed todo ##{@todo.id}."
     redirect_to todos_url
   end

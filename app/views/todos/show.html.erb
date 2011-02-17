@@ -1,5 +1,8 @@
 <% if @todo %>
 	<%= render :partial => "todos/show"  %>
 <% else %>
-	<%=t(:todo_not_found)%>: <%= @todo.inspect %>
+	<div class='error' >
+	  <%= image_tag('ric_addons/pics/ricarrabbiato.jpg')%>
+  	<%=t(:todo_not_found)%>: Maybe the ticket #<% @id %> was not found, or is not visible by you!
+	</div>
 <% end %>

@@ -25,7 +25,8 @@ class TodosControllerTest < ActionController::TestCase
   def test_create_valid
     Todo.any_instance.stubs(:valid?).returns(true)
     post :create
-    assert_redirected_to todo_url(assigns(:todo))
+    #assert_redirected_to todo_url(assigns(:todo))
+    assert_redirected_to todos_url
   end
 
   def test_edit
@@ -50,6 +51,7 @@ class TodosControllerTest < ActionController::TestCase
     delete :destroy, :id => todo
     assert_redirected_to todos_url
     assert !Todo.exists?(todo.id)
+    assert_redirected_to todos_url
   end
   
   def test_cannot_see_someone_elses_todo

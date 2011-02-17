@@ -1,4 +1,3 @@
-<% if @todo %>
 	<div class='photo_right' align_removem='right' >
 		<table border='1'><tr><td>
 		<%#= render_todo_action_icons(@todo) rescue "ErrWithActionsIcons: #{$!}" %>
@@ -71,7 +70,3 @@
 	  		<%= @todo.sys_notes %>
 		</tt>
 	</p>
-	
-<% else %>
-	<%=t(:todo_not_found)%>: <%= @todo.inspect %>
-<% end %>

@@ -31,8 +31,6 @@ GEM
     activesupport (3.0.3)
     acts-as-taggable-on (2.0.6)
     arel (2.0.8)
-    autotest (4.4.6)
-      ZenTest (>= 4.4.1)
     bcrypt-ruby (2.1.4)
     builder (2.1.2)
     erubis (2.6.6)
@@ -86,8 +84,8 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  ZenTest
   acts-as-taggable-on
-  autotest
   bcrypt-ruby
   jquery-rails
   mocha

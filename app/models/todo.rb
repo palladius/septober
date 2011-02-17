@@ -131,6 +131,8 @@ class Todo < ActiveRecord::Base
   # This should do some magic stuff like adding the due to tomorrow if string matches 'by tomorrow' or 'entro domani' and so on..  
 		# TODO FACILE: substitute the logs from description to sys_notes
     def apply_todo_regex_magic
+      logger.info "Todo.apply_todo_regex_magic() for ticket ##{self.id rescue :NO_ID}"
+      pyellow "Apply test"
       log = []
       begin # catch exceptions
         log << "\tDEBUG: apply_todo_regex_magic START for: #{self.inspect}"
