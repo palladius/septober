@@ -9,6 +9,7 @@
 	  <%= iconed_link_to "Edit", edit_todo_path(@todo) %> |
 	  <%= iconed_link_to "Destroy", @todo, :confirm => 'Are you sure?', :method => :delete %> |
 	  <%= iconed_link_to "View All", todos_path %>
+	  <%= link_to "Destroy2", @todo, :confirm => 'Are you sure you want to REALLY delete this?', :method => :delete %>
 	</p>
 	<p>
 	  <strong>Due:</strong>

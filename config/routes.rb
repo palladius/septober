@@ -10,7 +10,6 @@ Septober::Application.routes.draw do
   match 'login' => 'sessions#new', :as => :login
 
   resources :sessions
-  #resources :users
   resources :tags
   
   resources :users do
@@ -33,8 +32,9 @@ Septober::Application.routes.draw do
       get "procrastinate"
     end
   end
+  #resources :projects
 
-  
+  #resources :todos
   resources :todos do
     collection do
       post :update_attribute_on_the_spot
@@ -49,6 +49,7 @@ Septober::Application.routes.draw do
       end
     end
   end
+  #resources :todos
   
   namespace :api do
     get "todos/rss"        => "todos#rss"

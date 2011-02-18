@@ -33,6 +33,7 @@
       <%= iconed_link_to "Show", todo, :short => true  %>
       <%= iconed_link_to "Edit", edit_todo_path(todo), :short => true  %>
       <%= iconed_link_to "Destroy", todo, :confirm => 'Are you sure you want to delete this? You know you can mark it as done as well? ARE YOU SURE?', :method => :delete, :title => 'Are you sure u want to delete this ticket and not rather mark it as done?!?', :short => true %>
+
     </small>
     <div id='todo-<%=todo.id%>-detail' ></div>
   </td>
