@@ -87,7 +87,7 @@ DEPENDENCIES
   ZenTest
   acts-as-taggable-on
   bcrypt-ruby
-  jquery-rails
+  jquery-rails (>= 0.2.6)
   mocha
   nifty-generators
   on_the_spot

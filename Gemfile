@@ -8,7 +8,7 @@ gem "nifty-generators"  #, :group => :development
 gem "bcrypt-ruby",      :require => "bcrypt"
 gem 'acts-as-taggable-on'                         # For tags
 
-gem "jquery-rails"                                # For InPlaceEditing
+gem "jquery-rails",     '>= 0.2.6'                                # For InPlaceEditing
 gem "on_the_spot"                                 # .. https://github.com/nathanvda/on_the_spot 
 
 gem "mocha",            :group => :test

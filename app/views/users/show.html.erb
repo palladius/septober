@@ -2,13 +2,13 @@
 
 <p> Email: <%= on_the_spot_edit @user, :email %>
 <p> Todos: <b><%= @user.todos.active.count %></b>/<%= @user.todos.count %> (<%= @user.todos.overdue.count %> overdue )
-<p> Projects: <b><%= @user.projects.count %></b> (<%= @user.projects.public.count %> public)
+<p> Projects: <b><%= @user.projects.count %></b> (<%= @user.projects.publics.count %> public)
 <p> Friends: TODO
 <p> Admin?: <b><%= @user.admin? ? 'admin!!' : '-' %></b> 
 	
-<%# if @user.projects.public %>
+<%# if @user.projects.publics %>
 <h2>Public Projects</h2>
 
-<% @user.projects.public.each do |project| %>
+<% @user.projects.publics.each do |project| %>
 	- <%= render_project(project) %> (<b><%= project.todos.active.count %></b>/<%= project.todos.count %> todos) <br/>
 <%end%>

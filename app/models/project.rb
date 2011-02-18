@@ -14,7 +14,7 @@ class Project < ActiveRecord::Base
     validates_presence_of :user
 
     scope :publics, lambda { { :conditions => ['public = ?', true  ] } }
-    scope :public,  lambda { { :conditions => ['public = ?', true  ] } }
+    #scope :public,  lambda { { :conditions => ['public = ?', true  ] } }
     scope :made_by,  lambda {|user| { :conditions => ['user_id = ?', user.id  ] } }
     scope :owned_by, lambda {|user| { :conditions => ['user_id = ?', user.id] } }
     

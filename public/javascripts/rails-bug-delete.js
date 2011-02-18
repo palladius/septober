@@ -1,9 +1,6 @@
+
 /**
  * Unobtrusive scripting adapter for jQuery
-
-	(Copiata a manhouse da https://github.com/rails/jquery-ujs/raw/master/src/rails.js
-	Post baco delete )
-
  *
  * Requires jQuery 1.4.3 or later.
  * https://github.com/rails/jquery-ujs
@@ -171,3 +168,5 @@
 		if (this == event.target) enableFormElements($(this));
 	});
 })( jQuery );
+
+

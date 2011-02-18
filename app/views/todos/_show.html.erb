@@ -8,6 +8,12 @@
 	<p>
 	  <%= iconed_link_to "Edit", edit_todo_path(@todo) %> |
 	  <%= iconed_link_to "Destroy", @todo, :confirm => 'Are you sure?', :method => :delete %> |
+    <a href="/todos/<%= @todo.id %>" alt="Destroy" confirm="Are you sure?" method="delete" height="15" title="Destroy2">(Destroy Manhouse)</a> |
+
+		<a href="/todos/24" alt="Destroy" data-confirm="Sei sicuro?" data-method="delete" fallback="true" height="15" rel="nofollow" short="true" title="Destr.">
+			(Admin Destroy Da RAB)
+		</a> |
+		
 	  <%= iconed_link_to "View All", todos_path %>
 	  <%= link_to "Destroy2", @todo, :confirm => 'Are you sure you want to REALLY delete this?', :method => :delete %>
 	</p>
