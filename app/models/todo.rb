@@ -120,24 +120,23 @@ class Todo < ActiveRecord::Base
         #COOL n DRY: tag_match = lambda{|word| w.match /^@/ }
         tags = words.select{|w| w.match /^@/ }.map{|tag| tag.gsub(/^@/,'')}
         depured_str = words.select{|w| ! w.match /^@/ }.join(' ')
-        return [depured_str,tags]        
+        return [depured_str,tags]
       rescue Exception => e
         puts "\n\tException!! #{e}"
         return [str, [] ]
       end
-      
     end
     
   # This should do some magic stuff like adding the due to tomorrow if string matches 'by tomorrow' or 'entro domani' and so on..  
 		# TODO FACILE: substitute the logs from description to sys_notes
     def apply_todo_regex_magic
       logger.info "Todo.apply_todo_regex_magic() for ticket ##{self.id rescue :NO_ID}"
-      pyellow "Apply test"
+      pyellow "Apply apply_todo_regex_magic"
       log = []
       begin # catch exceptions
         log << "\tDEBUG: apply_todo_regex_magic START for: #{self.inspect}"
         str = self.name rescue ''
-        @due = Date.today if str.match /today| oggi/i
+        self.due = Date.today if str.match / today| oggi/i
         self.due = Date.tomorrow if str.match /tomorrow|domani/i # TODO \<string\>
         self.due = Date.yesterday if str.match /yesterday| ieri/i 
         @due ||= Date.today + 7 unless attribute_present?('due') # in 7 days
