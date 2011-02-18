@@ -47,7 +47,7 @@ GEM
       treetop (~> 1.4.8)
     mime-types (1.16)
     mocha (0.9.12)
-    nifty-generators (0.4.4)
+    nifty-generators (0.4.5)
     on_the_spot (0.0.6)
       json_pure (>= 1.4.6)
     polyglot (0.3.1)
