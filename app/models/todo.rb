@@ -136,10 +136,10 @@ class Todo < ActiveRecord::Base
       begin # catch exceptions
         log << "\tDEBUG: apply_todo_regex_magic START for: #{self.inspect}"
         str = self.name rescue ''
-        self.due = Date.today if str.match / today| oggi/i
-        self.due = Date.tomorrow if str.match /tomorrow|domani/i # TODO \<string\>
-        self.due = Date.yesterday if str.match /yesterday| ieri/i 
-        @due ||= Date.today + 7 unless attribute_present?('due') # in 7 days
+        self.due = Date.today if str.match( / today| oggi/i )
+        self.due = Date.tomorrow if str.match( /tomorrow|domani/i ) # TODO \<string\>
+        self.due = Date.yesterday if str.match( /yesterday| ieri/i )
+        self.due ||= Date.today + 7 unless attribute_present?('due') # in 7 days
         # TODO and priority = 3
         self.priority = 1 if str.match /^\-\-|\.\.\.$/ # TODO remove the ++
         self.priority = 2 if str.match /^\-|\.\.$/ # TODO remove the ++
@@ -193,7 +193,7 @@ class Todo < ActiveRecord::Base
         self.sys_notes = (self.sys_notes || '') + "\n\n---- LOGS: ----\n#{log.join("\n")}"
         return true
       rescue Exception => e
-        pred "Todo.apply_todo_regex_magic Exception: #{$!}"
+        pred "Todo.apply_todo_regex_magic Exception: #{ e.backtrace.join("\n") }"
         return false
       end
     end
