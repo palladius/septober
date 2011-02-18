@@ -2,11 +2,12 @@
 # PS TODO make this DRY, now youve to remember to update as well the following files:
 # - ./VERSION
 # - app/helpers/application_helper
+1.6.9
+  - fixed yay! - Bug is here. depends on using jquery instead of prototype: http://asciicasts.com/episodes/227-upgrading-to-rails-3-part-3
 1.6.8
   - bug solved due date in todo regex magic!
   - small bug in authenticaiton sovled (if u r logged in and u change the |DB and the user is not there anymore it should log you out... lets hope it doesnt log you out more than needed!)
   - STULL PRESENT BUG CANT DFELETE A TODO!!! @bug 
-  - Bug is here. depends on using jquery instead of prototype: http://asciicasts.com/episodes/227-upgrading-to-rails-3-part-3
 1.6.7
   - Tags are completely parsed from fast insert, yay!
   - Better testing (better but NOT complete)

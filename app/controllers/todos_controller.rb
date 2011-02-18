@@ -85,13 +85,9 @@ class TodosController < ApplicationController
     _update_field(:hide_until, Time.now + n_days.to_i.days )
   end
   
-  def delete(bohhhh)
-    TODO
-  end
-  
   def destroy
-    raise "Destroy exception: (i thought id never get here!)"
-    flash[:notice] = "Starting to destroy todo ##{@todo.id}..."
+    #raise "Destroy exception: (i thought id never get here!)"
+    #flash[:notice] = "Starting to destroy todo ##{@todo.id}..."
     @todo = Todo.find(params[:id])
     @todo.destroy 
     flash[:notice] = "Successfully destroyed todo ##{@todo.id}."
