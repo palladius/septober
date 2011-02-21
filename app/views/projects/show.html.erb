@@ -27,10 +27,14 @@
   <strong>User:</strong>
   <%= @project.user_id %>
 </p>
-<p>
-  <strong>Tags:</strong>
-  <%= @project.tags.join(', ') %>
-</p>
+	<p>
+	  <strong>Tags:</strong>
+	  <%= @project.tags.join(', ') %>
+	</p>
+	<p>
+		  <strong>Photo URL:</strong>
+		  <%= @project.photo_url %>
+	</p>
 <p>
   <strong>Magic Tags:</strong>
   <tt class='tag' ><%= @project.magic_tags.join(', ') %></tt>

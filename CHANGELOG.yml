@@ -2,6 +2,8 @@
 # PS TODO make this DRY, now youve to remember to update as well the following files:
 # - ./VERSION
 # - app/helpers/application_helper
+1.6.10
+  - fixed projects icons.. and better TODO icons even n devel...
 1.6.9
   - fixed yay! - Bug is here. depends on using jquery instead of prototype: http://asciicasts.com/episodes/227-upgrading-to-rails-3-part-3
 1.6.8
