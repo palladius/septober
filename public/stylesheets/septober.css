@@ -56,6 +56,14 @@ a {
 /*	opacity: .7;*/
 }
 
+.done {
+	color: red;
+	text-decoration: line-through;
+}
+.undone {
+	color: green;
+}
+
 .stillhidden_true {
 	color: brown; 
 	opacity: .1 ;
