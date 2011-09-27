@@ -20,7 +20,6 @@ class Todo < ActiveRecord::Base
     # More here: http://railscasts.com/episodes/15-fun-with-find-conditions
     # Task.find_all_by_priority(1..3)
     scope :relevant, lambda { { :conditions => ['priority in ?', 1..3 ] } }
-    #scope :automine, lambda { { :conditions => ['user_id = ?', current_user.id  ] } }
     scope :owned_by, lambda {|user| { :conditions => ['user_id = ?', user.id] } }
     
     validates_uniqueness_of :name, :scope => :user_id, :message => "for this user is already created! (Cant have duplicate Todos)"
@@ -29,9 +28,7 @@ class Todo < ActiveRecord::Base
     validates_inclusion_of :priority, :in => 1..5 ## , :message => "number must be in 1..5!"
     validates_inclusion_of :progress_status, :in => 0..100, :message => "is a percentage, please go back to school :P"
     
-    #  before_save :apply_todo_regex_magic #    RIGHT NOW... TO BECOME => BeforeCreate
     before_create :apply_todo_regex_magic
-    #after_create :apply_todo_regex_magic
     
     # TODO
     acts_as_taggable_on :tags        # normal, user created
