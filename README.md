@@ -4,7 +4,7 @@
  
  A screenshot:
  <img src='http://www.palladius.it/palladius.jpg' height='100' />
- <img src='https://github.com/palladius/septober/blob/master/doc/Screenshot.png' height='100' />
+ <img src='https://github.com/palladius/septober/raw/master/doc/Screenshot.png' height='100' />
 
  Author: Riccardo Carlesso <rusko@palladius.it>
     
@@ -39,7 +39,7 @@
 
 <img src="https://github.com/palladius/septober/raw/master/doc/CliScreenshot.png" width="300" alt="Screenshot for Septober CLI" align='right' />
 
-Usage (for use of bin/septober guides you thru the creation of "~/.septober.yml" conf file):
+Usage (for use of bin/septober guides you thru the creation of `~/.septober.yml` config file):
 
 	bin/septober list
 	bin/septober add 'Buy the milk by tomorrow!!'
