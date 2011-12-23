@@ -1,6 +1,13 @@
 <% title "Tag: #{@tag}" %>
 
 <%# render collection= render %>
-<% @taggings.each do |tagging|  %>	
-	<li class='tagging' ><%= render_tagging tagging %></li>
-<% end %>
+<% @taggings.each do |tagging|  
+	if Todo.find(tagging.taggable_id).user == current_user
+%>
+	<li class='tagging' >
+		<%= render_tagging(tagging) %>
+	</li>
+<%
+	end
+   end 
+%>

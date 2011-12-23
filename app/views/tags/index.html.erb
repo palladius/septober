@@ -1,8 +1,7 @@
 <% title "Tags Index" %>
 
-TODO CLoud
+@TODO CLoud
 
 <% @tags.sort{|x,y| x.to_s <=> y.to_s }.each do |tag| %>
-	<%= render_tag(tag).html_safe %>
-	<%#= link_to(tag,tag, :class => :tag) %>
+  <%= render_tag(tag).html_safe %>
 <% end %>

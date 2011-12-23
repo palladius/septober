@@ -256,6 +256,13 @@ class Todo < ActiveRecord::Base
       end
     end
     
+    def assign_to_user(another_user)
+      # sembra non funzinare la prox riga...
+      return unless another_user.class.name == "User"
+      self.user_id = another_user.id
+      self.save
+    end
+    
     # for RSS
     def rss_title
       name
