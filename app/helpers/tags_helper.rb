@@ -20,7 +20,7 @@ module TagsHelper
     return nil unless tagging.tagger_type && tagging.tagger_id
     case tagging.tagger_type
       when 'User'; return User.find(tagging.tagger_id)
-      when 'Tag'; return Tag.find(tagging.tagger_id)
+      when 'Tag';  return Tag.find(tagging.tagger_id)
       else ; raise "Unknown TAgger type: #{tagging.tagger_type}"
     end
   end
@@ -42,9 +42,10 @@ module TagsHelper
       link_to(
         obj.taggable, 
         obj.taggable, 
-        :class => obj.taggable.class.to_s.downcase 
+        :class => obj.taggable.class.to_s.downcase + " " + (obj.taggable.done? ? 'done' : 'undone')
       ) 
-    str +=  " (by #{render_tagging_tagger(obj)})" if opts.fetch :include_tagger,false
+    str += " (by #{obj.taggable.user})" if opts.fetch :include_ticket_user,true
+    str += " (tagged by #{render_tagging_tagger(obj)})" if opts.fetch :include_tagger,false
     content_tag(:span, str.html_safe,  :class => :tagging ).html_safe
   end
   

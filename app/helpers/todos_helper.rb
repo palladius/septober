@@ -5,18 +5,12 @@ module TodosHelper
   $priorities_colors= %w{ ZERO grey     green  black   orange   red       }
   
   def render_todo_name(todo, opts={} )
-    # (Prio=#{$priorities_names[todo.priority]})
     title = [
-      #todo.where ? "Where: #{todo.where}" : '-'  ,
-      #"Due: #{todo.due}",
-      #{}"Description: '#{todo.description}'",
       todo.description
       ].join("\n")
+    klasses = "todo #{todo.done? ? 'done' : 'undone' }"
     coloured_todo = render_within_project(todo.project,on_the_spot_edit(todo, :name, :tooltip => todo.description ) ) rescue "TodoErr('#{$!}')"
-    #coloured_todo = with_project_color_do(todo.project,todo.to_s.capitalize) { 
-    #  on_the_spot_edit(todo, :name )
-    #}
-    ret = content_tag( (todo.active ? :b : :s) , coloured_todo , :title => title , :alt => :alt , :class => "todo") # , :id => "todo_#{todo.id}")
+    ret = content_tag( (todo.active ? :b : :s) , coloured_todo , :title => title , :alt => :alt , :class => klasses ) # , :id => "todo_#{todo.id}")
     return ret
   end
   

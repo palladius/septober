@@ -22,17 +22,18 @@ Septober::Application.routes.draw do
     collection do
       post :update_attribute_on_the_spot
     end
-    resources :todos # how do I select only the sub_project stuff?!? 
-    member do
-      post 'set_public'
-      post 'set_private'
-      post 'set_home'
-      post 'set_no_home'
-      post 'set_project_description'
-      get "procrastinate"
+    resources :todos do   # how do I select only the sub_project stuff?!? 
+      #member do
+      #  post 'set_public'
+      #  post 'set_private'
+      #  post 'set_home'
+      #  post 'set_no_home'
+      #  post 'set_project_description'
+      #  get "procrastinate"
+      #end
     end
   end
-  #resources :projects
+  resources :projects
 
   #resources :todos
   resources :todos do

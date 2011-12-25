@@ -70,11 +70,13 @@ module ProjectsHelper
   end
   
   def render_project_icon(project, opts={})
-    icon = project.photo_url ||  'default.png'
-    image_tag("/images/icons/projects/#{icon}", opts )
+    #icon = project.photo_url ||  'default.png'
+    #image_tag("/images/icons/projects/#{icon}", opts )
+    opts[:image_dir] = '/icons/projects/'
+    render_photo_url(project, opts)
   end
   
-  def render_filter(filter,opts={})
-    filter
+  def render_filter(myfilter,opts={})
+    myfilter
   end
 end

@@ -1,7 +1,10 @@
 	<div class='photo_right' align_removem='right' >
+    <%= link_to( 
+      image_tag("icons/todo/V-grey.png", :mouseover => "icons/todo/V.png", :height => 50) ,
+      "/todos/#{@todo.id}/done", :title => t(:mark_as_done)
+    ) unless @todo.done? %>
 		<table border='1'><tr><td>
-		<%#= render_todo_action_icons(@todo) rescue "ErrWithActionsIcons: #{$!}" %>
-		<%= render_photo_url(@todo) if @todo.photo_url? %>
+		<%= render_photo_url(@todo, :height => 200 ) if @todo.photo_url? %>
 		</table>
 	</div>
 	<h1><%= render_todo_name(@todo) %></h1>
