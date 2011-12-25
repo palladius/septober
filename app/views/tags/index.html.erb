@@ -1,7 +1,11 @@
 <% title "Tags Index" %>
-
-@TODO CLoud
-
-<% @tags.sort{|x,y| x.to_s <=> y.to_s }.each do |tag| %>
-  <%= render_tag(tag).html_safe %>
+<%
+ # @TODO CLoud
+%>
+<% if current_user %>
+<%   @tags.sort{|x,y| x.to_s <=> y.to_s }.each do |tag| %>
+     <%= render_tag(tag).html_safe %>
+<%   end %>
+<% else %>
+  Sorry, you must be logged in to see all these tags :)
 <% end %>
