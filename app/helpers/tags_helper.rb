@@ -44,7 +44,7 @@ module TagsHelper
         obj.taggable, 
         :class => obj.taggable.class.to_s.downcase + " " + (obj.taggable.done? ? 'done' : 'undone')
       ) 
-    str += " (by #{obj.taggable.user})" if opts.fetch :include_ticket_user,true
+    str += " (by #{obj.taggable.user})" if opts.fetch :include_ticket_user,false
     str += " (tagged by #{render_tagging_tagger(obj)})" if opts.fetch :include_tagger,false
     content_tag(:span, str.html_safe,  :class => :tagging ).html_safe
   end
