@@ -1,13 +1,13 @@
 # Septober
 
- Put here stuff for github ;-)
+[![Build Status](https://secure.travis-ci.org/palladius/septober.png)](http://travis-ci.org/palladius/septober)
  
  A screenshot:
  <img src='http://www.palladius.it/palladius.jpg' height='100' />
  <img src='https://github.com/palladius/septober/raw/master/doc/Screenshot.png' height='100' />
 
  Author: Riccardo Carlesso <rusko@palladius.it>
-    
+
 * [Demo Site](http://septober.heroku.com/)
 * [Screenshot](https://github.com/palladius/septober/raw/master/doc/Screenshot.png)
 
