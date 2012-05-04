@@ -96,7 +96,7 @@ DEPENDENCIES
   mocha
   nifty-generators
   on_the_spot
-  rails (>= 3.0.3)
+  rails (= 3.0.3)
   ric (>= 0.11.3)
   sqlite3-ruby
   wirble
