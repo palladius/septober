@@ -1,12 +1,11 @@
-# preso dalle mie FB apps qui: 
-# http://www.facebook.com/developers/apps.php?app_id=178997375475443
-
-production:      # Septober : http://www.facebook.com/developers/editapp.php?app_id=178997375475443
-  app_id:  178997375475443
-  secret:  742d2c5abe0380eae9ec1864a154399f
-  api_key: 929983e95ffffbedd4f7b83542ee43b2
-development:     # RicAddressbook Localhost http://www.facebook.com/developers/editapp.php?app_id=192913460722379#
-  app_id:  192913460722379
-  secret:  f46dc58cf314df1e0099dc7a489add28
-  api_key: dca7d846cd45c4cb385b34af3d7a3ed8
-
+# Riccardo stuff protected correctly
+# take it from my personal gic repo in : private/projects/septober/config/facebooker.yml
+#
+production:      # Septober 
+  app_id:  {{ facebook.production.app_id}}
+  secret:  {{ facebook.production.secret}}
+  api_key: {{ facebook.production.api_key}}
+development:     # RicAddressbook Localhost 
+  secret:  {{ facebook.development.secret}}
+  api_key: {{ facebook.development.api_key}}
+  app_id:  {{ facebook.development.app_id}}
