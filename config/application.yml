@@ -4,6 +4,6 @@ app:
     Yet another ToDo Application, with simplicity kept in mind. 
     # Procrastinators unite.. tomorrow! (op. cit.)
   copyright: Copyright 2011-11 A few rights reserved (see LICENSE)
-  email: riccardo.carlesso@YML.gmail.com
+  email: riccardo.carlesso@gmail.com
   author_name: 'Riccardo "78YML" Carlesso'
   gems: [ ric, test, gems ]
