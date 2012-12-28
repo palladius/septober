@@ -35,6 +35,8 @@
     - bookmark, dependencies, procrastinate, hide_until date, where they are, done/undeone/toggle...
     - Quick create supports some regex ("buy milks by tomorrow!!" automatically sets the due date AND raises priority by 2)
 
+  - Trying to adhere to [Semantic Versioning](http://semver.org/)
+
 ## CLI
 
 <img src="https://github.com/palladius/septober/raw/master/doc/CliScreenshot.png" width="300" alt="Screenshot for Septober CLI" align='right' />
