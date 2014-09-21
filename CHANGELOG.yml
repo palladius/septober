@@ -1,7 +1,9 @@
 # CHANGELOG in YML style :)
-# PS TODO make this DRY, now youve to remember to update as well the following files:
+# PS TODO make this DRY, now you've to remember to update as well the following files:
 # - ./VERSION
 # - app/helpers/application_helper
+2.0.02
+  - Added Dockerfile
 1.7.01
   - Fixed BUG of Tags/Taggings visible to everybody (!!)
 1.6.11

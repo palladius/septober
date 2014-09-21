@@ -18,6 +18,13 @@
 
   Welcome to my first vanilla RubyOnRails Application generated with my generator.
   
+## INSTALL 
+
+  You have to install `sqlite3` gem dependencies. Thy this out:
+
+	`make install`
+	`bundle install`
+  
 # Features 
   
   - Language: RoR 3 !!!
