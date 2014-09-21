@@ -16,3 +16,7 @@ docker-run:
 run: configure
 	rake db:migrate
 	rails server
+
+# only if you know what youre doing...
+plugins-update:
+	rails g on_the_spot:install
