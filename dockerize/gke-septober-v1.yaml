@@ -1,0 +1,21 @@
+# septober-service.yaml
+#repo-url: 'https://github.com/palladius/septober'
+apiVersion: v1
+kind: Pod
+metadata:
+  name: septober-v1
+  namespace: riccardume
+  labels:
+    app: septober
+    version: "1.0"
+    tier: web-frontend
+    maturity: draft
+    env: staging
+    type: RubyOnRails
+spec:
+  containers:
+  - name: septober-v1
+    image: palladius/septober:v1
+    # Just spin & wait forever
+    command: [ "/bin/bash", "-c", "--" ]
+    args: [ "cd /home/riccardo/git/septober/ && make run" ]
