@@ -14,6 +14,6 @@ gem "on_the_spot"                                 # .. https://github.com/nathan
 gem "mocha",            :group => :test
 gem 'wirble', :groups => [:development,:test]
 #gem 'autotest', :groups => [:development,:test]
-gem 'ZenTest', :groups => [:development,:test]
+#gem 'ZenTest', :groups => [:development,:test]
 # If you are developing actively, try this:
 #gem "ric", :path => "~/git/ric"
