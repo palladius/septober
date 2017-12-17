@@ -11,11 +11,9 @@ ActiveRecord::Base.extend SearchableCopy
 # (create the session table with "rails generate session_migration")
 # Septober::Application.config.session_store :active_record_store
 
-
-
 $APP = {
-  :name        => 'Put your App name here (config/initializers/ric_addons.rb)',
-  :headline    => 'Put your App Headline here (config/initializers/ric_addons.rb)',
+  :name        => 'Septober is my App (config/initializers/ric_addons.rb)',
+  :headline    => 'This is my Headline for Septober. Procrastinators unite! (config/initializers/ric_addons.rb)',
   :version     => File.open("#{Rails.root}/VERSION" ).read ,  # RAILS_ROOT
   :copyright   => 'Copyright 2011-11 A few rights reserved (see LICENSE)',
   :email       => 'riccardo.carlesso@gmail.com',
