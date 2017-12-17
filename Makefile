@@ -13,6 +13,10 @@ run: configure
 	rake db:migrate
 	rails server
 
+run-prod: configure
+	RAILS_ENV=production rake db:migrate
+	RAILS_ENV=production rails server
+
 # only if you know what youre doing...
 plugins-update:
 	rails g on_the_spot:install
