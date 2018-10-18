@@ -1,0 +1,57 @@
+current directory: /Users/ricc/git/septober/vendor/bundle/ruby/2.3.0/gems/sqlite3-1.3.5/ext/sqlite3
+/System/Library/Frameworks/Ruby.framework/Versions/2.3/usr/bin/ruby -r ./siteconf20181018-84783-1cxjijk.rb extconf.rb
+checking for sqlite3.h... yes
+checking for sqlite3_libversion_number() in -lsqlite3... yes
+checking for rb_proc_arity()... yes
+checking for sqlite3_initialize()... yes
+checking for sqlite3_backup_init()... yes
+checking for sqlite3_column_database_name()... yes
+checking for sqlite3_enable_load_extension()... no
+checking for sqlite3_load_extension()... no
+creating Makefile
+
+To see why this extension failed to compile, please check the mkmf.log which can be found here:
+
+  /Users/ricc/git/septober/vendor/bundle/ruby/2.3.0/extensions/universal-darwin-17/2.3.0/sqlite3-1.3.5/mkmf.log
+
+current directory: /Users/ricc/git/septober/vendor/bundle/ruby/2.3.0/gems/sqlite3-1.3.5/ext/sqlite3
+make "DESTDIR=" clean
+
+current directory: /Users/ricc/git/septober/vendor/bundle/ruby/2.3.0/gems/sqlite3-1.3.5/ext/sqlite3
+make "DESTDIR="
+compiling backup.c
+compiling database.c
+database.c:188:3: warning: 'sqlite3_trace' is deprecated: first deprecated in macOS 10.12 [-Wdeprecated-declarations]
+  sqlite3_trace(ctx->db, NIL_P(block) ? NULL : tracefunc, (void *)self);
+  ^~~~~~~~~~~~~
+  sqlite3_trace_v2
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.13.sdk/usr/include/sqlite3.h:2907:36: note: 'sqlite3_trace' has been explicitly marked deprecated here
+SQLITE_API SQLITE_DEPRECATED void *sqlite3_trace(
+                                   ^
+1 warning generated.
+database.c:188:3: warning: 'sqlite3_trace' is deprecated: first deprecated in macOS 10.12 [-Wdeprecated-declarations]
+  sqlite3_trace(ctx->db, NIL_P(block) ? NULL : tracefunc, (void *)self);
+  ^~~~~~~~~~~~~
+  sqlite3_trace_v2
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.13.sdk/usr/include/sqlite3.h:2907:36: note: 'sqlite3_trace' has been explicitly marked deprecated here
+SQLITE_API SQLITE_DEPRECATED void *sqlite3_trace(
+                                   ^
+database.c:289:11: warning: implicit declaration of function 'RBIGNUM' is invalid in C99 [-Wimplicit-function-declaration]
+      if (RBIGNUM_LEN(result) * SIZEOF_BDIGITS <= 8) {
+          ^
+./sqlite3_ruby.h:16:24: note: expanded from macro 'RBIGNUM_LEN'
+#define RBIGNUM_LEN(x) RBIGNUM(x)->len
+                       ^
+database.c:289:11: error: member reference type 'int' is not a pointer
+      if (RBIGNUM_LEN(result) * SIZEOF_BDIGITS <= 8) {
+          ^~~~~~~~~~~~~~~~~~~
+./sqlite3_ruby.h:16:36: note: expanded from macro 'RBIGNUM_LEN'
+#define RBIGNUM_LEN(x) RBIGNUM(x)->len
+                       ~~~~~~~~~~  ^
+database.c:289:33: error: use of undeclared identifier 'SIZEOF_BDIGITS'
+      if (RBIGNUM_LEN(result) * SIZEOF_BDIGITS <= 8) {
+                                ^
+2 warnings and 2 errors generated.
+make[1]: *** [database.o] Error 1
+
+make failed, exit code 2

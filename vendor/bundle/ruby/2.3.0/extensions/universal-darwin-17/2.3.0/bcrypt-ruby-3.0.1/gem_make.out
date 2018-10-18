@@ -1,0 +1,41 @@
+current directory: /Users/ricc/git/septober/vendor/bundle/ruby/2.3.0/gems/bcrypt-ruby-3.0.1/ext/mri
+/System/Library/Frameworks/Ruby.framework/Versions/2.3/usr/bin/ruby -r ./siteconf20181018-57018-rtt7sw.rb extconf.rb
+creating Makefile
+
+current directory: /Users/ricc/git/septober/vendor/bundle/ruby/2.3.0/gems/bcrypt-ruby-3.0.1/ext/mri
+make "DESTDIR=" clean
+
+current directory: /Users/ricc/git/septober/vendor/bundle/ruby/2.3.0/gems/bcrypt-ruby-3.0.1/ext/mri
+make "DESTDIR="
+compiling bcrypt_ext.c
+bcrypt_ext.c:27:19: warning: implicit declaration of function 'ruby_bcrypt' is invalid in C99 [-Wimplicit-function-declaration]
+    return (VALUE)ruby_bcrypt(args->output, args->key, args->salt);
+                  ^
+1 warning generated.
+bcrypt_ext.c:27:19: warning: implicit declaration of function 'ruby_bcrypt' is invalid in C99 [-Wimplicit-function-declaration]
+    return (VALUE)ruby_bcrypt(args->output, args->key, args->salt);
+                  ^
+1 warning generated.
+compiling crypt.c
+compiling crypt_blowfish.c
+compiling crypt_gensalt.c
+compiling wrapper.c
+In file included from wrapper.c:27:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.13.sdk/System/Library/Frameworks/Ruby.framework/Versions/2.3/usr/include/ruby-2.3.0/ruby/backward/util.h:2:2: warning: use "ruby/util.h" instead of bare "util.h" [-W#warnings]
+#warning use "ruby/util.h" instead of bare "util.h"
+ ^
+1 warning generated.
+In file included from wrapper.c:27:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.13.sdk/System/Library/Frameworks/Ruby.framework/Versions/2.3/usr/include/ruby-2.3.0/ruby/backward/util.h:2:2: warning: use "ruby/util.h" instead of bare "util.h" [-W#warnings]
+#warning use "ruby/util.h" instead of bare "util.h"
+ ^
+1 warning generated.
+linking shared-object bcrypt_ext.bundle
+ld: warning: directory not found for option '-L/BuildRoot/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.13.Internal.sdk/usr/local/libressl/lib'
+ld: warning: directory not found for option '-L/BuildRoot/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.13.Internal.sdk/usr/local/lib'
+ld: warning: directory not found for option '-L/BuildRoot/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.13.Internal.sdk/usr/local/libressl/lib'
+ld: warning: directory not found for option '-L/BuildRoot/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.13.Internal.sdk/usr/local/lib'
+
+current directory: /Users/ricc/git/septober/vendor/bundle/ruby/2.3.0/gems/bcrypt-ruby-3.0.1/ext/mri
+make "DESTDIR=" install
+/usr/bin/install -c -m 0755 bcrypt_ext.bundle ./.gem.20181018-57018-1hp4y4l

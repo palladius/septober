@@ -1,0 +1,54 @@
+# would like to have this in YML format :)
+2011-10-05 v0.11.19:
+ - moved itunes to itunes.rb (itunes ships now with sakura!)
+2011-10-05 v0.11.18:
+ - septober v1.0.0 (just updated label)
+2011-10-05 v0.11.17:
+ - echo gemspec: now added to Runtime Dependencies like in rails gem. Lets see if it works
+2011-10-05 v0.11.16:
+ - echoe gemspec: tried to add activeresource to dependencies but cut/pasted wrong and now its a DEVEL dependency: worthless
+2011-10-05 v0.11.15:
+ - septober v0.9.8 timeout from 7 to 15 secs
+2011-02-06 v0.11.14:
+ - septober v0.9.8 with timeout and :edit
+2011-02-06 v0.11.13:
+ - septober v0.9.7 with better CLI
+ - reengineering septober yaml and help...
+2011-02-06 v0.11.12:
+ - septober v0.9.6 with tags and other stuff
+2011-02-06 v0.11.12:
+ - septober v0.9.6 with tags and other stuff
+2011-02-06 v0.11.11:
+ - better septober add
+2011-02-06 v0.11.10:
+ - refactored fatal, and better xcopy script and library. Yay!
+2011-02-06 v0.11.8:
+ - just cleanup
+2011-02-06 v0.11.7:
+ - small small bug that forced u to include require yaml..
+ - added debug funcs like 'fatal' and 'warning'
+2011-02-06 v0.11.6:
+ - Added xconf
+2011-02-06 v0.11.5:
+ - Added septober binary
+2011-02-06 v0.11.4:
+ - Added some tests but they dont work :P
+2011-01-24 v0.11.3:
+ - Added debug() alias
+2011-01-24 v0.11.2:
+  - Added debug() alias WITH A BUG!!!
+2011-01-24 v0.11.1:
+ - 'trying to better link ric/debug, I hope God wants its the good one!!'
+2011-01-24 v0.11.0:
+  - Moved 'riclib' to 'ric' in github!
+2011-01-24 v0.10.7:
+ - Added Ric::Debug with deb and debug_on (and merged)
+2011-01-16 v0.10.1:
+ - moving everything! Its a miracle if it still works.. in fact it doesnt
+2011-01-16 v0.9.7:
+ - ric_help fixed
+ - VERSION made DRY! (same in module Ric.version and into gem! Its extremely unefficient but thats the price for dryness!)
+2011-01-16 v0.9.6: 
+ - colors are broken, I implemnent a small test script in bin/
+2011-01-16 v0.9.2: 
+ - Added uniquify from rbates just to copy it.

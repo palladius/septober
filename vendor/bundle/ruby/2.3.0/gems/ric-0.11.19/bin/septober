@@ -1,0 +1,364 @@
+#!/usr/bin/env ruby 
+
+=begin
+  ############################################################
+  @author:    Riccardo Carlesso
+  @email:     riccardo.carlesso@gmail.com
+  @url:       http://github.com/palladius/septober
+  @script:    septober
+  @maturity:  development
+  @language:  Ruby
+	@tags:      development, rcarlesso
+  @synopsis:  This connects to septober websites. For more info, look here
+  @description:
+    septober.heroku.com client to add and list todos!
+   
+    TODO
+    - add --context|-x : to change context (--local => --context 'local' , default: "septober" )
+   
+    API: add actions (done, toggle, ..., due <today|tomorrow|monday> )
+  ###########################################################
+=end
+
+  $PROG_VER = '1.0.0'
+
+=begin
+  @history:
+    0.9.8 2011-02-10 Added timeout (works) and a broken prototype for :edit
+    0.9.7 2011-02-09 mini banner WITH version (not to get nuts again thru versions!). --conf now works!
+    0.9.6 2011-02-09 CLI supports --conf now. Tags working!
+    0.9.5 2011-02-08 more concise 'add'
+    0.9.4 2011-02-04 added 'done' action (and 'delete' ?)    
+    0.9.3 2011-02-04 better 'list'    
+    0.9.2 2011-02-04 'add' operation succefully added!   
+    0.9.1 2011-01-18 First version
+=end
+  
+
+  require 'optparse'       
+  require 'rubygems'
+  require 'ric'
+  require 'active_resource'
+  require 'socket'
+  
+  include RubyClasses::Array 
+  
+  $DEBUG    = false
+  
+  $opts = {
+    :app_name            => 'septober client',
+    :hello               => 'Welcome to this terrific application',
+    :septober_url        => 'http://septober.heroku.com/' , 
+    :dflt_config_file    => '~/.septober.yml' , 
+    :local               => false ,
+    :timeout             => 15 ,
+  }
+  
+  def init
+    $opts[:config_file] = $opts[:dflt_config_file]
+    $optparse = OptionParser.new do |opts|
+      opts.on( '-c', '--config <FILE>', 'uses a different configfile from: '+$opts[:dflt_config_file] ) {|arg_file|  
+        puts "Importing file different from default: #{yellow arg_file}"
+        $opts[:config_file] = arg_file  
+      }
+      opts.on( '-d', '--debug',     'enables debug (DFLT=false)' )  {  $opts[:debug] = true ; $debug = true ; debug_on('Debug enabled from ARGV')}
+      opts.on( '-h', '--help',      'Display this screen' )          {  puts(opts); exit 1 }
+      opts.on( '-n', '--no-colors', 'Deactives colors (onta e disonore!)' ) { $colors_active = false }
+      opts.on( '-l', '--local',     'uses local instead' )    {  $opts[:local] = true }
+      opts.on( '-t', '--timeout TIMEOUT',   "Sets timeout (default =#{$opts[:timeout]}s)" ) {|new_timeout| 
+        $opts[:timeout] = new_timeout.to_i rescue 5
+        RemoteTodo.timeout = new_timeout.to_i rescue 5
+      }
+      opts.on( '-v', '--verbose',   'Output more information' )   { $opts[:verbose] = true}
+
+      opts.banner = <<-API_OPTIONS
+#{$0} v.#{$PROG_VER}
+Usage: #{File.basename $0} [options] [add|list|done|del] [args]
+
+  API Actions (T stands for ToBeDoneYet ):
+    add <FREE TEXT>            # adds new task in free text with some magic..
+    delete <ID>                # T delete ticket.ID (DONT USE IF U CAN!)
+    done <ID>                  # T posts ticket.ID :done (resolved)
+    edit <ID> [ACTION1:ARG1] [ACT2:ARG2]# T posts generic action for ticket.ID /edit.xml?due=tomorrow&ACT2=ARG2
+    list                       # shows a list of your todos yet to complete
+    mail <ID>                  # T mail to yourself ticket.ID !!!
+    show <ID>                  # shows details about todo with id=ID
+    procrastinate <ID> <NDAYS> # T mail to yourself ticket.ID !!!
+    sleep <ID> <NDAYS>         # T mail to yourself ticket.ID !!!
+    
+  Examples:
+    septober --local edit 110 due:tomorrow
+    septober list
+    septober show 1
+    septober add 'This is a ticket with priority 4 and a simple @example tag!'
+    
+  Options:    
+      API_OPTIONS
+    end
+    $optparse.parse! 
+    RemoteTodo.import_config()
+  end
+  
+  #################################################################################################################################################
+  class RemoteTodo < ActiveResource::Base
+    # With a singleton u can define the accessors of the class (attr accessor for self!)
+    #class << self
+    #  attr_accessor :description  # = '-'
+    #end
+    self.site         = "http://septober.example.com/" # uninitialized
+    self.element_name = 'todo'
+    self.timeout      = $opts[:timeout] rescue 6
+    
+    @@sample_yml_config = <<-SAMPLE_YML_CONFIG 
+riccardo heroku:  &DEVEL_LOCAL
+  # YAML file with septober configuration. For more info: http://septober.heroku.com/
+  site: "http://localhost:3000/api/"   # or http://septober.heroku.com/api/
+  user: guest
+  password: guest
+  description: My Rails 3 development (guest//guest shuld work for real This is NOT a random thing)
+RiccardoHeroku: &RICCARDO_HEROKU
+  site: "http://septober.heroku.com/api/"   # or http://septober.heroku.com/api/
+  user: YOURUSERNAME
+  password: YOURPASSWORD
+  description: this server exists but is REALLY slow..
+Your server:
+  site: http://your_server.example.com/api/
+  user: USERNAME
+  pass: V3ry_D1ff1cul1
+  description: you can use your own server. this is open source. Just remember to say Riccardo you think hes a genius. I dont want money, just fame.
+#########################################################################################################
+
+  #########################################################################################################
+  # YAML file with septober configuration. For more info: http://septober.heroku.com/
+  # You just change here:
+septober:
+  <<: *RICCARDO_HEROKU
+septober_local:
+  <<: *DEVEL_LOCAL       
+      
+SAMPLE_YML_CONFIG
+      
+    # self.ssl_options = {:cert         => OpenSSL::X509::Certificate.new(File.open(pem_file))
+    #                        :key          => OpenSSL::PKey::RSA.new(File.open(pem_file)),
+    #                        :ca_path      => "/path/to/OpenSSL/formatted/CA_Certs",
+    #                        :verify_mode  => OpenSSL::SSL::VERIFY_PEER}
+    
+    def self.import_config(file=nil)
+      file ||= $opts[:config_file]
+      real_file = File.expand_path file
+      deb "Importing config from #{file}.."
+      if File.exists?(real_file)
+        #puts "TODO import from #{file} (local=#{$opts[:local]})"
+        sub_conf = $opts[:local] ? 'septober_local' : 'septober' # TODO remove local... put a generic subconf key, like 'wor', devel', ...
+        whole_hash = YAML.load_file(real_file) rescue {}
+        puts "Possible sub_confs: #{yellow whole_hash.keys.join(', ')}"
+        conf_hash = whole_hash[sub_conf] rescue nil
+        self.site = conf_hash['site']
+        self.user = conf_hash['user']
+        self.password = conf_hash['password']
+        self.description = conf_hash['description'] rescue '-'
+        deb "Conf imported successuflly: #{blue self.user}@#{self.site}"
+      else
+        pred "Missing file: #{file} !!! Try to do the following:"
+        puts "cat > #{file}\n#{@@sample_yml_config rescue "Err#{$!}" }"
+        exit 79
+      end
+    end
+    
+    def to_s
+      self.name
+    end
+    
+    def self.description
+      @@description ||= '-'
+    end
+    
+    def self.description=(desc)
+      @@description = desc
+    end
+    
+    def colored_project_name()
+      colora(project.color || :grey ,project.name)
+    end
+    
+    # TODO put this into todo.rb model and add it to the controller like "cli_colored_string" and "cli_neutral_string"
+    def colored_due_explaination(override_explaination=nil)
+      mycolor = case due_explaination
+        when 'overdue' ; :red 
+        when 'close' ;   :yellow 
+        when 'far' ;     :green 
+        else ; :gray
+        #default ; :gray
+      end
+      return colora(mycolor, override_explaination || due_explaination)
+    end
+    
+    def priority_str(priority)
+      case priority.to_s
+        when '1'; return '--'
+        when '2'; return '-'
+        when '3'; return ' '
+        when '4'; return '!'
+        when '5'; return '!!'
+      end
+      return "'?' #{priority}"
+    end
+
+    def show_entry(opts={})
+      mywhere = where ? azure( " @#{where}") : ''
+      mytags = (tag_list != [] ? 
+        ' '+tag_list.map{|tag| orange("@#{tag}")}.join(' ') : 
+        '' 
+      ) rescue ''
+      return sprintf "%-3d %-30s %2s %s %s%s",
+        id, colored_project_name , priority_str(priority), colored_due_explaination(due), name, mywhere+mytags
+    end
+    
+    def tags_comma_separated_list
+      orange(tag_list.join(', '))
+    end
+    
+    def colored_name()
+      white(name)
+    end
+    
+    def show_full_entry(opts={})
+      attributes = %w{
+        colored_name id 
+        due hide_until   
+        active depends_on_id 
+        photo_url progress_status 
+        source tags_comma_separated_list 
+        url where
+      }
+      key_vals = attributes.map{|attr| [attr,send(attr)] } # array of [key, val]
+      key_vals << ['ProjectName', "#{project.name} (#{send(project.color,project.color ) rescue white(project.color) })" ]
+      key_vals.map{|k,v| [k,v] }.select{|k,v| v.to_s != ''}.sort{|x,y| x.first <=> y.first }.map{ |k,v| "#{k}: #{v}" }.join("\n") +
+        "\n--\n#{description}"
+    end
+  end # /RemoteTodo
+  #################################################################################################################################################
+  
+  #############################
+  # Program start..
+  
+  # header
+  def bannerino(desc)
+    "#septober v#{$PROG_VER} #{white desc.to_s} (#{green RemoteTodo.user} @ #{cyan RemoteTodo.site.to_s.split('/')[2] }, timeout=#{RemoteTodo.timeout})" + 
+      (RemoteTodo.description.length > 2 ? " # #{gray RemoteTodo.description}" : '')
+  end
+
+  def todo_list(opts={})
+    show_only_active = opts.fetch :only_active, true
+    puts bannerino( "Index" )
+    all = RemoteTodo.find(:all)
+    all.each{|todo|
+      puts( todo.show_entry ) unless( show_only_active && ! todo.active )
+      #deb "Full ToString for #{white todo}:\n\t#{todo.inspect}"
+    } if all
+  end
+  
+=begin
+  Adds a todo with just the subject, the server takes it and parses and does the magic
+  to assing the correct ptoject and stuff..
+=end
+  def todo_add(words_from_argv)
+    puts bannerino( "Add('#{words_from_argv}')" )
+    # TODO put this into begin/end/catch !!!
+    t = RemoteTodo.create( 
+      :name => words_from_argv, 
+      :description => "sent by CLI #{$0} v.#{$PROG_VER}, due tomorrow by test", 
+      #:due => Date.tomorrow, 
+      :where => Socket.gethostname,
+      :source => "CLI v.#{$PROG_VER}"
+      #:project_id => 5,
+      #:priority => 4 
+    )
+    deb "DEB todo: #{t}"
+    ret = t.save    
+    puts "Some errors: '#{red t.errors.full_messages.to_s}'" if t.errors and t.errors.to_s != ''
+    if ret
+      puts "Todo created successfully: ##{green t.id.to_s}" # just provides the Id 
+    else
+      pred "Some error saving todo: #{t.inspect}"
+    end
+    pgray "TODO get meaningful explaination from api/todos_controller!"
+    #puts "errors: #{ret.errors}"
+  end
+  
+  def todo_show(id)
+    todo = RemoteTodo.find(id)
+    puts bannerino("Show(#{id})")
+    puts( todo.show_full_entry )
+  end
+  
+  def todo_done(id,done_or_undone=true)
+    todo_generic_put(id,:done)
+  end
+  def todo_toggle(id,done_or_undone=true)
+    todo_generic_put(id,:toggle)
+  end
+  
+  def todo_generic_put(id,action,opts={})
+    puts bannerino("GenericAction(#{action},#{id})")
+    begin
+      todo = RemoteTodo.find(id)
+      puts "Todo.#{id} ok #{green action}: #{yellow( todo.to_s )}"
+      put_options = {
+        :my_action => action, 
+        :from_cli_in_test_ric => Socket.gethostname
+      }.merge( opts.fetch( :additional_args, {:nis => :bah } ) ) # if there are ,m good. Otherwise, "nisba" :)
+      deb "todo_generic_put(id=#{id},#{purple action}, #{gray opts.inspect})"
+      todo.put(action, put_options ) # test stuff
+      #todo.put(action, :my_action => action, :from_cli_in_test_ric => Socket.gethostname , additional_args) # test stuff
+    rescue ActiveResource::ResourceNotFound
+      puts "Sorry ResourceNotFound: #{red $!}" 
+      exit 11
+    rescue   ActiveResource::ServerError
+      puts "Sorry ServerError: #{red $!}" 
+      exit 12
+    end
+    # todo is good
+    #todo.put(:generic_action, :my_action => action)
+  end
+  
+  def todo_search(q)
+    puts "# Todo.Search('#{q}') (user: #{blue RemoteTodo.user})"
+    pred "To Be implemented Yet"
+  end
+  
+  def usage(explaination=nil)
+    puts $optparse
+    pred(explaination) if explaination
+    exit 85
+  end
+  
+
+  def main()
+    init()
+      # Maybe you may want to check on ARGV
+    #unless ARGV.size > 0
+    #  usage "Give me at least 1 argument" # Maybe default to list?!? 
+    #end
+    all_args = ARGV[1..-1].join(' ') rescue ''
+    case ARGV[0].to_s
+      when 'list'  ;    todo_list()
+      when 'show'  ;    todo_show(ARGV[1])
+      when 'done'  ;    todo_done(ARGV[1],true)
+      when 'add'   ;    todo_add(all_args) # all except last one
+      when 'toggle';    todo_toggle(ARGV[1]) # all except last one
+      when 'delete';    todo_generic_put(ARGV[1], :delete , :additional_args => {:test_foo => 'test deletion string, with whole DELETE' }) 
+      when 'del';       todo_generic_put(ARGV[1], :delete , :additional_args => {:test_foo => 'test deletion string, with just DEL' }) 
+      when 'edit';      todo_generic_put(ARGV[1], :edit,    :additional_args => ARGV.map{|arg| k,v=arg.split(':') } )
+          # TODO transform [ [act1, arg1], [act2,arg2]] into {:act1 => arg1, :act2 => arg2 }
+      when 'tag'   ;    todo_generic_put(ARGV[1], :additional_args => {:tag_with => all_args.join(',') }) # all except last one
+      when 'help'  ;    usage 'Explicitly called help..'
+      when ''      ;    todo_list()
+      else            
+        usage "Unrecognized command: '#{ARGV[0]}'"
+    end
+  end
+
+#########################################################
+# real program...
+main()

@@ -1,0 +1,48 @@
+#!/usr/bin/env ruby -wKU
+
+  ############################################################
+	# $Id: script.rb 5267 2010-11-22 14:43:50Z rcarlesso $
+  ############################################################
+  # @author     Riccardo Carlesso
+  # @email      riccardo.carlesso@heanet.ie
+  # @tags       development, test, REMOVEME
+  # @maturity   development
+  # @language   Ruby
+  ############################################################
+
+# When this works, just remove it!
+#require 'ric'
+$ver = '1.2.1'
+
+def richiedi(str)
+  avail = `gem list #{str}`.split("\n").select{|line| line.match( /#{str} /) }.join('')
+  ret =  "Requiring: require '#{str}' [#{avail}].. "
+  ret += require( str.to_s ).to_s
+  ret 
+end
+
+def n
+  $count ||= -1
+  $count += 1
+end
+
+def nputs(s)
+  puts "#{n} #{Time.now}: #{s}"
+end
+
+def main()
+  begin
+    nputs "RicLib Test v#{$ver} (you should see something green): '#{ $0 }'"
+    nputs "#{richiedi(:rubygems)}"
+    nputs "#{richiedi(:ric)}"
+    Ric.say_hello
+    nputs Ric.version
+    nputs "Now invoking: #{white 'Ric.ric_help' }"
+    Ric.ric_help #rescue "ERRORS on inviking: Ric.help()"
+    nputs "If you seen green, then everything is #{ green('fine') rescue "some ERROR: #{$!}"}"
+  rescue
+    puts "E. Some exception: #{$!}"
+  end
+end
+
+main

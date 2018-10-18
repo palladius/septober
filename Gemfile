@@ -17,3 +17,6 @@ gem 'wirble', :groups => [:development,:test]
 #gem 'ZenTest', :groups => [:development,:test]
 # If you are developing actively, try this:
 #gem "ric", :path => "~/git/ric"
+
+
+gem 'sqlite3', :lib => "/usr/lib/"

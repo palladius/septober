@@ -1,0 +1,7 @@
+# See Echoe CHANGELOG format (this is an example, should RAKE/BAKE it from the HISTORY.YML)
+2011-02-06 v0.11.14:
+v0.11.15. Changed timeout and something else
+v0.11.14. v0.9.8 with timeout and :edit
+v0.11.13: septober v0.9.7 with better CLI - reengineering septober yaml and help...
+# TODO complete me
+# See docs here: http://fauna.github.com/fauna/echoe/files/README.html

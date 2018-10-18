@@ -47,3 +47,5 @@ docker-run-v1.2:
 docker-troubleshoot-v1.2:
 	sudo docker run -it -p 3005:3000 palladius/septober:v1.2 bash
 
+installa-locale:
+	bundle install --path vendor/bundle

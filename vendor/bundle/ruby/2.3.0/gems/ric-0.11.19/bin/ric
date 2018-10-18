@@ -1,0 +1,21 @@
+#!/usr/bin/env ruby
+
+$ver = '1.1'
+
+def main
+  require 'rubygems'
+  require 'ric' 
+  include Ric::Colors
+  
+  dir = File.dirname( File.dirname(__FILE__) + '/../..' )
+  ver_manual = File.read( File.expand_path('VERSION',dir) )
+  ver = Ric::Zibaldone.version rescue "UnknownVersionErr(#{$!})"
+  puts "#{$0} v.#{$ver} -- ARGS='#{ARGV.join(' ')}'"
+  puts "ric library version: ''#{ver_manual}'"
+  puts "Welcome to ric, the swiss-army knife tool from Riccardo,\n included in riclib gem (version=#{ver})"
+  pyellow 'ciao' rescue "Errors with color yellow: #{$!}"  
+  Ric::Zibaldone.say_hello()
+  #Ric::Html.anything_to_html( {:simbolo => 'stringa' } )
+end
+
+main

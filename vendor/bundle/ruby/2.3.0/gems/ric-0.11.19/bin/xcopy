@@ -1,0 +1,53 @@
+#!/usr/bin/env ruby -wKU
+
+=begin
+  @history:
+  2011-02-05 1.0.1: better myconf 
+  2011-02-05 0.9.1: Created 
+=end
+
+  require 'optparse'       # http://ruby.about.com/od/advancedruby/a/optionparser.htm
+  #require '~/lib/ric.rb'
+  require 'rubygems'
+  require 'ric'
+  require 'yaml'
+  
+
+  $PROG_VER = '1.0.1'
+  $DEBUG    = false
+  
+  $myconf = {
+      'author'      => 'Riccardo Carlesso <riccardo.carlesso@gmail.com>',
+      'description' => 'Please put an interesting description HERE for future use!',
+      'from'        => '~/Documents/',
+      'to'          => '/tmp/my_docs_backup/',
+      'files'       => ["**/{*.{mp3,jpg}}", 'README', 'put', 'your', 'files', 'here' ],
+      'dryrun'      => true,
+  }
+
+  def main
+    debug_on 'Just created script, presuming u need some debug. TODO REMOVE ME when everything works!' if $DEBUG
+      # Maybe you may want to check on ARGV
+    deb "+ Your configuration: #{purple $myconf}"
+    include Ric::Conf
+    include Ric::Files
+    myconf = load_auto_conf('xcopy', :sample_hash => $myconf)
+    xcopy(
+      File.expand_path(myconf['from']), 
+      File.expand_path(myconf['to']), 
+      myconf['files']  ,       #myconf
+      :dryrun      => myconf['dryrun'] 
+    )
+  end
+  
+  ## remove me in 0.11.8!
+  #def fatal(ret,str=nil)
+  #  unless str
+  #    str = ret
+  #    ret = 66
+  #  end
+  #  STDERR.puts "#{red 'XCpFatal (remove me from gem 0.11.7!)'}(#{ret}) #{str}"
+  #  exit ret
+  #end
+
+  main()

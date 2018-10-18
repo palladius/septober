@@ -1,3 +1,10 @@
 
 - TAGS work => 1 bug security, see github
 - CLI error
+
+#SQlite3 gem on MacOSX 201810
+
+gem install sqlite3 -- --with-sqlite3-lib=/usr/lib
+https://stackoverflow.com/questions/41370565/ruby-sqlite3-installation-sqlite3-libversion-number-macos-sierra
+
+it works!

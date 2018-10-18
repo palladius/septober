@@ -1,0 +1,17 @@
+#Creatd by ric.rb:load_auto_conf()
+# TODO test with THIS yaml
+--- 
+app_name: ric gem test yaml
+conf: 
+  dryrun: true
+  author: Riccardo Carlesso <riccardo.carlesso@gmail.com>
+  files: 
+  - "**/{*.{mp3,jpg}}"
+  - README
+  - put
+  - your
+  - files
+  - here
+  from: ~/git/yaffle_guide/vendor/plugins/ric_admin/
+  to: ~/git/ric_admin/
+  description: Please put an interesting description HERE for future use!
