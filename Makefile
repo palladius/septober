@@ -26,24 +26,30 @@ plugins-update:
 
 # cd /home/riccardo/git/septober/ && make run
 docker-build:
-	sudo docker build -t=septober-ng .
+	docker build -t=septober-ng .
 
 # I doubt this work ;-)
 docker-run:
-	sudo docker build -t riccseptober .
-	sudo docker run --name riccardo-septober -d riccseptober
+	docker build -t riccseptober .
+	docker run --name riccardo-septober -d riccseptober
 
 docker-run:
-	sudo docker run -it -p 3002:3000 --name=septober-v1-p3002 palladius/septober:v1 bash -c -- 'cd /home/riccardo/git/septober/ && make run'
+	docker run -it -p 3002:3000 --name=septober-v1-p3002 palladius/septober:v1 bash -c -- 'cd /home/riccardo/git/septober/ && make run'
 docker-run-daemon:
-	sudo docker run -p 3000:3000 -d palladius/septober:v1 /bin/sh -c "cd /home/riccardo/git/septober && make run"
+	docker run -p 3000:3000 -d palladius/septober:v1 /bin/sh -c "cd /home/riccardo/git/septober && make run"
 docker-run-v1:
-	sudo docker run -it -p 3002:3000 --name=septober-v1-p3002 palladius/septober:v1 bash -c -- 'cd /home/riccardo/git/septober/ && make run'
+	docker run -it -p 3002:3000 --name=septober-v1-p3002 palladius/septober:v1 bash -c -- 'cd /home/riccardo/git/septober/ && make run'
 docker-run-v1.1:
-	sudo docker run -p 80:3001 --name=septober-v11-p3001 palladius/septober:v1.1 /bin/sh -c "cd /home/riccardo/git/septober && make run-prod"
+	docker run -p 80:3001 --name=septober-v11-p3001 palladius/septober:v1.1 /bin/sh -c "cd /home/riccardo/git/septober && make run-prod"
 docker-run-v1.2:
-	sudo docker run -p 80:3002 --name=septober-v12-p3002 palladius/septober:v1.2 
+	docker run -p 80:3002 --name=septober-v12-p3002 palladius/septober:v1.2 
 
 docker-troubleshoot-v1.2:
-	sudo docker run -it -p 3005:3000 palladius/septober:v1.2 bash
+	docker run -it -p 3005:3000 palladius/septober:v1.2 bash
 
+
+build-local:
+	docker build -t=septober-ng:local .
+
+run-local: build-local
+	docker run -it -p 3001:3000 septober-ng:local bash

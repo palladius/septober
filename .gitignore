@@ -7,4 +7,5 @@ tmp/**/*
 t
 tt
 t.*
-tt.*
+tt.*install
+install
