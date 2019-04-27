@@ -1,11 +1,15 @@
 source 'http://rubygems.org'
 
+ruby "1.9.3" # septober image used this: 1.9.3-p484
+
 gem 'rails',            '3.0.3'
 #gem 'rails',            '>= 3.0.3'
 gem "ric",              '>= 0.11.3'
 gem 'sqlite3-ruby',     :require => 'sqlite3'
 gem "nifty-generators"  #, :group => :development
-gem "bcrypt-ruby",      :require => "bcrypt"
+#gem "bcrypt-ruby",      :require => "bcrypt"
+#gem 'bcrypt-ruby',      '3.1.5' ,  :require => "bcrypt"
+gem 'bcrypt-ruby', '~> 3.0.0'
 gem 'acts-as-taggable-on'                         # For tags
 
 gem "jquery-rails",     '>= 0.2.6'   # For InPlaceEditing

@@ -19,4 +19,3 @@ RUN /bin/sh /dockerize/prep.sh
 #CMD: [ "cd /septober/ && make run" ]
 CMD [ "/dockerize/run.sh" ] 
 
-#CMD ["make", "run"]

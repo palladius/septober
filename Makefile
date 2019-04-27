@@ -15,7 +15,7 @@ run: configure
 
 run-prod: configure
 	RAILS_ENV=production rake db:migrate
-	RAILS_ENV=production rails server
+	RAILS_ENV=production rails server -p 8080
 
 # only if you know what youre doing...
 plugins-update:
