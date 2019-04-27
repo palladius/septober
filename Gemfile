@@ -3,6 +3,7 @@ source 'http://rubygems.org'
 ruby "1.9.3" # septober image used this: 1.9.3-p484
 
 gem 'rails',            '3.0.3'
+gem "activerecord", ">= 3.2.19" # vulnerability CRITICAL: https://github.com/palladius/septober/network/alert/Gemfile.lock/activerecord/open
 #gem 'rails',            '>= 3.0.3'
 gem "ric",              '>= 0.11.3'
 gem 'sqlite3-ruby',     :require => 'sqlite3'

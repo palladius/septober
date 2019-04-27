@@ -10,8 +10,9 @@ run-v1:
 build:
 	docker build -t=septober-ng .
 
+# PORT=8080  DOESNT WORK :/
 run-latest-build: build
-	docker run -it septober-ng:latest bash -c -- 'cd /home/riccardo/git/septober/ && PORT=8080 make run-prod'
+	docker run -it -p 8080:3000 septober-ng:latest bash -c -- 'cd /home/riccardo/git/septober/ && make run-prod'
 
 debug:
 	docker run -it -P --name septober-unico-$(VER) palladius/septober:$(VER) bash
