@@ -57,4 +57,4 @@ debug-local: build-local
 
 run-local: build-local
 	@echo Riccardo check it has the LATEST version!
-	docker run -it -p 3001:3000 septober-ng:local "rails server"
+	docker run -it -p 3001:3000 septober-ng:local bash -c "rails server"
