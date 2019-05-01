@@ -51,5 +51,10 @@ docker-troubleshoot-v1.2:
 build-local:
 	docker build -t=septober-ng:local .
 
-run-local: build-local
+debug-local: build-local
+	@echo Riccardo check it has the LATEST version!
 	docker run -it -p 3001:3000 septober-ng:local bash
+
+run-local: build-local
+	@echo Riccardo check it has the LATEST version!
+	docker run -it -p 3001:3000 septober-ng:local "rails server"
