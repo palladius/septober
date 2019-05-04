@@ -50,11 +50,16 @@ docker-troubleshoot-v1.2:
 
 build-local:
 	docker build -t=septober-ng:local .
+run-local: build-local
+	@echo Riccardo check it has the LATEST version!
+	docker run -it -p 3001:3000 septober-ng:local bash -c "rails server"
 
 debug-local: build-local
 	@echo Riccardo check it has the LATEST version!
 	docker run -it -p 3001:3000 septober-ng:local bash
 
-run-local: build-local
-	@echo Riccardo check it has the LATEST version!
-	docker run -it -p 3001:3000 septober-ng:local bash -c "rails server"
+test-dbs:
+	@echo "1. Testing local sqlite3 (just library)"
+	echo User.all  | rails console
+	@echo "2. Testing remote mysql2 (library and connection)"
+	echo User.all  | RAILS_ENV=production rails console
