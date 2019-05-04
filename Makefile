@@ -63,3 +63,7 @@ test-dbs:
 	echo User.all  | rails console
 	@echo "2. Testing remote mysql2 (library and connection)"
 	echo User.all  | RAILS_ENV=production rails console
+
+heroku-push:
+	heroku container:push web -a septober
+	heroku container:release web  -a septober
