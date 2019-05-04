@@ -6,5 +6,6 @@ rvm:
 # script: bundle exec rspec spec
 script: bundle exec rake
 #script: bundle exec rake test
+# See https://docs.travis-ci.com/user/docker/
 services:
   - docker
