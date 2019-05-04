@@ -58,4 +58,4 @@ test-dbs:
 	@echo "1. Testing local sqlite3 (just library)"
 	echo User.all  | rails console
 	@echo "2. Testing remote mysql2 (library and connection)"
-	echo User.all  | rails console -e production
+	echo User.all  | RAILS_ENV=production rails console
