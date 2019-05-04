@@ -24,4 +24,7 @@ gem 'wirble', :groups => [:development,:test]
 #gem "ric", :path => "~/git/ric"
 
 # trovata in: https://stackoverflow.com/questions/9609985/please-install-mysql-adapter-gem-install-activerecord-mysql-adapter
-gem 'mysql2', "~>0.3.11"
+#gem 'mysql2', "~>0.3.11"
+# even better: https://stackoverflow.com/questions/51228905/rails-error-installing-mysql2-mysql2-0-3-20
+gem 'mysql2', '0.3.20'
+gem 'activerecord-mysql2-adapter'

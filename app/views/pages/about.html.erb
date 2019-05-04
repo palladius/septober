@@ -5,11 +5,13 @@
 
 <h2>Docker</h2>
 
-<pre>\
-Basics
+<pre>Basics
 ======
 1. Ricc pvt repo: .../docker-apps/dev/septober/Dockerfile
 2. base image: "ruby:1.9.3"
+3. Currently works like a charm with sqlite3 bt not with mysql2. Choices:
+- upgrade to rails 3.1 which has musql inside
+- patch to make it work with rails 303
 
 More info
 =========
@@ -21,8 +23,8 @@ ruby -v: 1.9.3-p551
 <h3>Bugs</h3>
 
 <pre>
-	ActionController::RoutingError (No route matches "/javascripts/jquery_ujs.js"):
+	FIXED. ActionController::RoutingError (No route matches "/javascripts/jquery_ujs.js"):
 
-	ActionController::RoutingError (No route matches "/javascripts/on_the_spot_code.js"):
+	FIXED. ActionController::RoutingError (No route matches "/javascripts/on_the_spot_code.js"):
 
 </pre>
