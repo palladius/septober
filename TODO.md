@@ -1,7 +1,10 @@
 Docker
 ======
 
-* Consider using RAILS_SERVE_STATIC_FILES to serve static files.
+* Consider using RAILS_SERVE_STATIC_FILES to serve static files. See
+  also Google ruby/CDN docs:
+  https://cloud.google.com/appengine/docs/flexible/ruby/serving-static-files
+
 CLI
 ===
 
