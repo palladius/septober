@@ -1,5 +1,6 @@
 #################################
-# This is simply the latest version...
+# This takes septober:v1.2 and juist injects the latest code 
+# It's a sort of cheating.
 #################################
 
 FROM palladius/septober:v1.2
