@@ -1,6 +1,8 @@
 # PS TODO make this DRY, now you've to remember to update as well the following files:
 # - ./VERSION
 # - app/helpers/application_helper
+2.2.7:
+ - Fixes the edit_in_place error. Now you can edit a TODO with a single click.
 2.1.5:
  - added 2 symlinks to jquery which gave error in the logs.
 2.0.03:

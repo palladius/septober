@@ -1,7 +1,6 @@
 GEM
   remote: http://rubygems.org/
   specs:
-    ZenTest (4.7.0)
     abstract (1.0.0)
     actionmailer (3.0.3)
       actionpack (= 3.0.3)
@@ -25,6 +24,8 @@ GEM
       activesupport (= 3.0.3)
       arel (~> 2.0.2)
       tzinfo (~> 0.3.23)
+    activerecord-mysql2-adapter (0.0.3)
+      mysql2
     activeresource (3.0.3)
       activemodel (= 3.0.3)
       activesupport (= 3.0.3)
@@ -50,6 +51,7 @@ GEM
     mime-types (1.18)
     mocha (0.10.5)
       metaclass (~> 0.0.1)
+    mysql2 (0.3.20)
     nifty-generators (0.4.6)
     on_the_spot (1.0.0)
       json_pure (>= 1.4.6)
@@ -89,11 +91,12 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  ZenTest
+  activerecord-mysql2-adapter
   acts-as-taggable-on
-  bcrypt-ruby
+  bcrypt-ruby (~> 3.0.0)
   jquery-rails (>= 0.2.6)
   mocha
+  mysql2 (= 0.3.20)
   nifty-generators
   on_the_spot
   rails (= 3.0.3)
