@@ -4,7 +4,11 @@ septober_local:
   site: "http://localhost:3000/api/"        # development
   user: guest
   password: guest
-septober:
+septober_heroku:
   site: "http://septober.heroku.com/api/"   # Riccardo production
+  user: YOUR_USER
+  password: YOUR_PASS
+septober_palladius:
+  site: "http://septober.palladi.us/api/"   # Riccardo production
   user: YOUR_USER
   password: YOUR_PASS

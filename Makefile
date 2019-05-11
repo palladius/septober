@@ -63,3 +63,10 @@ test-dbs:
 	echo User.all  | rails console
 	@echo "2. Testing remote mysql2 (library and connection)"
 	echo User.all  | RAILS_ENV=production rails console
+
+run-riccardo-pvt-image:
+	docker run -it -p 8080:8080 gcr.io/ric-cccwiki/septober-mysql bash
+
+heroku-push:
+	heroku container:push web -a septober
+	heroku container:release web  -a septober

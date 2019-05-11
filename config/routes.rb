@@ -38,6 +38,7 @@ Septober::Application.routes.draw do
   #resources :todos
   resources :todos do
     collection do
+      # https://github.com/nathanvda/on_the_spot/issues/26 fixed
       put :update_attribute_on_the_spot
     end
     member do
