@@ -2,3 +2,7 @@
 - 20190501: uninitialized constant User::BCrypt
 - TAGS work => 1 bug security, see github
 - CLI error
+
+20190512 API todo done
+
+ActionView::MissingTemplate (Missing template api/todos/show with {:handlers=>[:erb, :rjs, :builder, :rhtml, :rxml], :formats=>[:html], :locale=>[:en, :en]} in view paths "/var/www/septober/app/views", "/var/www/septober/vendor/plugins/ric_addons/app/views", "/var/www/septober/vendor/plugins/in_place_editing/app/views", "/var/www/septober/vendor/plugins/acts_as_taggable_on_steroids/app/views", "/usr/local/bundle/gems/on_the_spot-1.0.0/app/views"):
