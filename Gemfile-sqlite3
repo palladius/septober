@@ -1,3 +1,6 @@
+# TODO(ricc): 20190512 just use the original Gemfile and grep -v mysql2
+#             and add 'sqlite3'
+
 source 'http://rubygems.org'
 
 ruby "1.9.3" # septober image used this: 1.9.3-p484
@@ -7,8 +10,21 @@ gem 'rails',            '3.0.3'
 #gem "activerecord", ">= 3.2.19" # vulnerability CRITICAL: https://github.com/palladius/septober/network/alert/Gemfile.lock/activerecord/open
 #gem 'rails',            '>= 3.0.3'
 gem "ric",              '>= 0.11.3'
+
+###############################################
+# Sqlite3 hell - doesnt work
 gem 'sqlite3-ruby',     :require => 'sqlite3'
-#gem 'sqlite3' # ,     :require => 'sqlite3'
+gem 'sqlite3',          '>= 1.4.1'
+# prova 1: 
+#gem 'sqlite3', git: "https://github.com/sparklemotion/sqlite3-ruby"
+# prova 2: 
+# - https://github.com/sparklemotion/sqlite3-ruby/issues/224
+# - https://stackoverflow.com/questions/50249153/cannot-load-such-file-sqlite3-sqlite3-native-loaderror-ruby-on-rails/50680295
+gem 'sqlite3', git: "https://github.com/larskanis/sqlite3-ruby", branch: "add-gemspec"
+# prova 3:
+#gem 'sqlite3',  '1.3.11'
+###############################################
+
 gem "nifty-generators"  #, :group => :development
 #gem "bcrypt-ruby",      :require => "bcrypt"
 #gem 'bcrypt-ruby',      '3.1.5' ,  :require => "bcrypt"
@@ -22,11 +38,5 @@ gem "mocha",            :group => :test
 gem 'wirble', :groups => [:development,:test]
 #gem 'autotest', :groups => [:development,:test]
 #gem 'ZenTest', :groups => [:development,:test]
-# If you are developing actively, try this:
-#gem "ric", :path => "~/git/ric"
 
-# trovata in: https://stackoverflow.com/questions/9609985/please-install-mysql-adapter-gem-install-activerecord-mysql-adapter
-#gem 'mysql2', "~>0.3.11"
-# even better: https://stackoverflow.com/questions/51228905/rails-error-installing-mysql2-mysql2-0-3-20
-gem 'mysql2', '0.3.20'
-gem 'activerecord-mysql2-adapter'
+# rimuovo mysql2 da qui
