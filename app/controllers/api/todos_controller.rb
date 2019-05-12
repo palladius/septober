@@ -110,7 +110,7 @@ private
     #@todo = Todo.find(params[:id])
     @todo = Todo.find_securely(current_api_user, params[:id])
     if @todo.update_attributes( :active => new_active )
-      flash[:notice] = "Successfully '#{participle}' todo ##{params[:id]}"
+      flash[:notice] = "Successfully '#{participle}'d todo ##{params[:id]}"
       #redirect_to todos_url
     else
       render :action => 'edit'
