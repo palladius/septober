@@ -3,6 +3,21 @@
 - TAGS work => 1 bug security, see github
 - CLI error
 
-20190512 API todo done
-
+###########################
+# 1. 20190512 API todo done
+# FIXED!
 ActionView::MissingTemplate (Missing template api/todos/show with {:handlers=>[:erb, :rjs, :builder, :rhtml, :rxml], :formats=>[:html], :locale=>[:en, :en]} in view paths "/var/www/septober/app/views", "/var/www/septober/vendor/plugins/ric_addons/app/views", "/var/www/septober/vendor/plugins/in_place_editing/app/views", "/var/www/septober/vendor/plugins/acts_as_taggable_on_steroids/app/views", "/usr/local/bundle/gems/on_the_spot-1.0.0/app/views"):
+
+ActionView::MissingTemplate (Missing template api/todos/done with {:handlers=>[:erb, :rjs, :builder, :rhtml, :rxml], :formats=>[:json], :locale=>[:en, :en]} in view paths "/var/www/septober/app/views", "/var/www/septober/vendor/plugins/ric_addons/app/views", "/var/www/septober/vendor/plugins/in_place_editing/app/views", "/var/www/septober/vendor/plugins/acts_as_taggable_on_steroids/app/views", "/usr/local/bundle/gems/on_the_spot-1.0.0/app/views"):
+
+
+###########################
+# 2. 20190512 API TODO. add
+
+Started POST "/api/todos.json" for 172.17.0.1 at 2019-05-12 18:34:46 +0000
+  Processing by Api::TodosController#create as JSON
+  Parameters: {"name"=>"This is a ticket with priority 4 and a simple example tag", "description"=>"sent by CLI /home/riccardo/git/gic/bin/septober-cli v.1.0.1, due tomorrow by test", "where"=>"masagnux", "source"=>"CLI v.1.0.1"}
+Completed   in 103ms
+
+NoMethodError (undefined method `[]=' for nil:NilClass):
+  app/controllers/api/todos_controller.rb:37:in `create'

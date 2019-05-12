@@ -37,10 +37,14 @@ class TodosController < ApplicationController
 
   def new
     @todo = Todo.new
+    # 2019-05-12 TEST
+    #@todo.system_tags = [ "api_call" ]
+    #@todo.tags = []
   end
 
   def create
     params[:todo][:user_id] = current_user.id
+    #params[:todo][:tags] ||= []
     @todo = Todo.new(params[:todo])
     if @todo.save
       flash[:notice] = "Successfully created todo ##{@todo.id} '#{@todo.to_s}'"

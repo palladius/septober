@@ -34,10 +34,14 @@ class Api::TodosController < ApplicationController
 
   def create
     pgreen "DEBUG API::TodoController.create()"
+    # 20190512 For some reasons, params comes virgin, wihtout [:todo] so I need to push one level.
+    params[:todo] = params
+    pyellow "DEBUG API::TodoController.create() - param[:todo] vale: #{params[:todo]}"
+
     params[:todo][:user_id] = current_api_user.id
     @todo = Todo.new(params[:todo]) # both HTML and XML :)
     @todo.user_id = current_api_user.id
-    @todo.apply_todo_regex_magic()
+    @todo.apply_todo_regex_magic() rescue pred("Couldnt apply regex for TODO: #{ @todo }")
     respond_to do |format|
       format.xml { 
         if @todo.save
@@ -46,6 +50,7 @@ class Api::TodosController < ApplicationController
           render(:xml => @todo.to_xml , :status => "569 Couldnt save it sorry", :message => "ERROR API TOdo NOT created id=TODO")
         end
       }
+      format.json
       format.js # do nothing
     end #/respond_to
   end #/create
