@@ -101,7 +101,7 @@ class TodosController < ApplicationController
 private
   def _update_active(participle,new_active=nil)
     # nil = toggle
-    pgreen 'update active...'
+    pgreen '_update_active(participle=#{participle})...'
     new_active ||= false # should be the REVERSE... TODO!
     # copy the data from edit
     #@todo = Todo.find(params[:id])
