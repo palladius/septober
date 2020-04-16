@@ -19,4 +19,4 @@ gem 'wirble', :groups => [:development,:test]
 #gem "ric", :path => "~/git/ric"
 
 
-gem 'sqlite3', :lib => "/usr/lib/"
+#gem 'sqlite3', :lib => "/usr/lib/"
