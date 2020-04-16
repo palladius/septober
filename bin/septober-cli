@@ -1,0 +1,3 @@
+#!/bin/bash
+
+echo "gem install ric; septober"

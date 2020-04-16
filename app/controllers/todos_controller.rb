@@ -37,10 +37,14 @@ class TodosController < ApplicationController
 
   def new
     @todo = Todo.new
+    # 2019-05-12 TEST
+    #@todo.system_tags = [ "api_call" ]
+    #@todo.tags = []
   end
 
   def create
     params[:todo][:user_id] = current_user.id
+    #params[:todo][:tags] ||= []
     @todo = Todo.new(params[:todo])
     if @todo.save
       flash[:notice] = "Successfully created todo ##{@todo.id} '#{@todo.to_s}'"
@@ -97,7 +101,7 @@ class TodosController < ApplicationController
 private
   def _update_active(participle,new_active=nil)
     # nil = toggle
-    pgreen 'update active...'
+    pgreen '_update_active(participle=#{participle})...'
     new_active ||= false # should be the REVERSE... TODO!
     # copy the data from edit
     #@todo = Todo.find(params[:id])

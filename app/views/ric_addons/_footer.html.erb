@@ -12,6 +12,7 @@
 %><div class='footer' align='center' ><small>
 	<p>
 		<b class='ric_app' ><%=$APP[:name] rescue "Unknown RicApp" %></b> v.<%=$APP[:version] rescue 'VER_ERR' %> - <%=$APP.fetch :copyright, 'All rights reserved (TM)'%>
+		[<tt><%= Rails.env %></tt>]
 	<br/>
 		[
 		<%= ric_websites_ring.map{|appname,url| link_to(appname,url)}.join(' :: ').html_safe %>

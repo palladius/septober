@@ -9,5 +9,5 @@ pwd
 
 echo "## PROD:"
 echo This script should build whats needed to dockerize Septober..
-echo "Docker version: $(cat /dockerize/VERSION)"
+echo "Docker version: $(cat ./dockerize/VERSION)"
 touch /dockerized-on-$DATA.touch
