@@ -55,6 +55,12 @@ Usage (for use of bin/septober guides you thru the creation of `~/.septober.yml`
 	bin/septober show 45
 	bin/septober done 45
 
+### Cloud Shell Walkthrough
+
+Use this Cloud Shell walkthrough for a hands-on example.
+
+[![Open this project in Cloud Shell](http://gstatic.com/cloudssh/images/open-btn.png)](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/palladius/septober&page=editor&tutorial=walkthrough.md)
+
 ### BUGS
 
 - Search engine is still broken (see search addon!)
