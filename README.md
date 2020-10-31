@@ -24,10 +24,13 @@
 
 	`make install`
 	`bundle install`
+
+  * Rails: `3.X`
+  * Ruby: `1.9.3p484 ` # or at least so says the docker container
   
 # Features 
   
-  - Language: RoR 3 !!!
+  - Language: RoR 3 !!! Today its a bug I know :)
   
   - Multi-Project. Each project can be home visible or not
    .Projects can be hidden in home page if you want 
