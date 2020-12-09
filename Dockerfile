@@ -6,7 +6,7 @@
 # ruby/gems 1.9.1
 FROM palladius/septober:v1.2
 
-MAINTAINER Riccardo Carlesso <riccardo.carlesso@gmail.com>
+#MAINTAINER Riccardo Carlesso <riccardo.carlesso@gmail.com>
 
 # Linux
 RUN apt-get -y update
