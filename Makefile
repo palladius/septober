@@ -36,9 +36,11 @@ docker-run-latest-bash: docker-build-latest
 docker-build:
 	docker build -t=septober-ng:v$(VERSION) .
 
-docker-push: # docker-build
+docker-push: docker-build
 	docker tag septober-ng:v$(VERSION) gcr.io/7eptober/septober-ng:v$(VERSION)
+	docker tag septober-ng:v$(VERSION) gcr.io/7eptober/septober-ng
 	docker push gcr.io/7eptober/septober-ng:v$(VERSION)
+	docker push gcr.io/7eptober/septober-ng
 
 
 
