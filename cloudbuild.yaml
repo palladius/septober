@@ -1,0 +1,30 @@
+###########################################
+# Questo file e' PUBBLICO!
+# Trigger in 7septober:
+# https://console.cloud.google.com/cloud-build/triggers?project=7eptober
+#
+# Questo e autobuild di septober vintage
+###########################################
+timeout: 1200s
+options:
+  machineType: 'N1_HIGHCPU_8'
+images:
+  - 'gcr.io/$PROJECT_ID/septober-vintage:unstable-trigger'
+steps:
+ - name: 'gcr.io/cloud-builders/docker'
+   args: ['build', '-t', "gcr.io/$PROJECT_ID/septober-vintage:unstable-trigger", '.']
+
+#  - name: 'gcr.io/cloud-builders/gcloud'
+#    entrypoint: 'bash'
+#    args: 
+#    - '-eEuo'
+#    - 'pipefail'
+#    - '-c'
+#    - './cloud-build-simple.sh'
+ 
+ 
+tags: 
+  - 'host::$_HOSTNAME'
+  - 'rails'
+  - 'metarepo'
+  - "septober-vintage"
