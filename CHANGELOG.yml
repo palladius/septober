@@ -1,6 +1,11 @@
 # PS TODO make this DRY, now you've to remember to update as well the following files:
 # - ./VERSION
 # - app/helpers/application_helper
+
+2.2.15: # 2020-12-10
+  - Project images support now HTTPS which became kind of a thing in the latest 8 years :)
+2.2.14: # 2020-12-10
+  - Fixed footer and hear. Now newer links and header aligns perfectly in center b:)
 2.2.7:
  - Fixes the edit_in_place error. Now you can edit a TODO with a single click.
 2.1.5:
