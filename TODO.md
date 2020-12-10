@@ -5,6 +5,13 @@ Docker
   also Google ruby/CDN docs:
   https://cloud.google.com/appengine/docs/flexible/ruby/serving-static-files
 
+Vulnerabilities
+===============
+
+* Try to merge github pull requuests and see if it still woks.
+* https://github.com/palladius/septober/pulls
+* If jquery is patched, verify the EDIT IN PLACE still works Riccardo
+
 CLI
 ===
 
