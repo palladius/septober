@@ -36,6 +36,8 @@ docker-run-latest-bash: docker-build-latest
 docker-build:
 	docker build -t=septober-ng:v$(VERSION) .
 
+# New generation push, with both VERSION and latest. T be sure I use a different project
+# Where cloud build is enabled :)
 docker-push: docker-build
 	docker tag septober-ng:v$(VERSION) gcr.io/7eptober/septober-ng:v$(VERSION)
 	docker tag septober-ng:v$(VERSION) gcr.io/7eptober/septober-ng
