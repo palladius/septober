@@ -6,18 +6,19 @@
 		#'FsDB' => 'http://fsdb.dev.palladius.eu/',
 		'RicLife (TODO)' => 'https://riclife.palladius.eu/',
 		'Ric Homepage' => 'http://www.palladius.it/',
+		'Goldie2020' => 'http://goldie-prod.palladius.it/',
 		'Septober on GitHub' => 'https://github.com/palladius/septober'
 	}
 
 %><div class='footer' align='center' ><small>
 	<p>
 		<b class='ric_app' ><%=$APP[:name] rescue "Unknown RicApp" %> v<%=$APP[:version] rescue 'VER_ERR' %></b> - <%=$APP.fetch :copyright, 'All rights reserved (TM)'%>
-		[<tt><%= Rails.env %></tt>]
+		[<b><tt><%= Rails.env %></tt></b>]
 	<br/>
 		[
 		<%= ric_websites_ring.map{|appname,url| link_to(appname,url)}.join(' :: ').html_safe %>
 		]
-	<%= RicPlugin.ric_websites_ring rescue "Problems to include ric_websites_ring" %>
+	<%#= RicPlugin.ric_websites_ring rescue "Problems to include ric_websites_ring" %>
 	</p>
 	</small>
 	</div>
