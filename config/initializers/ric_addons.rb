@@ -12,10 +12,10 @@ ActiveRecord::Base.extend SearchableCopy
 # Septober::Application.config.session_store :active_record_store
 
 $APP = {
-  :name        => 'Septober is my App (config/initializers/ric_addons.rb)',
+  :name        => 'Septober is my Super-Duper App (config/initializers/ric_addons.rb)',
   :headline    => 'Procrastinators unite.. tomorrow! (config/initializers/ric_addons.rb)',
   :version     => File.open("#{Rails.root}/VERSION" ).read ,  # RAILS_ROOT
-  :copyright   => 'Copyright 2011-19 A few rights reserved (see LICENSE)',
+  :copyright   => 'Copyright 2011-20 A few rights reserved (see LICENSE)',
   :email       => 'riccardo.carlesso+septober@gmail.com',
   :author_name => 'Riccardo Carlesso'
 #  :author      => 'Riccardo Carlesso <riccardo.carlesso@gmail.com>',

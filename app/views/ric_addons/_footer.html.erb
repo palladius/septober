@@ -1,6 +1,6 @@
 <%
 	ric_websites_ring = {
-		'RAB' => 'http://ricaddressbook.heroku.com/',
+		#'RAB' => 'http://ricaddressbook.heroku.com/',
 		'lo' => 'http://localhost:3000',
 		'SeptOber' => 'http://septober.heroku.com',
 		'FsDB' => 'http://fsdb.dev.palladius.eu/',
@@ -11,16 +11,17 @@
 
 %><div class='footer' align='center' ><small>
 	<p>
-		<b class='ric_app' ><%=$APP[:name] rescue "Unknown RicApp" %></b> v.<%=$APP[:version] rescue 'VER_ERR' %> - <%=$APP.fetch :copyright, 'All rights reserved (TM)'%>
+		<b class='ric_app' ><%=$APP[:name] rescue "Unknown RicApp" %> v<%=$APP[:version] rescue 'VER_ERR' %></b> - <%=$APP.fetch :copyright, 'All rights reserved (TM)'%>
 		[<tt><%= Rails.env %></tt>]
 	<br/>
 		[
 		<%= ric_websites_ring.map{|appname,url| link_to(appname,url)}.join(' :: ').html_safe %>
 		]
-	<%#= RicPlugin.ric_websites_ring rescue "Problems to include ric_websites_ring" %>
+	<%= RicPlugin.ric_websites_ring rescue "Problems to include ric_websites_ring" %>
 	</p>
 	</small>
 	</div>
+
 <% if Rails.env == 'development' && $debug_info != {} %>
 	<hr/>
 	<h2>Development Debug Info from <tt>$debug_info</tt></h2>
