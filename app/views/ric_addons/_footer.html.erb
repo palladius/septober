@@ -14,7 +14,7 @@
 	<p>
 		<b class='ric_app' ><%=$APP[:name] rescue "Unknown RicApp" %> v<%=$APP[:version] rescue 'VER_ERR' %></b> - <%=$APP.fetch :copyright, 'All rights reserved (TM)'%>
 		[<b><tt><%= Rails.env %></tt></b>]
-	<br/>
+	<br/>Host: <%= Socket.gethostname %> (<%= Socket.ip_address_list.detect(&:ipv4_private?).ip_address rescue :boh %>)
 		[
 		<%= ric_websites_ring.map{|appname,url| link_to(appname,url)}.join(' :: ').html_safe %>
 		]

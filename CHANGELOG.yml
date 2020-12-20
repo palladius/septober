@@ -2,6 +2,8 @@
 # - ./VERSION
 # - app/helpers/application_helper
 
+2.2.18: # 2020-12-20
+  - Added hostname and IP in homepage for whitelisting ;)
 2.2.15: # 2020-12-10
   - Project images support now HTTPS which became kind of a thing in the latest 8 years :)
 2.2.14: # 2020-12-10

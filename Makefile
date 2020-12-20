@@ -31,7 +31,7 @@ docker-build-latest:
 
 # I doubt this work ;-)
 docker-run-latest-bash: docker-build-latest
-	docker run -it -p 8080:3000 septober-ng:latest bash
+	docker run -it -p 8080:8080 septober-ng:latest bash
 
 docker-build:
 	docker build -t=septober-ng:v$(VERSION) .
@@ -45,6 +45,8 @@ docker-push: docker-build
 	docker push gcr.io/7eptober/septober-ng
 
 
+####################################################################
+# OLD IMAGES - they work by pure luck
 
 docker-run-v1:
 	docker run -it -p 8080:3000 --name=septober-v1-p8080 palladius/septober:v1 bash -c -- 'cd /home/riccardo/git/septober/ && make run'
@@ -56,9 +58,7 @@ docker-run-v1.1:
 	docker run -p 80:8080 --name=septober-v11-p8080 palladius/septober:v1.1 /bin/sh -c "cd /home/riccardo/git/septober && make run-prod"
 docker-run-v1.2:
 	docker run -p 80:8080 --name=septober-v12-p8080 palladius/septober:v1.2
-###############################################################
-#docker-troubleshoot-v1.2:
-#	docker run -it -p 3005:3000 palladius/septober:v1.2 bash
+####################################################################
 
 
 build-local:

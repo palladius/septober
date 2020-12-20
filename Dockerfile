@@ -9,8 +9,7 @@ FROM palladius/septober:v1.2
 #MAINTAINER Riccardo Carlesso <riccardo.carlesso@gmail.com>
 
 # Linux
-RUN apt-get -y update
-RUN apt-get -y install libmysqlclient-dev mysql-common libmysqlclient18 mysql-client
+RUN apt-get -y update && apt-get -y install libmysqlclient-dev mysql-common libmysqlclient18 mysql-client
 
 # 2. Latest Code
 
