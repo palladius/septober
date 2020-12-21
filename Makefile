@@ -33,6 +33,13 @@ docker-build-latest:
 docker-run-latest-bash: docker-build-latest
 	docker run -it -p 8080:8080 septober-ng:latest bash
 
+docker-run-latest-prod:
+	docker run -it --env RAILS_ENV=production -p 8080:8080 septober-ng:latest ./entrypoint-8080.sh
+
+docker-run-latest-prod-bash:
+	docker run -it --env RAILS_ENV=production -p 8080:8080 septober-ng:latest bash
+
+
 docker-build:
 	docker build -t=septober-ng:v$(VERSION) .
 
