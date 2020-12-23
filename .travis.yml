@@ -3,8 +3,8 @@ rvm:
   - 1.8.7
   - 1.9.3
 script: 
-  - bundle exec rake test
   - bundle exec rake db:migrate
+  - bundle exec rake test
   - make build-local 
 # See https://docs.travis-ci.com/user/docker/
 services:
