@@ -21,3 +21,22 @@ push2dockerhub-v2.0:
 	@echo "Assuming you tag is: 7d27ead4236d. TODO(ricc): make it smarter"
 	docker tag 7d27ead4236d palladius/septober:autopush
 	docker push palladius/septober:autopush
+
+
+#############################################
+# 2020 effort to restore old amazing apps :)
+# idea: https://rollout.io/blog/running-rails-development-environment-docker/
+
+septober-volume:
+	git clone git@github.com:palladius/septober.git septober-volume/
+	touch !$/.septober-volume.touch 
+
+docker-septvolume-build: septober-volume
+	docker build -t septober-volume septober-volume/
+
+
+docker-septvolume-run: septober-volume
+	yellow TODO build docker-septvolume-build
+	docker run -itP -p 3000:3000 -v `pwd`/septober-volume/:/var/www-public/septober septober-volume bash
+
+

@@ -14,13 +14,13 @@ gem "ric",              '>= 0.11.3'
 ###############################################
 # Sqlite3 hell - doesnt work
 gem 'sqlite3-ruby',     :require => 'sqlite3'
-gem 'sqlite3',          '>= 1.4.1'
+gem 'sqlite3' # ,          '>= 1.4.1'
 # prova 1: 
 #gem 'sqlite3', git: "https://github.com/sparklemotion/sqlite3-ruby"
 # prova 2: 
 # - https://github.com/sparklemotion/sqlite3-ruby/issues/224
 # - https://stackoverflow.com/questions/50249153/cannot-load-such-file-sqlite3-sqlite3-native-loaderror-ruby-on-rails/50680295
-gem 'sqlite3', git: "https://github.com/larskanis/sqlite3-ruby", branch: "add-gemspec"
+#gem 'sqlite3', git: "https://github.com/larskanis/sqlite3-ruby", branch: "add-gemspec"
 # prova 3:
 #gem 'sqlite3',  '1.3.11'
 ###############################################

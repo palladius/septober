@@ -1,19 +1,21 @@
 <%
 	ric_websites_ring = {
-		'RAB' => 'http://ricaddressbook.heroku.com/',
-		'lo' => 'http://localhost:3000',
-		'SeptOber' => 'http://septober.heroku.com',
-		'FsDB' => 'http://fsdb.dev.palladius.eu/',
-		'RicLife' => 'https://riclife.palladius.eu/',
-		'Homepage' => 'http://www.palladius.it/',
+		#'RAB' => 'http://ricaddressbook.heroku.com/',
+		'lo:3k' => 'http://localhost:3000',
+		'SeptOber20' => 'http://septober.palladius.it',
+		'SeptOberGCE' => 'http://septober-gce.palladius.it',
+		#'FsDB' => 'http://fsdb.dev.palladius.eu/',
+		'RicLife (TODO)' => 'https://riclife.palladius.eu/',
+		'Ric Homepage' => 'http://www.palladius.it/',
+		'Goldie2020' => 'http://goldie-prod.palladius.it/',
 		'Septober on GitHub' => 'https://github.com/palladius/septober'
 	}
 
 %><div class='footer' align='center' ><small>
 	<p>
-		<b class='ric_app' ><%=$APP[:name] rescue "Unknown RicApp" %></b> v.<%=$APP[:version] rescue 'VER_ERR' %> - <%=$APP.fetch :copyright, 'All rights reserved (TM)'%>
-		[<tt><%= Rails.env %></tt>]
-	<br/>
+		<b class='ric_app' ><%=$APP[:name] rescue "Unknown RicApp" %> v<%=$APP[:version] rescue 'VER_ERR' %></b> - <%=$APP.fetch :copyright, 'All rights reserved (TM)'%>
+		[<b><tt><%= Rails.env %></tt></b>]
+	<br/>Host: <%= Socket.gethostname %> (<%= Socket.ip_address_list.detect(&:ipv4_private?).ip_address rescue :boh %>)
 		[
 		<%= ric_websites_ring.map{|appname,url| link_to(appname,url)}.join(' :: ').html_safe %>
 		]
@@ -21,6 +23,7 @@
 	</p>
 	</small>
 	</div>
+
 <% if Rails.env == 'development' && $debug_info != {} %>
 	<hr/>
 	<h2>Development Debug Info from <tt>$debug_info</tt></h2>

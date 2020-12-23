@@ -1,3 +1,4 @@
+VERSION=$(shell cat VERSION)
 
 install:
 	sudo apt-get install sqlite libsqlite3-dev
@@ -25,15 +26,39 @@ plugins-update:
 # Docker inspiration: https://github.com/kstaken/dockerfile-examples
 
 # cd /home/riccardo/git/septober/ && make run
-docker-build-latest:
-	docker build -t=septober-ng:latest .
+docker-build-latest: docker-build
+	echo Building locally two tags: both latest version with explicit vVERSION and LATEST
+#	docker build -t=septober-ng:latest .
 
 # I doubt this work ;-)
 docker-run-latest-bash: docker-build-latest
-	docker run -it -p 8080:3000 septober-ng:latest bash
+	docker run -it -p 8080:8080 septober-ng:latest bash
 
-docker-run-v1:
-	docker run -it -p 8080:3000 --name=septober-v1-p8080 palladius/septober:v1 bash -c -- 'cd /home/riccardo/git/septober/ && make run'
+docker-run-latest-prod: docker-build
+	docker run -it --env RAILS_ENV=production -p 8080:8080 septober-ng:latest ./entrypoint-8080.sh
+
+docker-run-latest-prod-bash: docker-build
+	docker run -it --env RAILS_ENV=production -p 8080:8080 septober-ng:latest bash
+
+
+docker-build:
+	docker build -t=septober-ng:v$(VERSION) .
+	docker tag septober-ng:v$(VERSION) septober-ng:latest
+
+# New generation push, with both VERSION and latest. T be sure I use a different project
+# Where cloud build is enabled :)
+docker-push: docker-build
+	docker tag septober-ng:v$(VERSION) gcr.io/7eptober/septober-ng:v$(VERSION)
+	docker tag septober-ng:v$(VERSION) gcr.io/7eptober/septober-ng
+	docker push gcr.io/7eptober/septober-ng:v$(VERSION)
+	docker push gcr.io/7eptober/septober-ng
+
+
+####################################################################
+# OLD IMAGES - they work by pure luck
+
+#docker-run-v1:
+#	docker run -it -p 8080:3000 --name=septober-v1-p8080 palladius/septober:v1 bash -c -- 'cd /home/riccardo/git/septober/ && make run'
 docker-run-daemon-v1:
 	docker run -p 3000:3000 -d palladius/septober:v1 /bin/sh -c "cd /home/riccardo/git/septober && make run"
 docker-run-v1:
@@ -42,13 +67,11 @@ docker-run-v1.1:
 	docker run -p 80:8080 --name=septober-v11-p8080 palladius/septober:v1.1 /bin/sh -c "cd /home/riccardo/git/septober && make run-prod"
 docker-run-v1.2:
 	docker run -p 80:8080 --name=septober-v12-p8080 palladius/septober:v1.2
-###############################################################
-#docker-troubleshoot-v1.2:
-#	docker run -it -p 3005:3000 palladius/septober:v1.2 bash
+####################################################################
 
 
-build-local:
-	docker build -t=septober-ng:local .
+#build-local:#
+#	docker build -t=septober-ng:local .
 run-local: build-local
 	@echo Riccardo check it has the LATEST version!
 	docker run -it -p 8080:3000 septober-ng:local bash -c "rails server"
