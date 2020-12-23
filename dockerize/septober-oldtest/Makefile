@@ -1,8 +1,9 @@
 
 # I doubt this work ;-)
-run:
-	docker build -t riccseptober .
-	docker run --name riccardo-septober -d riccseptober
+run: build
+#	docker build -t riccseptober .
+#	docker run --name riccardo-septober -d riccseptober
+	docker run -it -p 8080:8080 septober-ng ./entrypoint-8080.sh
 
 run-v1:
 	docker run -it -p 3002:3000 --name=septober-v1-p3002 palladius/septober:v1 bash -c -- 'cd /home/riccardo/git/septober/ && make run'

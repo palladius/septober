@@ -6,10 +6,10 @@
 # This has most code
 FROM palladius/septober:v1.2
 
-MAINTAINER Riccardo Carlesso <palladiusbonton+septober@gmail.com>
+#MAINTAINER Riccardo Carlesso <palladiusbonton+septober@gmail.com>
 
 # WORKDIR /home/riccardo/git/septober
-EXPOSE 3000
+EXPOSE 8080
 
 RUN mkdir -p /dockerize/
 ADD ./ /dockerize/

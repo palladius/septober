@@ -29,3 +29,17 @@ RUN bundle install
 
 RUN cat /var/www-public/septober/VERSION
 CMD ["rails", "server"]
+
+
+
+##
+#
+# See difference between two: https://goinbigdata.com/docker-run-vs-cmd-vs-entrypoint/#:~:text=ENTRYPOINT%20instruction%20allows%20you%20to,runs%20with%20command%20line%20parameters.
+#ENTRYPOINT ["/bin/echo", "Hello"]
+#CMD ["world"]
+# By inspecting I see this:
+#             "Entrypoint": null,
+# docker inspect septober-ng | grep -C 3 Cmd
+#               "/bin/sh",               "-c",                "#(nop) ",
+# AND
+#            "Cmd": [  "/dockerize/run.sh"
