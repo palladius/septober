@@ -4,7 +4,7 @@ class Todo < ActiveRecord::Base
     require 'socket'
   
     attr_accessible :name, :description, :active, :due, :user_id, :where, :priority, :project_id, :url,
-      :progress_status, :favorite, :hide_until, :depends_on_id, :source, :photo_url
+      :progress_status, :favorite, :hide_until, :depends_on_id, :source, :photo_url, :id
     searchable_by :name, :description # , :where forbidden until u fix the search!
     acts_as_carlesso
     

@@ -33,10 +33,10 @@ class Api::TodosController < ApplicationController
   end
 
   def create
-    pgreen "DEBUG API::TodoController.create()"
+    #pgreen "DEBUG API::TodoController.create()"
     # 20190512 For some reasons, params comes virgin, wihtout [:todo] so I need to push one level.
     params[:todo] = params
-    pyellow "DEBUG API::TodoController.create() - param[:todo] vale: #{params[:todo]}"
+    pgray "[RiccDEBUG] API::TodoController.create() - param[:todo] vale: #{params[:todo]}"
 
     params[:todo][:user_id] = current_api_user.id
     @todo = Todo.new(params[:todo]) # both HTML and XML :)
@@ -97,6 +97,11 @@ class Api::TodosController < ApplicationController
     @todo.destroy
     flash[:notice] = "Successfully destroyed todo."
     #redirect_to todos_url
+  end
+  def edit
+    #@todo = Todo.find(params[:id])
+    # 2020 not sure if this works
+    update
   end
   
 private
