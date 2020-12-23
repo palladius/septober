@@ -57,8 +57,9 @@ Septober::Application.routes.draw do
     get "todos/rss"        => "todos#rss"
     resources :todos do
       member do
-        put  'done'     #  lynx --dump http://localhost:3000/api/todos/7.xml -auth=guest:guest
-        put  'toggle'   # 201905 bug: ActionController::RoutingError (No route matches "/api/todos/65/toggle.json"):
+        put 'done'     #  lynx --dump http://localhost:3000/api/todos/7.xml -auth=guest:guest
+        put 'toggle'   # 201905 bug: ActionController::RoutingError (No route matches "/api/todos/65/toggle.json"):
+        put 'edit'
       end
     end
   end
