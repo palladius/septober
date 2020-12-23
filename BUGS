@@ -28,3 +28,7 @@ Completed   in 103ms
 
 NoMethodError (undefined method `[]=' for nil:NilClass):
   app/controllers/api/todos_controller.rb:37:in `create'
+
+###########################
+#3 2020-12-23 Project delete doesnt work.
+It actually works better from CLI :) since Ive just implemented the function under /api/todos_controller.
