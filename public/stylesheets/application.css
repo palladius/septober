@@ -27,7 +27,7 @@ a {
   margin-top: 20px;
 }
 
-#flash_notice, #flash_error, #flash_alert {
+#flash_notice, #flash_error, #flash_alert, #flash_riccardo {
   padding: 5px 8px;
   margin: 10px 0;
 }
@@ -40,6 +40,11 @@ a {
 #flash_error, #flash_alert {
   background-color: #FCC;
   border: solid 1px #C66;
+}
+
+#flash_riccardo {
+  background-color: rgb(255, 255, 180);;
+  border: solid 1px rgb(255, 238, 0);
 }
 
 .fieldWithErrors {

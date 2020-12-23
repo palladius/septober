@@ -9,6 +9,8 @@ VER="$(cat VERSION)"
 MYPORT="${PORT:-8080}"
 APP_NAME="${APPNAME:-entrypoint-sobenme}"
 
+export MESSAGGIO_OCCASIONALE="Test MsgOccas in Entrypoint8080... TBD removeme"
+
 echo "[$APP_NAME-v$VER-entrypoint] BEGIN. Args: $*"
     
 if printenv RAILS_ENV | grep -q production ; then
