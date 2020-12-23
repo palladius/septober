@@ -60,6 +60,7 @@ Septober::Application.routes.draw do
         put 'done'     #  lynx --dump http://localhost:3000/api/todos/7.xml -auth=guest:guest
         put 'toggle'   # 201905 bug: ActionController::RoutingError (No route matches "/api/todos/65/toggle.json"):
         put 'edit'
+        put 'delete'
       end
     end
   end

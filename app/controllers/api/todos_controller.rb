@@ -36,20 +36,24 @@ class Api::TodosController < ApplicationController
     #pgreen "DEBUG API::TodoController.create()"
     # 20190512 For some reasons, params comes virgin, wihtout [:todo] so I need to push one level.
     params[:todo] = params
-    pgray "[RiccDEBUG] API::TodoController.create() - param[:todo] vale: #{params[:todo]}"
+    pgray "[RiccDEBUG] API::TodoController.create() - param[:todo]=#{params[:todo]}"
 
     params[:todo][:user_id] = current_api_user.id
+    #params[:todo][:id] = "424242"
     @todo = Todo.new(params[:todo]) # both HTML and XML :)
     @todo.user_id = current_api_user.id
-    @todo.apply_todo_regex_magic() rescue pred("Couldnt apply regex for TODO: #{ @todo }")
+    @todo.apply_todo_regex_magic() rescue pred("Couldnt apply regex for TODO: #{ @todo }. Error: ''#{ $! }''")
     respond_to do |format|
       format.xml { 
         if @todo.save
+          pred "[RiccDEBUG] API::TodoController.create() - ALL GOOD WITH CREATION: param[:todo]=#{params[:todo]}"
           render(:xml => @todo.to_xml, :status => "201 Created yay", :message => "Yay API TOdo created id=TODO") 
         else
+          pred "[RiccDEBUG] API::TodoController.create() - SOMETHING WRONG WITH CREATION: param[:todo]=#{params[:todo]}"
           render(:xml => @todo.to_xml , :status => "569 Couldnt save it sorry", :message => "ERROR API TOdo NOT created id=TODO")
         end
       }
+
       format.json
       format.js # do nothing
     end #/respond_to
@@ -102,6 +106,9 @@ class Api::TodosController < ApplicationController
     #@todo = Todo.find(params[:id])
     # 2020 not sure if this works
     update
+  end
+  def delete
+    _update_active("delete")
   end
   
 private

@@ -4,7 +4,8 @@ class User < ActiveRecord::Base
   # new columns need to be added here to be writable through mass assignment
   attr_accessible :username, :email, :password, :password_confirmation
   
-  accepts_nested_attributes_for :todos
+# 2020 https://stackoverflow.com/questions/6163759/cant-mass-assign-protected-attributes
+  attr_accessible :todos_attributes, :projects_attributes
 
   attr_accessor :password
   before_save :prepare_password
