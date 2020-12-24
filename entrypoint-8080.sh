@@ -9,7 +9,7 @@ VER="$(cat VERSION)"
 MYPORT="${PORT:-8080}"
 APP_NAME="${APPNAME:-entrypoint-sobenme}"
 
-export MESSAGGIO_OCCASIONALE="Test Entrypoint8080 which is NOW the default entrypoint in docker, woohoo! TBD removeme once it's proven to work so we can use the ones from docker apps."
+#export MESSAGGIO_OCCASIONALE="Test Entrypoint8080 which is NOW the default entrypoint in docker, woohoo! TBD removeme once it's proven to work so we can use the ones from docker apps."
 
 echo "[$APP_NAME-v$VER-entrypoint] BEGIN. Args: $*"
     

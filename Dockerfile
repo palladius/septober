@@ -15,8 +15,10 @@ RUN apt-get -y update && apt-get -y install libmysqlclient-dev mysql-common libm
 
 ADD . /var/www-public/septober/
 WORKDIR /var/www-public/septober/
+
 # horrible again
-RUN cp Gemfile-sqlite3 Gemfile
+# 2020: removing this
+#RUN cp Gemfile-sqlite3 Gemfile
 # Added for MySQL but if you only use SQLite, its ok to remove the initializer.
 RUN mv ./config/initializers/abstract_mysql2_adapter.rb ./config/initializers/abstract_mysql2_adapter.rb.inutile
 #RUN /bin/sh /var/www-public/septober/dockerize/prep.sh
