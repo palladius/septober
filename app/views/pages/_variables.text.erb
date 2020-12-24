@@ -1,0 +1,6 @@
+app_name: $APP[:name]
+app_version: <%=$APP[:version] rescue 'VER_ERR' %>
+env: <%= ENV["RAILS_ENV"] %>
+hostname: <%= Socket.gethostname %>
+ip_address: <%= Socket.ip_address_list.detect(&:ipv4_private?).ip_address rescue :boh %>  
+

@@ -1,6 +1,6 @@
 Septober::Application.routes.draw do
 
-  %w{ index docs about search license}.each do |page_action| 
+  %w{ index about docs healthz license search statusz varz}.each do |page_action| 
     get "pages/#{page_action}"
   end
   
@@ -8,6 +8,11 @@ Septober::Application.routes.draw do
   match 'signup' => 'users#new', :as => :signup
   match 'logout' => 'sessions#destroy', :as => :logout
   match 'login' => 'sessions#new', :as => :login
+
+  # Google style endpoints. Helps with k8s too.
+  match 'healthz' => 'pages#healthz' 
+  match 'statusz' => 'pages#statusz' 
+  match 'varz' => 'pages#varz' 
 
   resources :sessions
   resources :tags

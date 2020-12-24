@@ -9,7 +9,7 @@ VER="$(cat VERSION)"
 MYPORT="${PORT:-8080}"
 APP_NAME="${APPNAME:-entrypoint-sobenme}"
 
-export MESSAGGIO_OCCASIONALE="Test MsgOccas in Entrypoint8080... TBD removeme"
+export MESSAGGIO_OCCASIONALE="Test MsgOccas in Entrypoint8080... TBD removeme once it's proven to work."
 
 echo "[$APP_NAME-v$VER-entrypoint] BEGIN. Args: $*"
     

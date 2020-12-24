@@ -12,7 +12,7 @@
 		<td align='center' width='80%' >
 			<%= link_to( '<b>Home</b>'.html_safe ,"/") %> 
 			<% @base_models.each do |model| %> 
-				<%= link_to(model,"/#{model.gsub(/#/,'/')}") %>
+				<%= link_to(model.capitalize,"/#{model.gsub(/#/,'/')}") %>
 			<% end %> 
 		</td>
 		<td align='right' >
