@@ -90,10 +90,12 @@ class TodosController < ApplicationController
   end
   
   def destroy
-    raise "Destroy exception: (i thought id never get here!)"
-    #flash[:notice] = "Starting to destroy todo ##{@todo.id}..."
+    #broken so lets debug
+    pyellow "TOD Destroy. Params: #{params}"
+    raise "Destroy exception: (i thought id never get here!). Maybe the javascript is broken!! Usually it send sa popup with are you sure.."
+    flash[:notice] = "Starting to destroy todo ##{@todo.id}..."
     @todo = Todo.find(params[:id])
-    @todo.destroy 
+    @todo.destroy
     flash[:notice] = "Successfully destroyed todo ##{@todo.id}."
     redirect_to todos_url
   end

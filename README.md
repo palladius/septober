@@ -64,6 +64,19 @@ Use this Cloud Shell walkthrough for a hands-on example.
 
 [![Open this project in Cloud Shell](http://gstatic.com/cloudssh/images/open-btn.png)](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/palladius/septober&page=editor&tutorial=walkthrough.md)
 
+## Dockerization
+
+This is complex topic so it deserves a paragraph here :)
+Until 2020-12-24 I had two branches of Dockerization:
+* in this `Dockerfile` with the sqlite containerization. Due to bugs and pains in Mysql I jus t overwrote the Gemfile making the system forget that
+   mysq is even a thing.
+* a private dockerfile which inherits from this, adds a private user/password/hostname to my prod DB and loads it, creating `septober-mysql` which only works in prod.
+
+This was painful as I had two things to maintain, dockerwise. So I finally merged the two creating a third docker in `docker-experiments/01-...`. This allows me to build
+a local docker image mounting the code as a volume, which allows me to fix bugs on th fly and not have to commit, push and hope (AKA "plug and pray").
+Now I'm there and the Dockerfile suppoerts both sqlite and mysql, and sqlite is set up for dev, and mysql for prod. Prod has also a dumb DB in case you want to set it up
+(I just need to add a routine to the ./entrypoint-8080.sh which accepts a db_setup_and_run for an empty DB on docker-compose). Yet to come!
+
 ### BUGS
 
 - Search engine is still broken (see search addon!)
@@ -71,9 +84,11 @@ Use this Cloud Shell walkthrough for a hands-on example.
     
 ### TODO 
 
-	- Add Facebook login!
+	- Add Google/Facebook login!
   
-    Things to add to this mirabolant script:
+  - fix bugs (eg you cant DELETE a TODO as of now just arechive them!)
+
+  -  Things to add to this mirabolant script:
     - remove todos (They're app specific, consider them a proof of concept)
     - ask for root password on create (in rake db:seed more security) 
     - Add tags to models.. and appropriate `acts_as_taggable` gem

@@ -18,6 +18,7 @@ gem 'acts-as-taggable-on'                         # For tags
 gem "jquery-rails",     '>= 0.2.6'   # For InPlaceEditing
 gem "on_the_spot"                    # .. https://github.com/nathanvda/on_the_spot 
 
+gem 'lolcat'   # Totally useless but what is life without some color?
 gem "mocha",            :group => :test
 gem 'wirble', :groups => [:development,:test]
 #gem 'autotest', :groups => [:development,:test]

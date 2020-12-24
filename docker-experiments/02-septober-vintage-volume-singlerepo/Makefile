@@ -27,7 +27,7 @@ docker-run-volume: docker-build
 	#@echo Also exposing 3306 from outside to inside for mysql tests..
 	@yellow Riccardo Remember to switch to another non default dir: /var/www-public/02-septober-vintage-volume-singlerepo/
 	docker run -it -p 8080:8080  \
-	    -v /home/riccardo/git/gcp-metarepo/septober/docker-experiments/02-septober-vintage-volume-singlerepo/septober-github-copy/:/var/www-public/02-septober-vintage-volume-singlerepo/ \
+	    -v /home/riccardo/git/gcp-metarepo/septober/:/var/www-public/02-septober-vintage-volume-singlerepo/ \
 	 	$(APPNAME):v$(VERSION) \
 	 	bash
 

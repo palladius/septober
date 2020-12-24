@@ -3,7 +3,7 @@
       image_tag("icons/todo/V-grey.png", :mouseover => "icons/todo/V.png", :height => 50) ,
       "/todos/#{@todo.id}/done", :title => t(:mark_as_done)
     ) unless @todo.done? %>
-		<table border='1'><tr><td>
+		<table border='0'><tr><td>
 		<%= render_photo_url(@todo, :height => 200 ) if @todo.photo_url? %>
 		</table>
 	</div>
