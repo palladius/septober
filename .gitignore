@@ -11,3 +11,4 @@ tt.*install
 install
 .septober.yml
 vendor/mysql2-0.5.2.gem
+config/database.yml.prod

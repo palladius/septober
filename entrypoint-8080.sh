@@ -22,9 +22,11 @@ if printenv RAILS_ENV | grep -q production ; then
     source .env
     source .env.production
 
-    bundle exec rake assets:precompile
+   # useless for septober too old!
+    #bundle exec rake assets:precompile
+    bundle install
 
-    #bundle exec rake db:migrate
+    bundle exec rake db:migrate
 
     bundle exec rails s -b 0.0.0.0 -p $MYPORT
 else
