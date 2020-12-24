@@ -26,9 +26,16 @@ test:
 production:
   adapter: mysql2
   encoding: utf8
-  database: YourSeptoberDB     # change me
-  username: Y0urS3ptob3rUs3r   # change me
-  password: Y0urP4ssw0rd       # change me
-  host: localhost # mysql-docker-compose   #  1.2.3.4                # change me
-  port: 3306
+  #database: YourSeptoberDB     # change me
+  #username: Y0urS3ptob3rUs3r   # change me
+  #password: Y0urP4ssw0rd       # change me
+  #host: localhost # mysql-docker-compose   #  1.2.3.4                # change me
+  #port: 3306
+  database: <%= ENV['DATABASE_NAME'] || 'YourSeptoberDB' %>
+  username: <%= ENV['DATABASE_USER'] || 'Y0urS3ptob3rUs3r' %>
+  password: <%= ENV['DATABASE_PASSWORD'] || 'Y0urD3f4ultSh1ttyP4ssw0rd' %>
+  host: <%= ENV['DATABASE_HOST'] || 'localhost' %>
+  port: <%= ENV['DATABASE_PORT'] || '3306' %> # note its a string now, in any case. Was int.
 ########################################################################
+
+

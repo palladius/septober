@@ -8,6 +8,8 @@ services:
     environment:
       - ALLOW_EMPTY_PASSWORD=yes
       - MARIADB_ROOT_PASSWORD=thisIsClearlyNotGood4Prod
+    ports:
+      - 3306:3306
 
   myapp:
     tty: true # Enables debugging capabilities when attached to this container.
@@ -15,11 +17,13 @@ services:
     image: septober-ng:latest
     environment:
       - DATABASE_HOST=mariadb
+      - DATABASE_PORT=3306
       - DATABASE_NAME=my_app_development
-      - DATABASE_user=root
-      - DATABASE_pass='thisIsClearlyNotGood4Prod'
+      - DATABASE_USER=root
+      - DATABASE_PASSWORD='thisIsClearlyNotGood4Prod'
       - MESSAGGIO_OCCASIONALE='Test from Docker Compose to cheaply test DB config'
       - RAILS_ENV=production
+
     depends_on:
       - mariadb
     ports:
