@@ -1,4 +1,5 @@
 VERSION=$(shell cat VERSION)
+APPNAME= septober-ng
 
 install:
 	sudo apt-get install sqlite libsqlite3-dev
@@ -32,27 +33,30 @@ docker-build-latest: docker-build
 
 # I doubt this work ;-)
 docker-run-latest-bash: docker-build-latest
-	docker run -it -p 8080:8080 septober-ng:latest bash
+	docker run -it -p 8080:8080 $(APPNAME):latest bash
 
 docker-run-latest-prod: docker-build
-	docker run -it --env RAILS_ENV=production -p 8080:8080 septober-ng:latest ./entrypoint-8080.sh
+	docker run -it --env RAILS_ENV=production -p 8080:8080 $(APPNAME):latest ./entrypoint-8080.sh
 
 docker-run-latest-prod-bash: docker-build
-	docker run -it --env RAILS_ENV=production -p 8080:8080 septober-ng:latest bash
+	docker run -it --env RAILS_ENV=production -p 8080:8080 $(APPNAME):latest bash
 
 
 docker-build:
-	docker build -t=septober-ng:v$(VERSION) .
-	docker tag septober-ng:v$(VERSION) septober-ng:latest
+	docker build -t=$(APPNAME):v$(VERSION) .
+	docker tag $(APPNAME):v$(VERSION) $(APPNAME):latest
 
 # New generation push, with both VERSION and latest. T be sure I use a different project
 # Where cloud build is enabled :)
 docker-push: docker-build
-	docker tag septober-ng:v$(VERSION) gcr.io/7eptober/septober-ng:v$(VERSION)
-	docker tag septober-ng:v$(VERSION) gcr.io/7eptober/septober-ng
-	docker push gcr.io/7eptober/septober-ng:v$(VERSION)
-	docker push gcr.io/7eptober/septober-ng
+	docker tag $(APPNAME):v$(VERSION) gcr.io/7eptober/$(APPNAME):v$(VERSION)
+	docker tag $(APPNAME):v$(VERSION) gcr.io/7eptober/$(APPNAME)
+	docker push gcr.io/7eptober/$(APPNAME):v$(VERSION)
+	docker push gcr.io/7eptober/$(APPNAME)
 
+docker-compose:
+	echo Riccardo were doing this to test MySQL DB connectivity in dev.
+	docker-compose up
 
 ####################################################################
 # OLD IMAGES - they work by pure luck
@@ -71,7 +75,7 @@ docker-run-v1.2:
 
 
 #build-local:#
-#	docker build -t=septober-ng:local .
+#	docker build -t=$(APPNAME):local .
 run-local: build-local
 	@echo Riccardo check it has the LATEST version!
 	docker run -it -p 8080:3000 septober-ng:local bash -c "rails server"

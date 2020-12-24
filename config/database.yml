@@ -16,19 +16,19 @@ test:
   pool: 5
   timeout: 5000
 
-production:
-  adapter: sqlite3
-  database: db/production.sqlite3
-  pool: 5
-  timeout: 5000
+#production:
+#  adapter: sqlite3
+#  database: db/production.sqlite3
+#  pool: 5
+#  timeout: 5000
 ########################################################################
 # If you enable MySQL make sure to enable this and change the quadruple b/user/pass/IP.
-#production:
-#  adapter: mysql2
-#  encoding: utf8
-#  database: YourSeptoberDB     # change me
-#  username: Y0urS3ptob3rUs3r   # change me
-#  password: Y0urP4ssw0rd       # change me
-#  host: 1.2.3.4                # change me
-#  port: 3306
+production:
+  adapter: mysql2
+  encoding: utf8
+  database: YourSeptoberDB     # change me
+  username: Y0urS3ptob3rUs3r   # change me
+  password: Y0urP4ssw0rd       # change me
+  host: localhost # mysql-docker-compose   #  1.2.3.4                # change me
+  port: 3306
 ########################################################################

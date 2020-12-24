@@ -1,0 +1,28 @@
+# copying from bitnami: https://hub.docker.com/r/bitnami/rails/
+# I want my app to use the same vars as bitnami for further compatibility.
+version: '2'
+services:
+
+  mariadb:
+    image: 'docker.io/bitnami/mariadb:10.3-debian-10'
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+      - MARIADB_ROOT_PASSWORD=thisIsClearlyNotGood4Prod
+
+  myapp:
+    tty: true # Enables debugging capabilities when attached to this container.
+    #image: docker.io/bitnami/rails:6-debian-10
+    image: septober-ng:latest
+    environment:
+      - DATABASE_HOST=mariadb
+      - DATABASE_NAME=my_app_development
+      - DATABASE_user=root
+      - DATABASE_pass='thisIsClearlyNotGood4Prod'
+      - MESSAGGIO_OCCASIONALE='Test from Docker Compose to cheaply test DB config'
+      - RAILS_ENV=production
+    depends_on:
+      - mariadb
+    ports:
+      - 3000:3000
+    volumes:
+      - .:/app
