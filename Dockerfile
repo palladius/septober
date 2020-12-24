@@ -28,7 +28,8 @@ RUN bundle install
 
 
 RUN cat /var/www-public/septober/VERSION
-CMD ["rails", "server"]
+#CMD ["rails", "server"]
+CMD ["./entrypoint-8080.sh"] 
 
 
 
