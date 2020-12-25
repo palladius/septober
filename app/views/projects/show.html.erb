@@ -1,5 +1,5 @@
 <div align='right' class='floating_right' >
-	<%= render_project_icon( @project, :height => 75 ) %>
+	<%= render_project_icon( @project, :height => 140 ) %>
 </div>
 <% title "#{@project.name.capitalize}" %>
 <p>
@@ -25,7 +25,7 @@
 </p>
 <p>
   <strong>User:</strong>
-  <%= @project.user_id %>
+  <%= @project.user %>
 </p>
 	<p>
 	  <strong>Tags:</strong>

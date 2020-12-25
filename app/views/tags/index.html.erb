@@ -2,6 +2,8 @@
 <%
  # @TODO CLoud
 %>
+Note there is a current bug - tags from ALL users are visible.
+Don't put any PII in it (eg, YOLO is good, name of our child is not).<br/>
 <% if current_user %>
 <%   @tags.sort{|x,y| x.to_s <=> y.to_s }.each do |tag| %>
      <%= render_tag(tag).html_safe %>

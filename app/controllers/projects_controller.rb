@@ -51,6 +51,7 @@ class ProjectsController < ApplicationController
   end
 
   def destroy
+    pred "I have a feeling the same bug also affects projects. Lets see if this line is ever reached when I click destroy. No its not then its JS"
     @project = Project.find(params[:id])
     @project.destroy
     flash[:notice] = "Successfully destroyed project."

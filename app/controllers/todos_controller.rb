@@ -89,11 +89,18 @@ class TodosController < ApplicationController
     _update_field(:hide_until, Time.now + n_days.to_i.days )
   end
   
+# Project.destroy which works to get inspired...
+  # def destroy
+  #   pred "I have a feeling the same bug also affects projects. Lets see if this line is ever reached when I click destroy. No its not then its JS"
+  #   @project = Project.find(params[:id])
+  #   @project.destroy
+  #   flash[:notice] = "Successfully destroyed project."
+  #   redirect_to projects_url
+  # end
+
   def destroy
     #broken so lets debug
-    pyellow "TOD Destroy. Params: #{params}"
-    raise "Destroy exception: (i thought id never get here!). Maybe the javascript is broken!! Usually it send sa popup with are you sure.."
-    flash[:notice] = "Starting to destroy todo ##{@todo.id}..."
+    pyellow "TODO::Destroy. Params: #{params}"
     @todo = Todo.find(params[:id])
     @todo.destroy
     flash[:notice] = "Successfully destroyed todo ##{@todo.id}."
