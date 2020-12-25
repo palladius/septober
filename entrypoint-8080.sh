@@ -10,7 +10,7 @@ source .env
 VER="$(cat VERSION)"
 MYPORT="${PORT:-8080}"
 APP_NAME="${APPNAME:-entrypoint-sobenme}"
-ENTRYPOINT_VERSION="0.3"
+ENTRYPOINT_VERSION="0.4"
 
 function verbose_echo() {
     echo "[ep8080][$APP_NAME-v$VER] $(echo "$*" | lolcat)" | lolcat
@@ -19,7 +19,7 @@ function verbose_echo() {
 
 #export MESSAGGIO_OCCASIONALE="Test Entrypoint8080 which is NOW the default entrypoint in docker, woohoo! TBD removeme once it's proven to work so we can use the ones from docker apps."
 
-verbose_echo "BEGIN. $0 called with args: '$*'" # | lolcat
+verbose_echo "BEGIN. $0 called on MYPORT=$MYPORT and args: '$*'"
 
 # if DEV or PROD we further source appropriate .env.$ENV if it exists.
 if [ -f ".env.$RAILS_ENV" ]; then
@@ -30,29 +30,36 @@ else
 fi 
     
 if printenv RAILS_ENV | grep -q production ; then
-    verbose_echo "Riccardo I believe this is PROD Lets scagnozz the dogs on port $MYPORT"
+    verbose_echo "Riccardo I believe this is PROD (RAILS_ENV=$RAILS_ENV). Lets scagnozz the dogs (in SeptoberVintagse this implies running MySQL - if it hangs probably you sucked at populating connection variables. Fingers crossed)!"
     export RAILS_LOG_TO_STDOUT=yesplease 
     export RAILS_ENV=production
     export RACK_ENV production
 
     #source .env # Nope, already done my friend.
     #source .env
-    if [ -f .env.production ]; then
-        source .env.production
-    fi 
+    #pleonastic as well
+    #if [ -f .env.production ]; then
+    #    source .env.production
+    #fi 
 
-   # useless for septober too old!
-    bundle install
+    # Lets try to REMOVE them to make start FASTER. 
+    # You can always call CMD "bundle install && bundle exec rake db:migrate" no wait you cant
+    #bundle install
+    #bundle exec rake db:migrate
 
-    bundle exec rake db:migrate
-
-    bundle exec rails s -b 0.0.0.0 -p $MYPORT
+    #bundle exec rails s -b 0.0.0.0 -p $MYPORT
 else
-    verbose_echo "Riccardo I believe this is DEV Lets keep it easy peasy on port $MYPORT"
+    verbose_echo "Riccardo I believe this is DEV (RAILS_ENV=$RAILS_ENV)"
     #source .env # Nope, already done my friend.
     # TODO create and source .env.development
-    bundle exec rails s -b 0.0.0.0 -p $MYPORT
 fi
 
-echo "[$APP_NAME-v$VER-entrypoint] END. Calling now Args in case you gave me: $*"
+# runs CMD commands BEFORE running.
+verbose_echo "Now Calling your custom Args script you gave me as CMD: '''$*'''"
 "$@"
+
+verbose_echo "And now finally calling rails server on port $MYPORT"
+# runs on all IPs and port ~8080.
+bundle exec rails s -b 0.0.0.0 -p $MYPORT
+
+echo "[$APP_NAME-v$VER-entrypoint] END. You should NEVER see this I guess,"
