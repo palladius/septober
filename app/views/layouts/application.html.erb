@@ -13,6 +13,7 @@
     <%= yield(:head) %>
   </head>
   <body>
+    <%= render :partial => 'layouts/occasional_message' %>
     <div id='header' >
       <%= render :partial => 'layouts/header' %>
     </div>
@@ -22,9 +23,6 @@
       <%= render 'todos/oneline_create' %>
       <% flash.each do |name, msg| %>
         <%= content_tag :div, msg, :id => "flash_#{name}" %>
-      <% end %>
-      <% if ENV['MESSAGGIO_OCCASIONALE'] %>
-        <%= content_tag :div, "[MSG OCCASIONALE]: #{ENV['MESSAGGIO_OCCASIONALE']}", :id => "flash_riccardo" %>
       <% end %>
       <%= content_tag :h1, yield(:title) if show_title? %>
       <%= yield %>

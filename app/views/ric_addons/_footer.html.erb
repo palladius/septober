@@ -1,8 +1,8 @@
 <%
 	ric_websites_ring = {
 		#'RAB' => 'http://ricaddressbook.heroku.com/',
-		'lo:3k' => 'http://localhost:3000',
-		'SeptOber20' => 'http://septober.palladius.it',
+		'lo:8080' => 'http://localhost:8080',
+		'SeptOberGKE' => 'http://septober.palladius.it',
 		'SeptOberGCE' => 'http://septober-gce.palladius.it',
 		#'FsDB' => 'http://fsdb.dev.palladius.eu/',
 		'RicLife (TODO)' => 'https://riclife.palladius.eu/',
@@ -13,10 +13,23 @@
 
 %><div class='footer' align='center' ><small>
 	<p>
+		<!-- Line one: appname, version, logo, env -->
 		<b class='ric_app' ><%=$APP[:name] rescue "Unknown RicApp" %> v<%=$APP[:version] rescue 'VER_ERR' %></b> - <%=$APP.fetch :copyright, 'All rights reserved (TM)'%>
 		[<b><tt><%= Rails.env %></tt></b>]
-	<br/>Host: <%= Socket.gethostname %> (<%= Socket.ip_address_list.detect(&:ipv4_private?).ip_address rescue :boh %>)
-		[
+	<br/>
+		<!-- Line two: hostname/IP (for docker) and minor endpoints that only Riccardo cares about -->
+	Host: <%= Socket.gethostname %> (<%= Socket.ip_address_list.detect(&:ipv4_private?).ip_address rescue :boh %>) -
+	<%= link_to "Page Index", "/pages/index" %> -
+	<%= link_to "About", "/pages/about" %> -
+	<%#= link_to "Search", "/pages/search" %> -
+	<%= link_to "Health", "/healthz" %> -
+	<%= link_to "Status", "/statusz" %> -
+	<%= link_to "varz", "/varz" %> -
+	<%= link_to "License", "/pages/license" %> -
+
+		<!-- Line three: Carlessian Ring (very 90s) -->
+	<br/>
+		Ring: [
 		<%= ric_websites_ring.map{|appname,url| link_to(appname,url)}.join(' :: ').html_safe %>
 		]
 	<%#= RicPlugin.ric_websites_ring rescue "Problems to include ric_websites_ring" %>

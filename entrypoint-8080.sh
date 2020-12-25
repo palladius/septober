@@ -17,8 +17,6 @@ function verbose_echo() {
 
 }
 
-#export MESSAGGIO_OCCASIONALE="Test Entrypoint8080 which is NOW the default entrypoint in docker, woohoo! TBD removeme once it's proven to work so we can use the ones from docker apps."
-
 verbose_echo "BEGIN. $0 called on MYPORT=$MYPORT and args: '$*'"
 
 # if DEV or PROD we further source appropriate .env.$ENV if it exists.
@@ -54,8 +52,13 @@ else
     # TODO create and source .env.development
 fi
 
+if printenv ADDITIONAL_CMD1; then
+    verbose_echo "wOOOT! ADDITIONAL_CMD1 provided. Executing before rails server: '$ADDITIONAL_CMD1'"
+    exec $ADDITIONAL_CMD1
+fi 
+
 # runs CMD commands BEFORE running.
-verbose_echo "Now Calling your custom Args script you gave me as CMD: '''$*'''"
+verbose_echo "Now Calling your custom Args script you gave me as CMD: '$*'"
 "$@"
 
 verbose_echo "And now finally calling rails server on port $MYPORT"

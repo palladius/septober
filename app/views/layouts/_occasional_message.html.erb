@@ -1,0 +1,3 @@
+<% if ENV['MESSAGGIO_OCCASIONALE'] %>
+    <%= content_tag :div, "[MSG OCCASIONALE @#{$env}]: #{ENV['MESSAGGIO_OCCASIONALE']}", :id => "flash_riccardo" %>
+<% end %>
