@@ -31,5 +31,14 @@ docker-run-volume: docker-build
 	 	$(APPNAME):v$(VERSION) \
 	 	bash
 
+docker-run-volume-prod: docker-build
+	@yellow To run this you need to have a .env.prod configured with values to your prod MYSQL DB. Copy and edit the .dist if you struggle.
+	docker run -it -p 8080:8080  \
+		--env-file /home/riccardo/git/gcp-metarepo/septober/.env.production \
+	    -v /home/riccardo/git/gcp-metarepo/septober/:/var/www-public/02-septober-vintage-volume-singlerepo/ \
+	 	$(APPNAME):v$(VERSION) \
+	 	bash
+
+
 docker-push:
 	rosso Camomilize a bit bro. You dont want to do this.
