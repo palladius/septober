@@ -77,6 +77,16 @@ a local docker image mounting the code as a volume, which allows me to fix bugs 
 Now I'm there and the Dockerfile suppoerts both sqlite and mysql, and sqlite is set up for dev, and mysql for prod. Prod has also a dumb DB in case you want to set it up
 (I just need to add a routine to the ./entrypoint-8080.sh which accepts a db_setup_and_run for an empty DB on docker-compose). Yet to come!
 
+There's now a third docker that makes sense only for local dev (not to be pushed or user as it needs a liquid FS to dev locally):
+
+* `cd docker-experiments/02-septober-vintage-volume-singlerepo/ `
+* `make docker-run-volume-prod `
+* Note: once in the container the LOCAL dir is the untouched one - I left it for additional troubleshooting power.
+* `cd /var/www-public/02-septober-vintage-volume-singlerepo/`
+* RAILS_ENV=development ./entrypoint-8080.sh 
+* And you're in! Do all changes you want and they'll reflect on the docker being run - only 9 times in the past since ruby1.8 and rails2 is impossible to run on my personal computer today (God knows I've tried).
+* Login as guest/guest in dev.
+
 ### BUGS
 
 - Search engine is still broken (see search addon!)
