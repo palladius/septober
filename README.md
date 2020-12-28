@@ -68,9 +68,8 @@ Use this Cloud Shell walkthrough for a hands-on example.
 
 This is complex topic so it deserves a paragraph here :)
 Until 2020-12-24 I had two branches of Dockerization:
-* in this `Dockerfile` with the sqlite containerization. Due to bugs and pains in Mysql I jus t overwrote the Gemfile making the system forget that
-   mysq is even a thing.
-* a private dockerfile which inherits from this, adds a private user/password/hostname to my prod DB and loads it, creating `septober-mysql` which only works in prod.
+* in this `Dockerfile` with the sqlite containerization. Due to bugs and pains in Mysql I jus t overwrote the Gemfile making the system forget that mysql is even a thing. Note: This has been recently changed, read on.
+* a private `Dockerfile` which inherits from this, adds a private user/password/hostname to my prod DB and loads it, creating `septober-mysql` which only works in prod.
 
 This was painful as I had two things to maintain, dockerwise. So I finally merged the two creating a third docker in `docker-experiments/01-...`. This allows me to build
 a local docker image mounting the code as a volume, which allows me to fix bugs on th fly and not have to commit, push and hope (AKA "plug and pray").
@@ -86,6 +85,22 @@ There's now a third docker that makes sense only for local dev (not to be pushed
 * RAILS_ENV=development ./entrypoint-8080.sh 
 * And you're in! Do all changes you want and they'll reflect on the docker being run - only 9 times in the past since ruby1.8 and rails2 is impossible to run on my personal computer today (God knows I've tried).
 * Login as guest/guest in dev.
+
+### Docker Compose
+
+To get a gist of sqlite3, just run rails s and you're game.
+
+To get a gist of MySQL, I set up a working docker compose. Therefore you can just do this:
+
+* `docker-compose up`
+* Open `http://localhost:8080/login`  (*)
+* Log in as `guest` // `seed-guest`. And you're in! 
+
+(*) Note sometime I saw a bug in the / endpoint, so you might have to go to login directly since home failed. Hope it doesnt reoccur.
+
+To troubleshoot users, you can do this (love `docker-compose`!):
+
+    echo User.all | docker-compose exec septober rails c
 
 ### BUGS
 

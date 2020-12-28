@@ -24,7 +24,7 @@ services:
      bash -c "
        sleep 10 &&
        bundle exec rake db:migrate && 
-       bundle exec rake db:seed && 
+       rake db:seed && 
        ./entrypoint-8080.sh
      "
     environment:
