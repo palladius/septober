@@ -1,8 +1,12 @@
 # PS TODO make this DRY, now you've to remember to update as well the following files:
 # - ./VERSION
 # - app/helpers/application_helper
+2.3.11:
+  - better version naming. Simpler for docker not to go crazy.
+2.3.10:
+  - boh Ripreso in mano siccome docker non va una cippa..
 2.2.26:
-   - Added docker-compose functionality and it works! Inspired from https://hub.docker.com/r/bitnami/rails/
+  - Added docker-compose functionality and it works! Inspired from https://hub.docker.com/r/bitnami/rails/
 2.2.25: # 2020-12-24
   - Added healthz endpoints plus varz and statusz for ease of k8s
 2.2.23: # 2020-12-23
@@ -14,9 +18,9 @@
 2.2.14: # 2020-12-10
   - Fixed footer and hear. Now newer links and header aligns perfectly in center b:)
 2.2.7:
- - Fixes the edit_in_place error. Now you can edit a TODO with a single click.
+  - Fixes the edit_in_place error. Now you can edit a TODO with a single click.
 2.1.5:
- - added 2 symlinks to jquery which gave error in the logs.
+  - added 2 symlinks to jquery which gave error in the logs.
 2.0.03:
   - Updated on_the_spot inline editing... see https://github.com/nathanvda/on_the_spot/issues/28
 2.0.02: # 20140921

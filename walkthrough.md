@@ -11,9 +11,8 @@ Click the **Start** button to move to the next step.
 
 ## How did you invent the name?
 
-Thanks for asking. Begonz (my bolognese boss) used to use this virtual month name
+Thanks for asking. Bergonz (my former Bologna boss) used to use this virtual month name
 when postponing non-porioritary activities.
-
 
 ```bash
 gem install septober --no-document --quiet
