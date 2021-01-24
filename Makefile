@@ -1,5 +1,7 @@
 VERSION=$(shell cat VERSION)
 APPNAME= septober-ng
+#PROJECT_ID = 7eptober
+PROJECT_ID = ric-cccwiki
 
 # funge anche senza: miracolo!
 #PWD=$(shell pwd)
@@ -52,10 +54,10 @@ docker-build:
 # New generation push, with both VERSION and latest. T be sure I use a different project
 # Where cloud build is enabled :)
 docker-push: docker-build
-	docker tag $(APPNAME):v$(VERSION) gcr.io/7eptober/$(APPNAME):v$(VERSION)
-	docker tag $(APPNAME):v$(VERSION) gcr.io/7eptober/$(APPNAME)
-	docker push gcr.io/7eptober/$(APPNAME):v$(VERSION)
-	docker push gcr.io/7eptober/$(APPNAME)
+	docker tag $(APPNAME):v$(VERSION) gcr.io/$(PROJECT_ID)/$(APPNAME):v$(VERSION)
+	docker tag $(APPNAME):v$(VERSION) gcr.io/$(PROJECT_ID)/$(APPNAME)
+	docker push gcr.io/$(PROJECT_ID)/$(APPNAME):v$(VERSION)
+	docker push gcr.io/$(PROJECT_ID)/$(APPNAME)
 
 docker-compose:
 	echo Riccardo were doing this to test MySQL DB connectivity in dev.
