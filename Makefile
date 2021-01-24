@@ -1,7 +1,9 @@
 VERSION=$(shell cat VERSION)
 APPNAME= septober-ng
-#PROJECT_ID = 7eptober
-PROJECT_ID = ric-cccwiki
+# project for "septober-ng" (PUBLIC no pwd)
+PROJECT_ID = 7eptober
+# project for "septober-mysql" (PRIVATE with mysql pwd)
+#PROJECT_ID = ric-cccwiki
 
 # funge anche senza: miracolo!
 #PWD=$(shell pwd)
