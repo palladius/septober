@@ -1,6 +1,9 @@
 VERSION=$(shell cat VERSION)
 APPNAME= septober-ng
 
+# funge anche senza: miracolo!
+#PWD=$(shell pwd)
+
 install:
 	sudo apt-get install sqlite libsqlite3-dev
 	touch install
@@ -60,25 +63,32 @@ docker-compose:
 
 ####################################################################
 # OLD IMAGES - they work by pure luck
+# they DO work but i want to forget them :)
 
 #docker-run-v1:
-#	docker run -it -p 8080:3000 --name=septober-v1-p8080 palladius/septober:v1 bash -c -- 'cd /home/riccardo/git/septober/ && make run'
-docker-run-daemon-v1:
-	docker run -p 3000:3000 -d palladius/septober:v1 /bin/sh -c "cd /home/riccardo/git/septober && make run"
-docker-run-v1:
-	docker run -it -p 8080:3000 --name=septober-v1-p8080 palladius/septober:v1 bash -c -- 'cd /home/riccardo/git/septober/ && make run'
-docker-run-v1.1:
-	docker run -p 80:8080 --name=septober-v11-p8080 palladius/septober:v1.1 /bin/sh -c "cd /home/riccardo/git/septober && make run-prod"
-docker-run-v1.2:
-	docker run -p 80:8080 --name=septober-v12-p8080 palladius/septober:v1.2
-####################################################################
+# #	docker run -it -p 8080:3000 --name=septober-v1-p8080 palladius/septober:v1 bash -c -- 'cd /home/riccardo/git/septober/ && make run'
+# docker-run-daemon-v1:
+# 	docker run -p 3000:3000 -d palladius/septober:v1 /bin/sh -c "cd /home/riccardo/git/septober && make run"
+# docker-run-v1:
+# 	docker run -it -p 8080:3000 --name=septober-v1-p8080 palladius/septober:v1 bash -c -- 'cd /home/riccardo/git/septober/ && make run'
+# docker-run-v1.1:
+# 	docker run -p 80:8080 --name=septober-v11-p8080 palladius/septober:v1.1 /bin/sh -c "cd /home/riccardo/git/septober && make run-prod"
+# docker-run-v1.2:
+# 	docker run -p 80:8080 --name=septober-v12-p8080 palladius/septober:v1.2
+# ####################################################################
 
 
-#build-local:#
-#	docker build -t=$(APPNAME):local .
+build-local:
+	docker build -t=$(APPNAME):v$(VERSION) .
 run-local: build-local
 	@echo Riccardo check it has the LATEST version!
-	docker run -it -p 8080:3000 septober-ng:local bash -c "rails server"
+	docker run -it -p 8080:8080 septober-ng:v$(VERSION) ./entrypoint-8080.sh 
+run-local-bash-nobuild: # build-local
+	@echo Riccardo check it has the LATEST version!
+	docker run -it -p 8080:8080 septober-ng:v$(VERSION) bash
+# FUNGE!!!
+docker-run-nobuild-mount-volume:
+	docker run -it -p 8080:8080 -v $(PWD):/var/www-public/septober/ $(APPNAME):v$(VERSION) bash
 
 debug-local: build-local
 	@echo Riccardo check it has the LATEST version!

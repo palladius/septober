@@ -12,7 +12,8 @@ Septober::Application.routes.draw do
   # Google style endpoints. Helps with k8s too.
   match 'healthz' => 'pages#healthz' 
   match 'statusz' => 'pages#statusz' 
-  match 'varz' => 'pages#varz' 
+#  match 'varz' => 'pages#varz'
+  match 'varz' => 'pages#varz_testuale'
 
   resources :sessions
   resources :tags

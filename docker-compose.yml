@@ -15,7 +15,7 @@ services:
     ports:
       - 3306:3306
 
-  septober:
+  septober-prod:
     tty: true # Enables debugging capabilities when attached to this container.
     #image: docker.io/bitnami/rails:6-debian-10
     image: septober-ng:latest
@@ -39,6 +39,23 @@ services:
     depends_on:
       - mariadb
     ports:
+      - 8081:8080
+  #    volumes:
+  #      - .:/app
+
+
+  #dev:8080 (files are editable)
+  septober-dev:
+    tty: true # Enables debugging capabilities when attached to this container.
+    #image: docker.io/bitnami/rails:6-debian-10
+    image: septober-ng:latest
+    # Wait for MariaDB to spin up correctly before injecting DB migrations..
+    command: ./entrypoint-8080.sh
+    environment:
+      - MESSAGGIO_OCCASIONALE='DockerCompose See dev in 8080 and prod in 8081 my friend with bogus MAriaDB just migrated! Dev mounts /app prod does NOT.'
+
+      - RAILS_ENV=development
+    ports:
       - 8080:8080
-#    volumes:
-#      - .:/app
+    volumes:
+      - .:/var/www-public/septober/

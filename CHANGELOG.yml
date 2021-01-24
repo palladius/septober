@@ -1,6 +1,9 @@
 # PS TODO make this DRY, now you've to remember to update as well the following files:
 # - ./VERSION
 # - app/helpers/application_helper
+2.3.12:
+  - enforcing /varz textual for prometheus
+  - Added an amazing oneliner from SO! 
 2.3.11:
   - better version naming. Simpler for docker not to go crazy.
 2.3.10:
