@@ -1,6 +1,8 @@
-app_name: <%=$APP[:name] rescue 'VER_ERR' %>
-app_version: <%=$APP[:version] rescue 'VER_ERR' %>
-env: <%= ENV["RAILS_ENV"] %>
-hostname: <%= Socket.gethostname %>
-ip_address: <%= Socket.ip_address_list.detect(&:ipv4_private?).ip_address rescue :boh %>  
+# test comment
+varz_available_since_version: "2.3.11"
+app_name: "<%= $APP[:name] rescue 'VER_ERR' %>"
+app_version: "<%=$APP[:version] rescue 'VER_ERR' %>"
+env: "<%= ENV["RAILS_ENV"] %>"
+hostname: "<%= Socket.gethostname %>"
+ip_address: "<%= Socket.ip_address_list.detect(&:ipv4_private?).ip_address rescue :boh %>"
 usage_oneliner: "<%= `#{Rails.root}/bin/usage-oneliner`.chomp %>"

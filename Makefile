@@ -91,7 +91,7 @@ run-local-bash-nobuild: # build-local
 	@echo Riccardo check it has the LATEST version!
 	docker run -it -p 8080:8080 septober-ng:v$(VERSION) bash
 # FUNGE!!!
-docker-run-nobuild-mount-volume:
+docker-run-mountvolume: build-local
 	docker run -it -p 8080:8080 -v $(PWD):/var/www-public/septober/ $(APPNAME):v$(VERSION) bash
 
 debug-local: build-local
