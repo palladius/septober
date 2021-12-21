@@ -1,0 +1,19 @@
+apiVersion: skaffold/v2beta26
+kind: Config
+metadata:
+  name: septober
+build:
+  artifacts:
+  - image: palladius/septober
+    docker:
+      dockerfile: Dockerfile
+deploy:
+  kubectl:
+    manifests:
+    - docker-experiments/gke-septober-skaffold.yaml
+# portForward:
+# - resourceType: deployment
+#   resourceName: myDep
+#   namespace: mynamespace
+#   port: 8080
+#   localPort: 9000 # *Optional*

@@ -2,3 +2,5 @@ Makefile
 docker-experiments/
 #.env
 .env.production
+skaffold.yaml
+docker-compose.yml

@@ -112,3 +112,12 @@ installa-locale:
 heroku-push:
 	heroku container:push web -a septober
 	heroku container:release web  -a septober
+minikube-start:
+	minikube start
+	minikube dashboard
+minikubami:
+	echo Checking that minikube is running...
+	ps aux |grep minikube
+	kubectl create deployment septober-prova --image=septober-ng:v2.3.14
+	kubectl expose deployment septober-prova --type=LoadBalancer --port=9191
+	minikube service septober-prova
