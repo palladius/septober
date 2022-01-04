@@ -121,3 +121,15 @@ minikubami:
 	kubectl create deployment septober-prova --image=septober-ng:v2.3.14
 	kubectl expose deployment septober-prova --type=LoadBalancer --port=9191
 	minikube service septober-prova
+
+
+# Skaffold stuff
+
+build-skaffold-gcb:
+	@echo Building with skaffold build and profile GoogleCloudBuild
+	skaffold build -p gcb
+
+build-skaffold-local:
+	@echo Building with skaffold build and profile GoogleCloudBuild
+	skaffold build -p local
+
