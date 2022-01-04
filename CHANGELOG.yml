@@ -1,7 +1,9 @@
 # PS TODO make this DRY, now you've to remember to update as well the following files:
 # - ./VERSION
 # - app/helpers/application_helper
-2.3.15: # minor
+2.4.01: # major 2022-01-04
+  - upgraded ActiveRecord for Major vulnerability https://github.com/palladius/septober/security/dependabot/Gemfile.lock/activeresource/open 
+2.3.15: # minor 2022-01-04
   - Changes son/father in children/parent.
   - added skaffold profiles for Cloud Build vs Local.
 2.3.14:
