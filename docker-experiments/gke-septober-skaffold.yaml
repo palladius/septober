@@ -15,7 +15,7 @@ metadata:
 spec:
   containers:
   - name: septober-v1
-    image: palladius/septober:v1
+    image: sk-septober # palladius/septober:v1
     # Just spin & wait forever
     command: [ "/bin/bash", "-c", "--" ]
     args: [ "cd /home/riccardo/git/septober/ && make run" ]

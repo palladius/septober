@@ -4,7 +4,7 @@
 #################################
 
 # ruby/gems 1.9.1
-FROM palladius/septober:v1.2
+FROM palladius/septober:v1.2 as base 
 
 #MAINTAINER Riccardo Carlesso <riccardo.carlesso@gmail.com>
 

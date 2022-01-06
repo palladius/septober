@@ -29,7 +29,13 @@ class Api::TodosController < ApplicationController
   end
 
   def new
-    @todo = Todo.new
+    puts("\n\nNEW params vale: #{params}\n\n")
+    pgray "[RiccDEBUGNEW] API::TodoController.create() - param[:todo]=#{params[:todo]}"
+    @todo = Todo.new(params[:todo])
+    puts("BUG This seems to be broken :/")
+    pred("Big Bug dig dug drank drunk")
+    # errore credo sia questo: WARNING: Can't mass-assign protected attributes: action, controller, format
+    # foprse manca params nel costruittore? forse manca post_params?
   end
 
   def create
@@ -39,24 +45,41 @@ class Api::TodosController < ApplicationController
     pgray "[RiccDEBUG] API::TodoController.create() - param[:todo]=#{params[:todo]}"
 
     params[:todo][:user_id] = current_api_user.id
-    #params[:todo][:id] = "424242"
     @todo = Todo.new(params[:todo]) # both HTML and XML :)
     @todo.user_id = current_api_user.id
     @todo.apply_todo_regex_magic() rescue pred("Couldnt apply regex for TODO: #{ @todo }. Error: ''#{ $! }''")
+    ret = @todo.save
     respond_to do |format|
       format.xml { 
-        if @todo.save
-          pred "[RiccDEBUG] API::TodoController.create() - ALL GOOD WITH CREATION: param[:todo]=#{params[:todo]}"
+        if ret
+          pred "[RiccDEBUG XML] API::TodoController.create() - ALL GOOD WITH CREATION: param[:todo]=#{params[:todo]}"
           render(:xml => @todo.to_xml, :status => "201 Created yay", :message => "Yay API TOdo created id=TODO") 
         else
-          pred "[RiccDEBUG] API::TodoController.create() - SOMETHING WRONG WITH CREATION: param[:todo]=#{params[:todo]}"
-          render(:xml => @todo.to_xml , :status => "569 Couldnt save it sorry", :message => "ERROR API TOdo NOT created id=TODO")
+          pred "[RiccDEBUG XML] API::TodoController.create() - SOMETHING WRONG WITH CREATION: param[:todo]=#{params[:todo]}"
+          render(:xml => @todo.to_xml , :status => :unprocessable_entity, :message => "ERROR API TOdo NOT created id=TODO")
         end
       }
-
-      format.json
+      format.json  { 
+        if ret
+          pred "[RiccDEBUG JSON] API::TodoController.create() - ALL GOOD WITH CREATION: param[:todo]=#{params[:todo]}"
+          render(:json => @todo.to_json, :status => "201 Created yay", :message => "Yay API TOdo created id=TODO") 
+        else
+          pred "[RiccDEBUG JSON] API::TodoController.create() - SOMETHING WRONG WITH CREATION: param[:todo]=#{params[:todo]}. ret=#{ret}. Errors: #{ @todo.errors}"
+          render(:json => @todo.to_json, 
+            #:status => "572 JSON Couldnt save it sorry", 
+            :status => :unprocessable_entity,
+            :message => "ERROR API TOdo NOT created id=TODO. Forse duplicato", 
+            :error => "TODO Ho fallito perche: #{ @todo.errors.full_messages }",
+            :errors => "TODO Ho fallito perche: #{ @todo.errors.full_messages }",
+            #:code => "code",
+          )
+        end
+      }
       format.js # do nothing
     end #/respond_to
+    ret_enforced = @todo.save
+    pgray( "[RiccDEBUG] API::TodoController.create() - ret[todo save]=#{ret_enforced}")
+    return ret_enforced
   end #/create
 
   def edit
@@ -137,7 +160,6 @@ private
    # if user
    #   session[:user_id] = user.id
    #   flash[:notice] = "Logged in successfully."
-      
     user = nil
     return authenticate_or_request_with_http_basic do |username, password|
       #username == "guest" && password == "guest"
@@ -146,9 +168,9 @@ private
       if user
         session[:api_user_id] = user.id 
       end
-      user
+      puts "\n\nDEBUG (API authorize_episode95): user='#{user.id rescue "NoId:"}'\n\n"
+      return user
     end
-    #puts "\n\nDEBUG (API authorize_episode95): user='#{user.id rescue "NoId:"}'\n\n"
     #if user
     #  session[:user_id] = user.id 
     #end

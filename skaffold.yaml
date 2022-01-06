@@ -4,19 +4,25 @@ metadata:
   name: septober
 build:
   artifacts:
-  - image: palladius/septober
+  - image: sk-septober
     docker:
       dockerfile: Dockerfile
-deploy:
-  kubectl:
-    manifests:
-    - docker-experiments/gke-septober-skaffold.yaml
-# portForward:
-# - resourceType: deployment
-#   resourceName: myDep
-#   namespace: mynamespace
-#   port: 8080
-#   localPort: 9000 # *Optional*
+    ######################################################################
+    # Syncing app/ of RoR without rebuild with docker - for efficiency
+    # Very powerful! Try it Riccardo
+    ######################################################################
+    sync:
+      manual:
+      - src:  app/
+        dest: app/
+      - src:  config/
+        dest: config/
+      - src:  VERSION
+        dest: VERSION
+# deploy:
+#   kubectl:
+#     manifests:
+#     - docker-experiments/gke-septober-skaffold.yaml
 
 # Copiato da cloud-ops-sandbox
 profiles:

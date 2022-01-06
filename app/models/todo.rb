@@ -28,6 +28,7 @@ class Todo < ActiveRecord::Base
     validates_inclusion_of :priority, :in => 1..5 ## , :message => "number must be in 1..5!"
     validates_inclusion_of :progress_status, :in => 0..100, :message => "is a percentage, please go back to school :P"
     
+    # 2022-01-06 proviamo a disabilitarlo per vedere se le API funzionano senza questo...
     before_create :apply_todo_regex_magic
     
     # TODO

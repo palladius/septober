@@ -53,7 +53,6 @@ services:
     command: ./entrypoint-8080.sh
     environment:
       - MESSAGGIO_OCCASIONALE='DockerCompose See dev in 8080 and prod in 8081 my friend with bogus MAriaDB just migrated! Dev mounts /app prod does NOT.'
-
       - RAILS_ENV=development
     ports:
       - 8080:8080

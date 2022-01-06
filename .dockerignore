@@ -4,3 +4,8 @@ docker-experiments/
 .env.production
 skaffold.yaml
 docker-compose.yml
+README.md
+#LICENSE
+#TODO.md
+walkthrough.md
+log/
