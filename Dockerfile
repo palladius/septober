@@ -6,7 +6,7 @@
 # Dockerfile versions:
 #
 # - 20220108 v1.1 bundle installing BEFORE copying files :) This should derive time to compile WAY down! time docker build .
-#
+#                 Time to build now: 13 seconds!
 
 # ruby/gems 1.9.1
 FROM palladius/septober:v1.2 as base 
@@ -16,16 +16,15 @@ RUN apt-get -y update && apt-get -y install libmysqlclient-dev mysql-common libm
 
 WORKDIR /var/www-public/septober/
 
+# 2. Add Gem and build. Takes time but should be done seldom
+
 COPY Gemfile Gemfile.lock /var/www-public/septober/
 RUN bundle install
 
-# 2. Latest Code
+# 3. Latest Code. This is fast to iterate thru skaffold.
 
 ADD . /var/www-public/septober/
 
-# horrible again
-# 2020: removing this
-#RUN cp Gemfile-sqlite3 Gemfile
 # Added for MySQL but if you only use SQLite, its ok to remove the initializer.
 RUN mv ./config/initializers/abstract_mysql2_adapter.rb ./config/initializers/abstract_mysql2_adapter.rb.inutile
 #RUN /bin/sh /var/www-public/septober/dockerize/prep.sh

@@ -2,8 +2,8 @@ Makefile
 docker-experiments/
 #.env
 .env.production
-skaffold.yaml
-docker-compose.yml
+skaffold.yaml*
+docker-compose.yml*
 README.md
 #LICENSE
 #TODO.md

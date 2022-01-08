@@ -1,6 +1,10 @@
 # PS TODO make this DRY, now you've to remember to update as well the following files:
 # - ./VERSION
 # - app/helpers/application_helper
+2.4.03: # major 2022-01-08
+  - faster dockerfile! now build with just gemfile and THEN copy stuff. This means ai revuild ONLY if Gemfile has changed. 
+2.4.02: # major 2022-01-04
+  - nothing here. Updated septober script on `ric` gem. Yuppie! I should move the script here - maybe. 
 2.4.01: # major 2022-01-04
   - upgraded ActiveRecord for Major vulnerability https://github.com/palladius/septober/security/dependabot/Gemfile.lock/activeresource/open 
 2.3.15: # minor 2022-01-04

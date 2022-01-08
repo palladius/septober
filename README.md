@@ -58,6 +58,10 @@ Usage (for use of bin/septober guides you thru the creation of `~/.septober.yml`
 	bin/septober show 45
 	bin/septober done 45
 
+Septober CLI can be installed by simply doing:
+
+    gem install ric
+
 ### Cloud Shell Walkthrough
 
 Use this Cloud Shell walkthrough for a hands-on example.
@@ -104,6 +108,31 @@ To troubleshoot users, you can do this (love `docker-compose`!):
   
 Starting to use skaffold, I'm inclined to use kompose to generate k8s manifests starting from docker-compose: https://github.com/kubernetes/kompose. Installing on Mac is a breeze
 
+### Run in prod
+
+If you have a MySQL available and you fancy setting it up by running
+
+    docker run -it LOCALIMAGE ENV=production rake db:migrate
+
+Then you can just run the prod image this way:
+
+    make docker-build
+    (
+          echo DATABASE_HOST=1.2.3.4
+          echo DATABASE_PORT=3306
+          echo DATABASE_NAME=your-db-name
+          echo DATABASE_USER=your-user
+          echo DATABASE_PASSWORD=your-passwprd
+          echo MESSAGGIO_OCCASIONALE='This will appear on top of the app just for debugging purposes. Remember: Quality or Death! (Boris)'
+          echo RAILS_ENV=production
+    ) > t
+    docker run -it -p 8080:8080 --env-file t septober-ng
+
+The first time you might want to just do a: 
+
+    docker run -it -p 8080:8080 --env-file t septober-ng bash 
+
+And try the ENV variables manually until they work with your MYSQL server.
 
 ### BUGS
 
