@@ -5,9 +5,8 @@
 
 FROM palladius/septober:v1.2
 
-MAINTAINER Riccardo Carlesso <riccardo.carlesso@gmail.com>
 
-ADD . /septober/
+ADD . /septober/cat
 
 WORKDIR /septober/
 

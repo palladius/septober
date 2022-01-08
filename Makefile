@@ -126,7 +126,7 @@ minikubami:
 # Skaffold stuff
 
 build-skaffold-gcb:
-	@echo Building with skaffold build and profile GoogleCloudBuild
+	@echo Building with skaffold build and profile GoogleCloudBuild. If it doesn work consider using: make gcloud-ricc-configure:
 	skaffold build -p gcb
 
 build-skaffold-local:
@@ -134,6 +134,12 @@ build-skaffold-local:
 	skaffold build -p local
 
 # normal
+gcloud-ricc-configure:
+	# this is Riccardo only
+	gcloud-activate-palladius 
+	#gcloud config configurations activate cccwiki
+	gcloud auth application-default login
+
 skaffold-dev:
 	skaffold dev 
 

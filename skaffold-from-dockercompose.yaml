@@ -23,4 +23,4 @@ deploy:
     # - septober-prod-service.yaml
     # - docker-experiments/gke-septober-skaffold.yaml
     # - docker-experiments/gke-septober-v1.yaml
-    - docker-experiments/k8s-from-composer/*.yaml
+    - kubernetes/k8s-from-composer/*.yaml
