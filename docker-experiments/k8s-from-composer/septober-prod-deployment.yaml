@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-compose.yml
+    kompose.version: 1.26.0 (40646f47)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: septober-prod
+  name: septober-prod
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: septober-prod
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -f docker-compose.yml
+        kompose.version: 1.26.0 (40646f47)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: septober-prod
+    spec:
+      containers:
+        - args:
+            - bash
+            - -c
+            - "\n  sleep 10 &&\n  bundle exec rake db:migrate && \n  rake db:seed && \n  ./entrypoint-8080.sh\n"
+          env:
+            - name: ADMIN_PASSWORD
+              value: '''Ch4ngeM3Th1s1sGu3ss4ble'''
+            - name: DATABASE_HOST
+              value: mariadb
+            - name: DATABASE_NAME
+              value: septober_prod_test_oxymoron
+            - name: DATABASE_PASSWORD
+              value: '''thisIsClearlyNotGood4Prod'''
+            - name: DATABASE_PORT
+              value: "3306"
+            - name: DATABASE_USER
+              value: septober_user
+            - name: MESSAGGIO_OCCASIONALE
+              value: '''DockerCompose v1.3_20201228 test to cheaply deploy a MySQL PROD config. Connect with guest // seed-guest'''''
+            - name: RAILS_ENV
+              value: production
+          image: septober-ng:latest
+          name: septober-prod
+          ports:
+            - containerPort: 8080
+          resources: {}
+          tty: true
+      restartPolicy: Always
+status: {}

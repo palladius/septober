@@ -101,6 +101,9 @@ To get a gist of MySQL, I set up a working docker compose. Therefore you can jus
 To troubleshoot users, you can do this (love `docker-compose`!):
 
     echo User.all | docker-compose exec septober rails c
+  
+Starting to use skaffold, I'm inclined to use kompose to generate k8s manifests starting from docker-compose: https://github.com/kubernetes/kompose. Installing on Mac is a breeze
+
 
 ### BUGS
 

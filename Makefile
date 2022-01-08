@@ -133,3 +133,10 @@ build-skaffold-local:
 	@echo Building with skaffold build and profile GoogleCloudBuild
 	skaffold build -p local
 
+# normal
+skaffold-dev:
+	skaffold dev 
+
+skaffold-dev-from-docker-compose:
+	echo This is a very interesting skaffold config I built out of docker-compose. Should byuld MariaDB and Septober and manage together with kubectl. Lets try it out.
+	skaffold dev -f skaffold-from-dockercompose.yaml 

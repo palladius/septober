@@ -1,0 +1,26 @@
+# Created by ricc with:
+# skaffold init --compose-file docker-compose.yml
+# and then moved all yamls onto 
+apiVersion: skaffold/v2beta26
+kind: Config
+metadata:
+  name: septober
+build:
+  artifacts:
+  #- image: docker.io/bitnami/mariadb
+  - image: septober-ng
+    docker:
+      dockerfile: Dockerfile
+deploy:
+  kubectl:
+    manifests:
+    # - mariadb-deployment.yaml
+    # - mariadb-service.yaml
+    # - septober-dev-claim0-persistentvolumeclaim.yaml
+    # - septober-dev-deployment.yaml
+    # - septober-dev-service.yaml
+    # - septober-prod-deployment.yaml
+    # - septober-prod-service.yaml
+    # - docker-experiments/gke-septober-skaffold.yaml
+    # - docker-experiments/gke-septober-v1.yaml
+    - docker-experiments/k8s-from-composer/*.yaml
