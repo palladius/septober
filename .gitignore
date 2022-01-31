@@ -13,3 +13,8 @@ install
 vendor/mysql2-0.5.2.gem
 config/database.yml.prod
 .env.production
+.env.sh
+00-init.sh
+01-magic-tejal.sh
+build-out.json
+.sk-septober.appname

@@ -9,7 +9,8 @@ build:
       format: "20060102_150405"
       timezone: "Local"
   artifacts:
-  - image: gcr.io/7eptober/sk-septober-ng # palladius/sk-septober
+#  - image: gcr.io/7eptober/sk-septober-ng # palladius/sk-septober
+  - image: sk-septober-ng # palladius/sk-septober
     docker:
       dockerfile: Dockerfile
     ######################################################################
@@ -29,7 +30,8 @@ build:
 deploy:
   kubectl:
     manifests:
-    - kubernetes/skaffold-recipes/*.yaml
+#    - kubernetes/skaffold-recipes/gke*.yaml
+    - kubernetes/skaffold-recipes/skaffold*.yaml
 
 # Copiato da cloud-ops-sandbox
 profiles:

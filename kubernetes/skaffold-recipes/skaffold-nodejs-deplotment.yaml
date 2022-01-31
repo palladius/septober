@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: skaff-septober
+spec:
+  ports:
+  - port: 3000
+  type: LoadBalancer
+  selector:
+    app: skaff-septober
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: skaff-septober
+spec:
+  selector:
+    matchLabels:
+      app: skaff-septober
+  template:
+    metadata:
+      labels:
+        app: skaff-septober
+    spec:
+      containers:
+      - name: skaff-septober
+#        image: sk-septober-dev
+        image: sk-septober-ng
+        ports:
+        - containerPort: 3000
