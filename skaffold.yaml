@@ -9,7 +9,7 @@ build:
       format: "20060102_150405"
       timezone: "Local"
   artifacts:
-  - image: sk-septober
+  - image: gcr.io/7eptober/sk-septober-ng # palladius/sk-septober
     docker:
       dockerfile: Dockerfile
     ######################################################################
@@ -17,6 +17,8 @@ build:
     # Very powerful! Try it Riccardo
     ######################################################################
     sync:
+      # infer:
+      #   - app/
       manual:
       - src:  app/
         dest: app/

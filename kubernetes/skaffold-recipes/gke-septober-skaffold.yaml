@@ -3,19 +3,52 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: septober-v1
+  name: sk-septober-dev
 #  namespace: septober-skaffold
   labels:
     app: septober
-    version: "1.0"
+    skaffold_config_version: "1.1"
     tier: web-frontend
-    maturity: draft
+    maturity: cacchiodicane
     env: staging
     type: RubyOnRails
 spec:
   containers:
-  - name: septober-v1
-    image: sk-septober # palladius/septober:v1
-    # Just spin & wait forever
-    command: [ "/bin/bash", "-c", "--" ]
-    args: [ "cd /home/riccardo/git/septober/ && make run" ]
+  # - name: septober-v1
+  #   image: sk-septober:latest # palladius/septober:v1
+        - args:
+            - ./entrypoint-8080.sh
+          env:
+            - name: MESSAGGIO_OCCASIONALE
+              value: '''Prova Skaffold scpiazzata da docker-compose.'''
+            - name: RAILS_ENV
+              value: development
+          image: gcr.io/7eptober/sk-septober-ng
+          name: sk-septober-dev
+          ports:
+            - containerPort: 8080
+          resources: {}
+          tty: true
+          # volumeMounts:
+          #   - mountPath: /var/www-public/septober/
+          #     name: sk-septober-dev-claim0
+
+
+#  spec:
+#       containers:
+#         - args:
+#             - ./entrypoint-8080.sh
+#           env:
+#             - name: MESSAGGIO_OCCASIONALE
+#               value: '''DockerCompose See dev in 8080 and prod in 8081 my friend with bogus MAriaDB just migrated! Dev mounts /app prod does NOT.'''
+#             - name: RAILS_ENV
+#               value: development
+#           image: septober-ng:latest
+#           name: sk-septober-dev
+#           ports:
+#             - containerPort: 8080
+#           resources: {}
+#           tty: true
+#           volumeMounts:
+#             - mountPath: /var/www-public/septober/
+#               name: sk-septober-dev-claim0
