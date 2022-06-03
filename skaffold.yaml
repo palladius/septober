@@ -55,3 +55,11 @@ profiles:
   build:
     local:
       push: false
+# copied from https://skaffold.dev/docs/environment/profiles/
+- name: dev
+  patches:
+    - op: replace
+      path: /build/artifacts/0/docker/dockerfile
+        #value: Dockerfile_dev
+        ## to be tested! never tried!
+      value: ./docker-experiments/septober-oldtest/Dockerfile 
