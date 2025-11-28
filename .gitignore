@@ -18,3 +18,6 @@ config/database.yml.prod
 01-magic-tejal.sh
 build-out.json
 .sk-septober.appname
+.echodo_history
+.git-privatize
+.gemini/logs.json

@@ -1,0 +1,16 @@
+<div class="card">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+    <h2>Projects</h2>
+    <%= link_to "New Project", new_project_path, class: "btn btn-primary" %>
+  </div>
+
+  <ul>
+    <% @projects.each do |project| %>
+      <li>
+        <%= link_to project.name, project %>
+        (<%= project.todos.count %> todos)
+        <%= link_to "Edit", edit_project_path(project), style: "font-size: 0.8rem;" %>
+      </li>
+    <% end %>
+  </ul>
+</div>

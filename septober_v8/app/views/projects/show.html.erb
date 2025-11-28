@@ -1,0 +1,14 @@
+<div class="card">
+  <h2><%= @project.name %></h2>
+  <p><%= @project.description %></p>
+  
+  <h3>Todos in this project</h3>
+  <ul>
+    <% @project.todos.each do |todo| %>
+      <li><%= link_to todo.name, todo %></li>
+    <% end %>
+  </ul>
+
+  <%= link_to "Edit", edit_project_path(@project), class: "btn btn-secondary" %>
+  <%= link_to "Back", projects_path, class: "btn" %>
+</div>

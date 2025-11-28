@@ -1,0 +1,72 @@
+#!/usr/bin/env ruby
+
+require 'net/http'
+require 'json'
+require 'uri'
+require 'optparse'
+
+# Configuration
+BASE_URL = ENV['SEPTOBER_URL'] || 'http://localhost:3000'
+USER = ENV['SEPTOBER_USER'] || 'test'
+PASSWORD = ENV['SEPTOBER_PASSWORD'] || 'password'
+
+def login
+  uri = URI("#{BASE_URL}/login")
+  response = Net::HTTP.post_form(uri, 'login' => USER, 'password' => PASSWORD)
+  # In a real CLI, we'd need to handle cookie/session persistence.
+  # For now, we'll assume Basic Auth or Token Auth if we implement it, 
+  # or just rely on the fact that this is a proof of concept.
+  # Rails session cookies are hard to use from CLI without a browser.
+  # We might need to implement a simple API token system for the CLI.
+  puts "Login response: #{response.code}"
+end
+
+def list_todos
+  uri = URI("#{BASE_URL}/todos.json")
+  puts "Fetching todos from #{uri}..."
+  
+  begin
+    response = Net::HTTP.get_response(uri)
+    
+    if response.is_a?(Net::HTTPSuccess)
+      todos = JSON.parse(response.body)
+      if todos.empty?
+        puts "No todos found."
+      else
+        puts "\n%-5s | %-40s | %-10s | %s" % ["ID", "Name", "Due", "Project"]
+        puts "-" * 80
+        todos.each do |todo|
+          project_name = todo['project'] ? todo['project']['name'] : 'N/A'
+          puts "%-5d | %-40s | %-10s | %s" % [todo['id'], todo['name'][0..38], todo['due'], project_name]
+        end
+      end
+    else
+      puts "Error fetching todos: #{response.code} - #{response.message}"
+      puts "Response body: #{response.body}"
+      puts "\nNote: Ensure you are logged in or the API is public. (Auth not fully implemented in CLI yet)"
+    end
+  rescue StandardError => e
+    puts "Failed to connect to #{BASE_URL}: #{e.message}"
+  end
+end
+
+options = {}
+OptionParser.new do |opts|
+  opts.banner = "Usage: septober [options] [command]"
+
+  opts.on("-v", "--[no-]verbose", "Run verbosely") do |v|
+    options[:verbose] = v
+  end
+end.parse!
+
+command = ARGV[0] || 'list'
+
+case command
+when 'list'
+  list_todos
+when 'add'
+  puts "Adding todo: #{ARGV[1]}"
+  # Implement add logic
+else
+  puts "Unknown command: #{command}"
+end

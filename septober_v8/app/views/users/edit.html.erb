@@ -1,0 +1,38 @@
+<div class="card" style="max-width: 400px; margin: 0 auto;">
+  <h2>Edit Profile</h2>
+  <%= form_with model: @user, local: true do |f| %>
+    <% if @user.errors.any? %>
+      <div class="alert alert-danger">
+        <ul>
+          <% @user.errors.full_messages.each do |msg| %>
+            <li><%= msg %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <div class="form-group">
+      <%= f.label :username %>
+      <%= f.text_field :username, class: "form-control" %>
+    </div>
+    <div class="form-group">
+      <%= f.label :email %>
+      <%= f.email_field :email, class: "form-control" %>
+    </div>
+    <div class="form-group">
+      <%= f.label :description %>
+      <%= f.text_area :description, class: "form-control" %>
+    </div>
+    <div class="form-group">
+      <%= f.label :password, "New Password (leave blank to keep current)" %>
+      <%= f.password_field :password, class: "form-control" %>
+    </div>
+    <div class="form-group">
+      <%= f.label :password_confirmation %>
+      <%= f.password_field :password_confirmation, class: "form-control" %>
+    </div>
+    <div class="form-group">
+      <%= f.submit "Update Profile", class: "btn btn-primary" %>
+    </div>
+  <% end %>
+</div>

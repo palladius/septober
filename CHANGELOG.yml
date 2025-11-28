@@ -1,6 +1,15 @@
 # PS TODO make this DRY, now you've to remember to update as well the following files:
 # - ./VERSION
 # - app/helpers/application_helper
+2.5.0: # major 2025-11-28
+  - Migrated to Rails 8.0 (Fresh Start in septober_v8 subdirectory).
+  - Ported User, Project, Todo models.
+  - Replaced attr_accessible with Strong Parameters.
+  - Replaced acts_as_carlesso gem with local concern.
+  - Added acts-as-taggable-on.
+  - Modernized UI with Vanilla CSS and Hotwire.
+  - Fixed Search engine.
+  - Added CLI tool (bin/septober) with API support.
 2.4.03: # major 2022-01-08
   - faster dockerfile! now build with just gemfile and THEN copy stuff. This means ai revuild ONLY if Gemfile has changed. 
 2.4.02: # major 2022-01-04
