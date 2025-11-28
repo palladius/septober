@@ -11,7 +11,7 @@
   - Fixed Search engine.
   - Added CLI tool (bin/septober) with API support.
 2.4.03: # major 2022-01-08
-  - faster dockerfile! now build with just gemfile and THEN copy stuff. This means ai revuild ONLY if Gemfile has changed. 
+  - faster dockerfile! now build with just gemfile and THEN copy stuff. This means I rebuild ONLY if Gemfile has changed. 
 2.4.02: # major 2022-01-04
   - nothing here. Updated septober script on `ric` gem. Yuppie! I should move the script here - maybe. 
 2.4.01: # major 2022-01-04
@@ -39,7 +39,7 @@
 2.2.15: # 2020-12-10
   - Project images support now HTTPS which became kind of a thing in the latest 8 years :)
 2.2.14: # 2020-12-10
-  - Fixed footer and hear. Now newer links and header aligns perfectly in center b:)
+  - Fixed footer and header. Now newer links and header aligns perfectly in center b:)
 2.2.7:
   - Fixes the edit_in_place error. Now you can edit a TODO with a single click.
 2.1.5:
@@ -58,8 +58,8 @@
   - fixed yay! - Bug is here. depends on using jquery instead of prototype: http://asciicasts.com/episodes/227-upgrading-to-rails-3-part-3
 1.6.8:
   - bug solved due date in todo regex magic!
-  - small bug in authenticaiton sovled (if u r logged in and u change the |DB and the user is not there anymore it should log you out... lets hope it doesnt log you out more than needed!)
-  - STULL PRESENT BUG CANT DFELETE A TODO!!! @bug 
+  - small bug in authentication solved (if u r logged in and u change the |DB and the user is not there anymore it should log you out... lets hope it doesnt log you out more than needed!)
+  - STILL PRESENT BUG CANT DELETE A TODO!!! @bug 
 1.6.7:
   - Tags are completely parsed from fast insert, yay!
   - Better testing (better but NOT complete)
@@ -75,14 +75,14 @@
   - tag recognition in magic subject parsing!! (only one so far)
 1.6.2:
   - ran migration on heroku.
-  - added skleep/postpone
+  - added sleep/postpone
   - fixed photo_url
 1.6.1:
   - parsing URL! Https very cool
-  - much betre test (with user password in fixture from 33 to 13 errors!)
+  - much better test (with user password in fixture from 33 to 13 errors!)
 1.6.0:
  - added photo_url to todos as well. Where would i go without a pic every now and then??
- - rempoved bin/septober (now for good put into ric gem! Lets do this experiment!)
+ - removed bin/septober (now for good put into ric gem! Lets do this experiment!)
 1.5.5:
   - fixed search. Now it has ONLY MY TODOS (goes with current user)
   - and supports bad fields like 'where'
@@ -126,7 +126,7 @@
 1.3.0:
   - Added to todos: hide_until,favorite, progress_status
   - better view/edit/list
-  - BUG! in local populated all progress_status of old todos to 0, in production it DIDNT. I had to do on prodyction the following
+  - BUG! in local populated all progress_status of old todos to 0, in production it DIDNT. I had to do on production the following
   - "Todo.all.each{|t| t.progress_status = 0 ; t.save }"
 1.2.0:
   - Migrated with TAGS
@@ -135,7 +135,7 @@
   - Fatal auth bug!!
 1.1.2:
     - Priority toggles!!
-  - 20110127 Rewoking on Projects. New ActsAsCarlesso implementations (need to backport to AAC plugin!)
+  - 20110127 Reworking on Projects. New ActsAsCarlesso implementations (need to backport to AAC plugin!)
 1.1.1:
   - 20110126 Search on TODOs fixed
 1.1.0:
@@ -147,10 +147,10 @@
   - post create hook
   - TODO index interface now rocks!
 1.0.4:
-  - 20110125 SubProjects Todo view bug corrected (now corectly visualizes corretcly)
+  - 20110125 SubProjects Todo view bug corrected (now correctly visualizes correctly)
 1.0.3:
  - More internationalization. A few plau
- - ripristined English as dflt locale. Some nasty err in oneline_create with trnslation
+ - restored English as dflt locale. Some nasty err in oneline_create with trnslation
  - put italian as default locale
 1.0.2:
 - Added this changelog
