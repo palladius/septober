@@ -6,7 +6,7 @@ require 'uri'
 require 'optparse'
 
 # Configuration
-BASE_URL = ENV['SEPTOBER_URL'] || 'http://localhost:3000'
+BASE_URL = ENV['SEPTOBER_URL'] || 'http://localhost:42042'
 USER = ENV['SEPTOBER_USER'] || 'test'
 PASSWORD = ENV['SEPTOBER_PASSWORD'] || 'password'
 

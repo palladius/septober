@@ -21,3 +21,6 @@ build-out.json
 .echodo_history
 .git-privatize
 .gemini/logs.json
+log/
+cache/
+storage/
