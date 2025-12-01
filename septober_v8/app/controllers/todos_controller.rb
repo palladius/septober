@@ -50,15 +50,28 @@ class TodosController < ApplicationController
 
   def edit
     @todo = Todo.find_by(id: params[:id], user_id: current_user.id)
+    if turbo_frame_request?
+      render partial: "inline_form", locals: { todo: @todo }
+    else
+      render :edit
+    end
   end
 
   def update
     @todo = Todo.find(params[:id])
     if @todo.update(todo_params)
-      flash[:notice] = "Successfully updated todo ##{@todo.id}"
-      redirect_to todos_url
+      if turbo_frame_request?
+        render partial: "todo", locals: { todo: @todo }
+      else
+        flash[:notice] = "Successfully updated todo ##{@todo.id}"
+        redirect_to todos_url
+      end
     else
-      render :edit, status: :unprocessable_entity
+      if turbo_frame_request?
+        render partial: "inline_form", locals: { todo: @todo }, status: :unprocessable_entity
+      else
+        render :edit, status: :unprocessable_entity
+      end
     end
   end
 
