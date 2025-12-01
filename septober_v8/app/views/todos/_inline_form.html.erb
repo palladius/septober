@@ -1,0 +1,18 @@
+<%= turbo_frame_tag todo do %>
+  <div class="todo-item" style="border-bottom: 1px solid #e5e7eb; padding: 0.5rem 0;">
+    <%= form_with model: todo, local: false, data: { turbo: true } do |f| %>
+      <div style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem;">
+        <%= f.text_field :name, style: "flex-grow: 1; padding: 0.25rem;", class: "form-control" %>
+        <%= f.collection_select :project_id, Project.where(user_id: todo.user_id), :id, :name, {}, { style: "padding: 0.25rem;", class: "form-control" } %>
+        <%= f.date_field :due, style: "padding: 0.25rem;" %>
+      </div>
+      <div style="display: flex; gap: 0.5rem;">
+        <%= f.text_area :description, rows: 2, style: "flex-grow: 1; padding: 0.25rem;", class: "form-control", placeholder: "Description" %>
+        <div style="display: flex; flex-direction: column; gap: 0.25rem;">
+          <%= f.submit "Save", class: "btn btn-primary btn-sm" %>
+          <%= link_to "Cancel", todo_path(todo), class: "btn btn-secondary btn-sm" %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+<% end %>
