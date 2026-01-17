@@ -1,6 +1,8 @@
 # PS TODO make this DRY, now you've to remember to update as well the following files:
 # - ./VERSION
 # - app/helpers/application_helper
+2.4.04: # 2026-01-17
+  - Maintenance release: version bump and blueprint update.
 2.4.03: # major 2022-01-08
   - faster dockerfile! now build with just gemfile and THEN copy stuff. This means ai revuild ONLY if Gemfile has changed. 
 2.4.02: # major 2022-01-04
