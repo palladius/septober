@@ -17,6 +17,7 @@ CLI
 
 * septober tag 123 travels,shopping,riccardo
 * TAGS work => 1 bug security, see github
+* (Nice-to-have) Explore Charm/Bubbletea for a glamorous TUI (currently broken on ARM64/Ruby 3.4).
 
 Facebook
 ========
