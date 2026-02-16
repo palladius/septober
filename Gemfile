@@ -2,7 +2,7 @@ source 'http://rubygems.org'
 
 ruby "1.9.3" # septober image used this: 1.9.3-p484
 
-gem 'rails',            '3.0.3'
+gem 'rails',            '3.2.22.5'
 #gem "activeresource", ">= 5.1.1" # TODO(ricc): VULNERABILITY! But if you enable this it stops working :/
 #gem "activerecord", ">= 3.2.19" # vulnerability CRITICAL: https://github.com/palladius/septober/network/alert/Gemfile.lock/activerecord/open
 
