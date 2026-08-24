@@ -44,3 +44,21 @@ def statusz():
         "version": settings.version,
         "env": settings.env,
     }
+
+@app.get("/")
+def root():
+    return {
+        "app": settings.app_name,
+        "version": settings.version,
+        "message": "Procrastinators unite... with better technology! 🗓️",
+        "docs": "/docs",
+        "endpoints": {
+            "todos": "/api/todos/",
+            "tags": "/api/tags/",
+            "health": "/healthz",
+            "status": "/statusz",
+            "swagger": "/docs",
+            "redoc": "/redoc",
+        },
+    }
+
