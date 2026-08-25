@@ -215,6 +215,32 @@ async function addTodo(e) {
 }
 
 function esc(s) { const d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
+
+// --- WebSocket real-time sync ---
+let ws;
+let wsRetry = 1000;
+function connectWS() {
+  const proto = location.protocol === 'https:' ? 'wss:' : 'ws:';
+  ws = new WebSocket(`${proto}//${location.host}/ws`);
+  ws.onopen = () => { wsRetry = 1000; console.log('🔌 WS connected'); };
+  ws.onmessage = (e) => {
+    const msg = JSON.parse(e.data);
+    console.log('📡 WS event:', msg.event, msg.data);
+    // Reload list on any change from another client
+    load();
+    if (msg.event === 'todo_created') toast(`📡 Nuovo: ${msg.data.title}`);
+    else if (msg.event === 'todo_deleted') toast('📡 Todo eliminato');
+    else if (msg.event === 'todo_toggled') toast('📡 Todo aggiornato');
+  };
+  ws.onclose = () => {
+    console.log(`🔌 WS disconnected, retry in ${wsRetry}ms`);
+    setTimeout(connectWS, wsRetry);
+    wsRetry = Math.min(wsRetry * 2, 30000); // Exponential backoff, max 30s
+  };
+  ws.onerror = () => ws.close();
+}
+connectWS();
+
 load();
 </script>
 </body>

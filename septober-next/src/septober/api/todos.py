@@ -1,4 +1,5 @@
 """Todo CRUD API endpoints with quick actions."""
+import asyncio
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select, func, and_
 from datetime import date, datetime, timedelta, timezone
@@ -7,6 +8,17 @@ from septober.models import Todo, Tag, TodoTagLink, TodoStatus, Category
 from septober.schemas import TodoCreate, TodoUpdate, TodoRead, TodoList, StatsResponse
 from septober.db import get_session
 from septober.magic import apply_magic
+from septober.broadcast import broadcaster
+
+
+def _fire_event(event: str, data: dict | None = None):
+    """Fire a WebSocket broadcast from a sync endpoint."""
+    try:
+        loop = asyncio.get_running_loop()
+        loop.create_task(broadcaster.broadcast(event, data))
+    except RuntimeError:
+        pass  # No event loop — skip (e.g. in tests)
+
 
 router = APIRouter(prefix="/api/todos", tags=["todos"])
 
@@ -170,7 +182,9 @@ def create_todo(todo_in: TodoCreate, session: Session = Depends(get_session)):
         session.commit()
         session.refresh(todo)
 
-    return _todo_to_read(todo)
+    result = _todo_to_read(todo)
+    _fire_event("todo_created", {"id": todo.id, "title": todo.title})
+    return result
 
 
 @router.get("/{todo_id}", response_model=TodoRead)
@@ -218,6 +232,7 @@ def delete_todo(todo_id: int, session: Session = Depends(get_session)):
         raise HTTPException(status_code=404, detail="Todo not found")
     session.delete(todo)
     session.commit()
+    _fire_event("todo_deleted", {"id": todo_id})
 
 
 @router.post("/{todo_id}/done", response_model=TodoRead)
@@ -266,7 +281,9 @@ def toggle_todo(todo_id: int, session: Session = Depends(get_session)):
     session.add(todo)
     session.commit()
     session.refresh(todo)
-    return _todo_to_read(todo)
+    result = _todo_to_read(todo)
+    _fire_event("todo_toggled", {"id": todo.id, "status": todo.status.value})
+    return result
 
 
 @router.post("/{todo_id}/snooze", response_model=TodoRead)
