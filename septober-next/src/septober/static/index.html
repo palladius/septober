@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<title>Septober Next 🗓️</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+         background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); color: #e0e0e0;
+         min-height: 100vh; overflow-x: hidden; -webkit-user-select: none; user-select: none; }
+  .container { max-width: 600px; margin: 0 auto; padding: 16px; }
+  header { text-align: center; padding: 24px 0 12px; }
+  header h1 { font-size: 2.2em; background: linear-gradient(90deg, #f7971e, #ffd200);
+              -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  header p { color: #aaa; margin-top: 4px; font-size: 0.85em; font-style: italic; }
+  .stats { display: flex; gap: 10px; justify-content: center; margin: 12px 0; }
+  .stat { background: rgba(255,255,255,0.08); border-radius: 12px; padding: 10px 16px;
+          text-align: center; min-width: 70px; }
+  .stat-num { font-size: 1.6em; font-weight: 700; color: #ffd200; }
+  .stat-label { font-size: 0.7em; color: #888; text-transform: uppercase; }
+  .add-form { display: flex; gap: 8px; margin: 14px 0; }
+  .add-form input { flex: 1; padding: 12px 16px; border-radius: 12px; border: 1px solid #444;
+                     background: rgba(255,255,255,0.06); color: #fff; font-size: 16px; outline: none; }
+  .add-form input:focus { border-color: #ffd200; }
+  .add-form button { padding: 12px 20px; border-radius: 12px; border: none;
+                      background: linear-gradient(135deg, #f7971e, #ffd200); color: #1a1a2e;
+                      font-weight: 700; cursor: pointer; font-size: 16px; white-space: nowrap; }
+  .todo-list { list-style: none; }
+
+  /* Swipe container */
+  .swipe-wrapper { position: relative; overflow: hidden; border-radius: 12px; margin: 8px 0; }
+  .swipe-bg { position: absolute; top: 0; bottom: 0; display: flex; align-items: center;
+              padding: 0 20px; font-weight: 700; font-size: 0.9em; color: white; display: none; }
+  .swipe-bg-right { left: 0; right: 0; background: #22c55e; justify-content: flex-start; }
+  .swipe-bg-left { left: 0; right: 0; background: #ef4444; justify-content: flex-end; }
+  .todo-item { display: flex; align-items: center; gap: 12px; padding: 14px 16px;
+               background: rgba(30,30,60,0.95); position: relative; z-index: 2;
+               cursor: pointer; touch-action: pan-y; }
+  .todo-item.snapping { transition: transform 0.3s ease-out, opacity 0.3s; }
+  .todo-item.done { opacity: 0.4; }
+  .todo-item.done .todo-title { text-decoration: line-through; }
+  .todo-check { width: 24px; height: 24px; border-radius: 50%; border: 2px solid #ffd200;
+                 display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+                 font-size: 14px; }
+  .todo-check.checked { background: #ffd200; color: #1a1a2e; }
+  .todo-title { flex: 1; font-size: 0.95em; line-height: 1.3; }
+  .todo-meta { display: flex; gap: 6px; align-items: center; flex-shrink: 0; }
+  .todo-cat { font-size: 0.7em; padding: 2px 8px; border-radius: 8px;
+              background: rgba(255,255,255,0.1); color: #aaa; }
+  .todo-pri { font-size: 0.7em; }
+  .links { text-align: center; margin-top: 20px; padding-top: 16px; border-top: 1px solid #333; }
+  .links a { color: #ffd200; text-decoration: none; margin: 0 10px; font-size: 0.85em; }
+  .links a:hover { text-decoration: underline; }
+  .empty { text-align: center; padding: 40px; color: #666; }
+  .hint { text-align: center; color: #555; font-size: 0.75em; margin: 6px 0 2px; }
+  .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+           background: rgba(0,0,0,0.85); color: #fff; padding: 10px 24px; border-radius: 20px;
+           font-size: 0.9em; z-index: 100; opacity: 0; transition: opacity 0.3s; pointer-events: none; }
+  .toast.show { opacity: 1; }
+  .version { text-align: center; color: #333; font-size: 0.65em; margin-top: 12px; }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>🗓️ Septober</h1>
+    <p>Procrastinators unite... with better technology!</p>
+  </header>
+  <div class="stats">
+    <div class="stat"><div class="stat-num" id="s-active">-</div><div class="stat-label">Active</div></div>
+    <div class="stat"><div class="stat-num" id="s-done">-</div><div class="stat-label">Done</div></div>
+    <div class="stat"><div class="stat-num" id="s-total">-</div><div class="stat-label">Total</div></div>
+  </div>
+  <form class="add-form" onsubmit="addTodo(event)">
+    <input type="text" id="new-todo" placeholder="Aggiungi todo..." autocomplete="off">
+    <button type="submit">＋</button>
+  </form>
+  <div class="hint">👈 swipe left = delete · swipe right = done ✅</div>
+  <ul class="todo-list" id="todo-list"></ul>
+  <div class="links">
+    <a href="/docs">📖 Docs</a>
+    <a href="/redoc">📕 ReDoc</a>
+    <a href="/api/todos/">🔌 API</a>
+  </div>
+  <div class="version">v3.0.0 · Supabase 🐘</div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+const CAT_ICONS = {famiglia:'👨‍👩‍👧‍👦', personale:'🧘', lavoro:'💼', finanze:'🏦', shopping:'🛒'};
+const PRI = {1:'○', 2:'◔', 3:'◑', 4:'◕', 5:'●'};
+const SWIPE_THRESHOLD = 80;
+
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 1800);
+}
+
+async function load() {
+  try {
+    const [active, done] = await Promise.all([
+      fetch('/api/todos/?status=active&limit=50').then(r=>r.json()),
+      fetch('/api/todos/?status=done&limit=50').then(r=>r.json()),
+    ]);
+    document.getElementById('s-active').textContent = active.total;
+    document.getElementById('s-done').textContent = done.total;
+    document.getElementById('s-total').textContent = active.total + done.total;
+    const list = document.getElementById('todo-list');
+    const items = [...active.items, ...done.items.slice(0,5)];
+    if (!items.length) {
+      list.innerHTML = '<div class="empty">Nessun todo! 🎉<br>Aggiungi il primo.</div>';
+      return;
+    }
+    list.innerHTML = items.map(t => `
+      <li class="swipe-wrapper">
+        <div class="swipe-bg swipe-bg-right">✅ Done</div>
+        <div class="swipe-bg swipe-bg-left">🗑️ Delete</div>
+        <div class="todo-item ${t.status==='done'?'done':''}"
+             data-id="${t.id}" data-status="${t.status}">
+          <div class="todo-check ${t.status==='done'?'checked':''}">
+            ${t.status==='done'?'✓':''}
+          </div>
+          <span class="todo-title">${esc(t.title)}</span>
+          <div class="todo-meta">
+            <span class="todo-pri">${PRI[t.priority]||'◑'}</span>
+            <span class="todo-cat">${CAT_ICONS[t.category]||'🧘'}</span>
+          </div>
+        </div>
+      </li>`).join('');
+    initSwipe();
+  } catch(e) { console.error(e); }
+}
+
+function initSwipe() {
+  document.querySelectorAll('.todo-item').forEach(el => {
+    let startX = 0, startY = 0, currentX = 0, swiping = false, moved = false;
+
+    el.addEventListener('touchstart', e => {
+      startX = e.touches[0].clientX;
+      startY = e.touches[0].clientY;
+      currentX = 0;
+      swiping = false;
+      moved = false;
+      el.classList.remove('snapping');
+    }, {passive: true});
+
+    el.addEventListener('touchmove', e => {
+      const dx = e.touches[0].clientX - startX;
+      const dy = e.touches[0].clientY - startY;
+      if (!swiping && Math.abs(dx) > 10 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+        swiping = true;
+      }
+      if (!swiping) return;
+      e.preventDefault();
+      moved = true;
+      currentX = dx;
+      el.style.transform = `translateX(${dx}px)`;
+      const wrapper = el.closest('.swipe-wrapper');
+      const bgR = wrapper.querySelector('.swipe-bg-right');
+      const bgL = wrapper.querySelector('.swipe-bg-left');
+      bgR.style.display = dx > 0 ? 'flex' : 'none';
+      bgL.style.display = dx < 0 ? 'flex' : 'none';
+      // Threshold feedback
+      if (dx > SWIPE_THRESHOLD) bgR.style.fontSize = '1.1em';
+      else bgR.style.fontSize = '0.9em';
+      if (dx < -SWIPE_THRESHOLD) bgL.style.fontSize = '1.1em';
+      else bgL.style.fontSize = '0.9em';
+    }, {passive: false});
+
+    el.addEventListener('touchend', async () => {
+      el.classList.add('snapping');
+      const id = el.dataset.id;
+      if (currentX > SWIPE_THRESHOLD) {
+        el.style.transform = `translateX(100vw)`;
+        el.style.opacity = '0';
+        await fetch(`/api/todos/${id}/toggle`, {method:'POST'});
+        toast(el.dataset.status === 'done' ? '↩️ Riattivato!' : '✅ Fatto!');
+        setTimeout(load, 300);
+      } else if (currentX < -SWIPE_THRESHOLD) {
+        el.style.transform = `translateX(-100vw)`;
+        el.style.opacity = '0';
+        await fetch(`/api/todos/${id}`, {method:'DELETE'});
+        toast('🗑️ Eliminato!');
+        setTimeout(load, 300);
+      } else {
+        el.style.transform = 'translateX(0)';
+        const wrapper = el.closest('.swipe-wrapper');
+        wrapper.querySelector('.swipe-bg-right').style.display = 'none';
+        wrapper.querySelector('.swipe-bg-left').style.display = 'none';
+      }
+    });
+
+    // Desktop click to toggle (only if not swiped)
+    el.addEventListener('click', async () => {
+      if (moved) return;
+      await fetch(`/api/todos/${el.dataset.id}/toggle`, {method:'POST'});
+      toast(el.dataset.status === 'done' ? '↩️ Riattivato!' : '✅ Fatto!');
+      load();
+    });
+  });
+}
+
+async function addTodo(e) {
+  e.preventDefault();
+  const input = document.getElementById('new-todo');
+  const title = input.value.trim();
+  if (!title) return;
+  await fetch('/api/todos/', {method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({title})});
+  input.value = '';
+  toast('📝 Aggiunto!');
+  load();
+}
+
+function esc(s) { const d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
+load();
+</script>
+</body>
+</html>
