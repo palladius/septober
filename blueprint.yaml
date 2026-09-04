@@ -20,4 +20,6 @@ ricc-app:
   privacy:
     code: public
     app: public
+  depends:
+    - ric-gem # id: g-497b-8422
   grid_id: g-d1ca-c813
