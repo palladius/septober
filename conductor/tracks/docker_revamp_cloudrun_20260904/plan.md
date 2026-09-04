@@ -12,11 +12,11 @@
 - [x] Task: Verify test suite passes with `pytest` / `python3 -m unittest` 98bf448
 - [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) 98bf448
 
-## Phase 3: Containerization & Cloud SQL Socket Support
-- [ ] Task: Update `config/database.yml` to support `DATABASE_SOCKET` for Cloud SQL Unix socket
-- [ ] Task: Ensure `cloudbuild.yaml` or build script produces deployable image
-- [ ] Task: Verify container entrypoint configuration
-- [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+## Phase 3: Containerization & Cloud SQL Socket Support [checkpoint: 1a11e58]
+- [x] Task: Update `config/database.yml` to support `DATABASE_SOCKET` for Cloud SQL Unix socket 1a11e58
+- [x] Task: Ensure `cloudbuild.yaml` or build script produces deployable image 1a11e58
+- [x] Task: Verify container entrypoint configuration 1a11e58
+- [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) 1a11e58
 
 ## Phase 4: Remote Deployment & Live Verification
 - [ ] Task: Configure Cloud Run service (or GCE `septober26-mini` VM)
