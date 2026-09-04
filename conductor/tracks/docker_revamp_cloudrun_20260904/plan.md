@@ -6,11 +6,11 @@
 - [x] Task: Audit repository for any tracked sensitive credentials db0e38b
 - [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) db0e38b
 
-## Phase 2: CLI 2026 Resiliency & Testing
-- [ ] Task: Add test suite `test/test_septober_cli_26.py` covering arguments, auth, and error handling
-- [ ] Task: Update `bin/septober-cli-26` with environment variable overrides and improved timeout diagnostics
-- [ ] Task: Verify test suite passes with `pytest` / `python3 -m unittest`
-- [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+## Phase 2: CLI 2026 Resiliency & Testing [checkpoint: 98bf448]
+- [x] Task: Add test suite `test/test_septober_cli_26.py` covering arguments, auth, and error handling 98bf448
+- [x] Task: Update `bin/septober-cli-26` with environment variable overrides and improved timeout diagnostics 98bf448
+- [x] Task: Verify test suite passes with `pytest` / `python3 -m unittest` 98bf448
+- [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) 98bf448
 
 ## Phase 3: Containerization & Cloud SQL Socket Support
 - [ ] Task: Update `config/database.yml` to support `DATABASE_SOCKET` for Cloud SQL Unix socket
