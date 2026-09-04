@@ -18,8 +18,8 @@
 - [x] Task: Verify container entrypoint configuration 1a11e58
 - [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) 1a11e58
 
-## Phase 4: Remote Deployment & Live Verification
-- [ ] Task: Configure Cloud Run service (or GCE `septober26-mini` VM)
-- [ ] Task: Verify Cloud SQL connectivity (either via `--add-cloudsql-instances` or authorized IP)
-- [ ] Task: Test live endpoint using `bin/septober-cli-26 list`
-- [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+## Phase 4: Remote Deployment & Live Verification [checkpoint: 754ab8d]
+- [x] Task: Configure Cloud Run service (or GCE `septober26-mini` VM) 754ab8d
+- [x] Task: Verify Cloud SQL connectivity (either via `--add-cloudsql-instances` or authorized IP) 754ab8d
+- [x] Task: Test live endpoint using `bin/septober-cli-26 list` 754ab8d
+- [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) 754ab8d
