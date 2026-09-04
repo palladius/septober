@@ -1,10 +1,10 @@
 # Implementation Plan: Docker Revamp, Secrets Cleanup, and Cloud Run / GCE Deployment 2026
 
-## Phase 1: Configuration & Secret Sanitization
-- [ ] Task: Create `.septober.yml.example` with placeholders and documentation
-- [ ] Task: Ensure `.gitignore` ignores all variants of `.septober.yml` and local secrets
-- [ ] Task: Audit repository for any tracked sensitive credentials
-- [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+## Phase 1: Configuration & Secret Sanitization [checkpoint: db0e38b]
+- [x] Task: Create `.septober.yml.example` with placeholders and documentation db0e38b
+- [x] Task: Ensure `.gitignore` ignores all variants of `.septober.yml` and local secrets db0e38b
+- [x] Task: Audit repository for any tracked sensitive credentials db0e38b
+- [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) db0e38b
 
 ## Phase 2: CLI 2026 Resiliency & Testing
 - [ ] Task: Add test suite `test/test_septober_cli_26.py` covering arguments, auth, and error handling
