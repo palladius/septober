@@ -1,0 +1,22 @@
+# Septober CLI configuration template.
+# Copy this file to ~/.septober.yml or keep it in bin/.septober.yml (gitignored).
+# DO NOT commit real passwords to public repositories!
+
+local: &DEVEL_LOCAL
+  site: "http://localhost:8080/api/"
+  user: "guest"
+  password: "guest"
+  description: "Local development instance (vanilla sqlite or local container)"
+
+septober: &CLOUDRUN
+  site: "https://septober-mysql-2-3-12-prova-v3ydafeb7q-lm.a.run.app/api/"
+  user: "YOUR_USERNAME"
+  password: "YOUR_PASSWORD"
+  description: "Septober on Google Cloud Run"
+
+# Default environment selection
+production:
+  <<: *CLOUDRUN
+
+development:
+  <<: *DEVEL_LOCAL
