@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110208152947) do
+ActiveRecord::Schema.define(:version => 20260905140000) do
 
   create_table "projects", :force => true do |t|
     t.string   "name"
@@ -74,6 +74,13 @@ ActiveRecord::Schema.define(:version => 20110208152947) do
     t.string   "facebook_id"
     t.boolean  "admin",         :default => false
     t.text     "description"
+    t.integer  "parent_id"
+    t.boolean  "is_agent",      :default => false, :null => false
+    t.string   "agent_host"
+    t.string   "agent_icon"
   end
+
+  add_index "users", ["parent_id"], :name => "index_users_on_parent_id"
+  add_index "users", ["parent_id", "is_agent"], :name => "index_users_on_parent_id_and_is_agent"
 
 end
