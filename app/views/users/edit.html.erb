@@ -1,3 +1,38 @@
 <% title "Update Profile" %>
 
 <%= render 'form' %>
+
+<hr/>
+
+<div class='user_agents_section'>
+  <h3>🤖 My Autonomous Copilots & Agents</h3>
+  <% if @user.agents.any? %>
+    <table border="1" cellpadding="6" cellspacing="0" class="agents_table" width="100%">
+      <thead>
+        <tr style="background-color: #f0f4f8;">
+          <th>Icon</th>
+          <th>Agent Username</th>
+          <th>Host / Machine</th>
+          <th>Email</th>
+          <th>Tasks Count</th>
+          <th>Created At</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @user.agents.each do |agent| %>
+          <tr>
+            <td align="center" style="font-size: 1.5em;"><%= agent.agent_icon || '🤖' %></td>
+            <td><b><%= agent.username %></b></td>
+            <td><code><%= agent.agent_host || 'cloud' %></code></td>
+            <td><small><%= agent.email %></small></td>
+            <td><%= agent.todos.count %> (<%= agent.todos.active.count %> active)</td>
+            <td><small><%= agent.created_at.strftime('%Y-%m-%d') rescue '-' %></small></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <p><i>No child agents registered yet.</i></p>
+  <% end %>
+</div>
+

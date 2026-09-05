@@ -5,7 +5,8 @@ class TodosController < ApplicationController
   can_edit_on_the_spot
   
   def index
-    filter_conditions = { :user_id => current_user.id  } 
+    allowed_ids = current_user.respond_to?(:family_user_ids) ? current_user.family_user_ids : [current_user.id]
+    filter_conditions = { :user_id => allowed_ids } 
     #  Project: , :home_visible => true
     filter_conditions[:project_id] = Project.find_by_name_and_user_id(params[:add_project], current_user.id).id if params[:add_project]
     filter_conditions[:projects] = { :home_visible => true } unless params[:add_project] # in which case i show everything
