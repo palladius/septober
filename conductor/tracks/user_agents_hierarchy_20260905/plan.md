@@ -38,12 +38,12 @@
   - [x] Provide ready-to-copy snippets for `~/.hermes/.env` and `~/.openclaw/.env`
 - [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) [68537fb]
 
-## Phase 4: CLI Enhancement & Cloud Run Deployment
-- [ ] Task: Implement agent auto-detection and badge rendering in `septober-cli-26`
-  - [ ] Support `--agent` flag and `SEPTOBER_AGENT` env variable
-  - [ ] Auto-detect identity when running inside Hermes or OpenClaw harness
-  - [ ] Render agent icons in `list` and `show`
-- [ ] Task: Write CLI tests for agent detection and icon rendering
-- [ ] Task: Build and deploy updated container revision to Cloud Run
-  - [ ] Submit Cloud Build patch image and deploy to `septober-mysql-2-3-12-prova`
-- [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+## Phase 4: CLI Enhancement & Cloud Run Deployment [checkpoint: a1b6108]
+- [x] Task: Implement agent auto-detection and badge rendering in `septober-cli-26` [a1b6108]
+  - [x] Support `--agent` flag and `SEPTOBER_AGENT` env variable
+  - [x] Auto-detect identity when running inside Hermes or OpenClaw harness
+  - [x] Render agent icons in `list` and `show`
+- [x] Task: Write CLI tests for agent detection and icon rendering [a1b6108]
+- [x] Task: Build and deploy updated container revision to Cloud Run [7cb9844]
+  - [x] Submit Cloud Build patch image and deploy to `septober-mysql-2-3-12-prova`
+- [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) [a1b6108]

@@ -7,4 +7,4 @@
 - [x] **Track: Docker Revamp, Secrets Cleanup, and Cloud Run / GCE Deployment 2026** *Link: [tracks/docker_revamp_cloudrun_20260904/index.md](tracks/docker_revamp_cloudrun_20260904/index.md)*
 
 ---
-- [~] **Track: User Model Parent-Child Agent Hierarchy & Schema Migration** *Link: [tracks/user_agents_hierarchy_20260905/index.md](tracks/user_agents_hierarchy_20260905/index.md)*
+- [x] **Track: User Model Parent-Child Agent Hierarchy & Schema Migration** *Link: [tracks/user_agents_hierarchy_20260905/index.md](tracks/user_agents_hierarchy_20260905/index.md)*

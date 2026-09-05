@@ -69,5 +69,55 @@ production:
         self.assertEqual(len(res["data"]), 1)
         self.assertEqual(res["data"][0]["name"], "Test todo")
 
+    def test_load_config_agent_profile(self):
+        with open(self.yaml_file, "w") as f:
+            f.write("""
+local:
+  site: "http://localhost:8080/api/"
+  user: "guest"
+  password: "guest_password"
+agents:
+  ermete:
+    user: "rcarlesso.ermete"
+    password: "pwd-ermete"
+    icon: "🚛"
+    host: "mini-lobby"
+  lobby:
+    user: "rcarlesso.lobby"
+    password: "pwd-lobby"
+    icon: "🦞"
+    host: "mini-lobby"
+""")
+        cfg_ermete = cli.load_config(self.yaml_file, target_agent="ermete")
+        self.assertEqual(cfg_ermete["user"], "rcarlesso.ermete")
+        self.assertEqual(cfg_ermete["password"], "pwd-ermete")
+        self.assertEqual(cfg_ermete["agent"], "ermete")
+        self.assertEqual(cfg_ermete["agent_icon"], "🚛")
+
+        cfg_lobby = cli.load_config(self.yaml_file, target_agent="lobby")
+        self.assertEqual(cfg_lobby["user"], "rcarlesso.lobby")
+        self.assertEqual(cfg_lobby["password"], "pwd-lobby")
+        self.assertEqual(cfg_lobby["agent"], "lobby")
+        self.assertEqual(cfg_lobby["agent_icon"], "🦞")
+
+    def test_load_config_agent_auto_detect_from_harness(self):
+        with open(self.yaml_file, "w") as f:
+            f.write("""
+local:
+  site: "http://localhost:8080/api/"
+  user: "guest"
+  password: "guest_password"
+agents:
+  ermete:
+    user: "rcarlesso.ermete"
+    password: "pwd-ermete"
+    icon: "🚛"
+    host: "mini-lobby"
+""")
+        with patch.dict(os.environ, {"HARNESS_NAME": "Hermes"}, clear=False):
+            cfg = cli.load_config(self.yaml_file)
+            self.assertEqual(cfg["user"], "rcarlesso.ermete")
+            self.assertEqual(cfg["agent"], "ermete")
+
 if __name__ == "__main__":
     unittest.main()
