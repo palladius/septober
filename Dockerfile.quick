@@ -3,10 +3,12 @@ FROM gcr.io/ric-cccwiki/septober-mysql:2.3.12
 WORKDIR /var/www/septober/
 COPY config/database.yml /var/www/septober/config/database.yml
 COPY app/controllers/application_controller.rb /var/www/septober/app/controllers/application_controller.rb
+COPY app/controllers/api/todos_controller.rb /var/www/septober/app/controllers/api/todos_controller.rb
+COPY app/models/todo.rb /var/www/septober/app/models/todo.rb
+RUN rm -f /var/www/septober/app/views/api/todos/create.json.builder
 COPY bin/ /var/www/septober/bin/
 COPY VERSION /var/www/septober/VERSION
 
-# Sync to /var/www-public as well
 RUN mkdir -p /var/www-public/septober/ && cp -r /var/www/septober/* /var/www-public/septober/ 2>/dev/null || true
 
 WORKDIR /var/www/septober/

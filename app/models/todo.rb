@@ -177,9 +177,8 @@ class Todo < ActiveRecord::Base
         # PROJECT: This should be done in the regex magic!!!
         # TODO if the first word matches an existing project, do it!
         unless attribute_present?('project_id')
-          personal = Project.find_by_name_and_user_id('personal',self.user_id)
-          log << "PersProject: #{personal.inspect}"
-          self.project_id = personal.id #Project.find_by_name_and_user_id('personal',self.user_id).id
+          proj = Project.find_by_name_and_user_id('personal', self.user_id) || Project.find_by_user_id(self.user_id)
+          self.project_id = proj.id if proj
         end
         #self.url  = 'test url3' # this works
         @where = 'Inferred from Current IP TODO :)'

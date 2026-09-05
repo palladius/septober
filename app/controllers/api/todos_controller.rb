@@ -40,12 +40,12 @@ class Api::TodosController < ApplicationController
 
   def create
     #pgreen "DEBUG API::TodoController.create()"
-    # 20190512 For some reasons, params comes virgin, wihtout [:todo] so I need to push one level.
-    params[:todo] = params
-    pgray "[RiccDEBUG] API::TodoController.create() - param[:todo]=#{params[:todo]}"
+    # Support both flat JSON params and nested {:todo => {...}}
+    todo_params = params[:todo] || params
+    todo_params = todo_params.except("action", "controller", "format")
+    todo_params[:user_id] = current_api_user.id
 
-    params[:todo][:user_id] = current_api_user.id
-    @todo = Todo.new(params[:todo]) # both HTML and XML :)
+    @todo = Todo.new(todo_params)
     @todo.user_id = current_api_user.id
     @todo.apply_todo_regex_magic() rescue pred("Couldnt apply regex for TODO: #{ @todo }. Error: ''#{ $! }''")
     ret = @todo.save
