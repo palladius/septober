@@ -1,14 +1,14 @@
 # Implementation Plan: User Model Parent-Child Agent Hierarchy
 
-## Phase 1: Database Migration & Schema Update (Cloud SQL)
-- [ ] Task: Generate ActiveRecord migration file `db/migrate/20260905140000_add_parent_id_and_agent_metadata_to_users.rb`
-  - [ ] Add `parent_id`, `is_agent`, `agent_host`, `agent_icon`
-  - [ ] Add indexes on `parent_id` and `[:parent_id, :is_agent]`
-- [ ] Task: Apply migration to Cloud SQL MySQL instance `prod`
-  - [ ] Execute DDL statements safely on Cloud SQL `35.198.182.127`
-- [ ] Task: Verify schema changes
-  - [ ] Verify `DESCRIBE users;` returns new columns
-- [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+## Phase 1: Database Migration & Schema Update (Cloud SQL) [checkpoint: b3c0f06]
+- [x] Task: Generate ActiveRecord migration file `db/migrate/20260905140000_add_parent_id_and_agent_metadata_to_users.rb` [7503296]
+  - [x] Add `parent_id`, `is_agent`, `agent_host`, `agent_icon`
+  - [x] Add indexes on `parent_id` and `[:parent_id, :is_agent]`
+- [x] Task: Apply migration to Cloud SQL MySQL instance `prod` [b3c0f06]
+  - [x] Execute DDL statements safely on Cloud SQL `35.198.182.127`
+- [x] Task: Verify schema changes [b3c0f06]
+  - [x] Verify `DESCRIBE users;` returns new columns
+- [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) [b3c0f06]
 
 ## Phase 2: User Model & Family Workspace Logic (TDD & Implementation)
 - [ ] Task: Write tests for User parent-child association and depth validation
