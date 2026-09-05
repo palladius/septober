@@ -2,25 +2,29 @@
 /* Septober 2026 Core Component Stylesheet */
 
 /* Header styling */
-.header_table {
+.header_table,
+table.header_table {
   background-color: var(--surface);
-  background-image: linear-gradient(to bottom, rgba(11, 15, 25, 0.65), rgba(11, 15, 25, 0.88)), url('/images/logo-banner.png');
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
+  background-image: linear-gradient(to bottom, rgba(11, 15, 25, 0.55), rgba(11, 15, 25, 0.82)), url('/images/logo-banner.png');
+  background-position: center center !important;
+  background-repeat: no-repeat !important;
+  background-size: cover !important;
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow);
   color: var(--text-main);
   margin: 1.25rem auto;
+  min-height: 180px;
   opacity: 1 !important;
-  padding: 1.5rem 2.25rem;
+  padding: 1.75rem 2.25rem;
 }
 
 [data-theme='light'] .header_table,
+[data-theme='light'] table.header_table,
 @media (prefers-color-scheme: light) {
-  .header_table {
-    background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.85), rgba(248, 250, 252, 0.96)), url('/images/logo-banner.png');
+  .header_table,
+  table.header_table {
+    background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.80), rgba(248, 250, 252, 0.94)), url('/images/logo-banner.png');
   }
 }
 
@@ -75,7 +79,7 @@
 }
 
 /* Header Navigation Links */
-.header_table td:first-child a {
+.header_table tr:first-child td:first-child a {
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   background: rgba(255, 255, 255, 0.1);
@@ -91,13 +95,13 @@
   transition: all 0.15s ease;
 }
 
-[data-theme='light'] .header_table td:first-child a {
+[data-theme='light'] .header_table tr:first-child td:first-child a {
   background: rgba(255, 255, 255, 0.8);
   border-color: #cbd5e1;
   color: #0f172a;
 }
 
-.header_table td:first-child a:hover {
+.header_table tr:first-child td:first-child a:hover {
   background: var(--primary);
   border-color: var(--primary);
   color: #ffffff;
