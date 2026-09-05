@@ -24,3 +24,4 @@ build-out.json
 *.key
 *.secret
 .env.local
+.worktrees/
