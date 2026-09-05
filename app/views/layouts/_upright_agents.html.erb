@@ -9,10 +9,10 @@
           "#{ag.respond_to?(:resolved_agent_icon) ? ag.resolved_agent_icon : (ag.agent_icon || '🤖')} #{short_name}",
           todos_path(:agent_id => ag.id),
           :title => "Filter by agent #{ag.username} on #{ag.agent_host}",
-          :style => (active_link ? "font-weight:bold; background-color:#e2e8f0; padding:1px 4px; border-radius:3px;" : "padding:1px 4px;")
+          :style => (active_link ? "font-weight:bold; text-decoration:underline; padding:1px 4px;" : "padding:1px 4px;")
         )
     %>
   <% end %>
-  <%= link_to("+ New Agent", edit_current_user_path, :title => "Provision or manage sub-agents", :style => "color: #2563eb; font-weight: bold; margin-left: 6px;") %>
+  <%= link_to("+ New Agent", edit_current_user_path, :title => "Provision or manage sub-agents", :style => "font-weight: bold; margin-left: 6px;") %>
 </div>
 <% end %>

@@ -9,7 +9,7 @@
   <% if @user.agents.any? %>
     <table border="1" cellpadding="6" cellspacing="0" class="agents_table" width="100%">
       <thead>
-        <tr style="background-color: #f0f4f8;">
+        <tr>
           <th>Icon</th>
           <th>Agent Username</th>
           <th>Host / Machine</th>
@@ -75,7 +75,7 @@
   <hr/>
   <h4>📖 How to Onboard & Connect your Sub-Agent</h4>
   <p>Once provisioned, configure the agent's environment (e.g. in <code>~/.hermes/.env</code> or <code>~/.openclaw/.env</code>):</p>
-  <pre style="background: #f8fafc; padding: 10px; border: 1px solid #cbd5e1; border-radius: 4px;">
+  <pre class="code_sample">
 # In your agent's .env file:
 SEPTOBER_USER="palladius.&lt;agent_name&gt;"
 SEPTOBER_PASSWORD="&lt;agent_password&gt;"
