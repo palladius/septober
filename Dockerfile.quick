@@ -1,12 +1,12 @@
 FROM gcr.io/ric-cccwiki/septober-mysql:2.3.12
 
-# Copy updated database.yml and code to /var/www/septober/ (where vintage lives)
 WORKDIR /var/www/septober/
 COPY config/database.yml /var/www/septober/config/database.yml
+COPY app/controllers/application_controller.rb /var/www/septober/app/controllers/application_controller.rb
 COPY bin/ /var/www/septober/bin/
 COPY VERSION /var/www/septober/VERSION
 
-# Also copy to /var/www-public/septober/ just in case
+# Sync to /var/www-public as well
 RUN mkdir -p /var/www-public/septober/ && cp -r /var/www/septober/* /var/www-public/septober/ 2>/dev/null || true
 
 WORKDIR /var/www/septober/
