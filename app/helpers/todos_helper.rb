@@ -1,3 +1,4 @@
+# encoding: utf-8
 module TodosHelper
   
                 #  Priorities  1        2      3       4        5
@@ -34,7 +35,7 @@ module TodosHelper
 
   def render_agent_first_row_icon(todo)
     return ''.html_safe unless todo.user && todo.user.agent?
-    icon = todo.user.agent_icon.presence || '🤖'
+    icon = todo.user.respond_to?(:resolved_agent_icon) ? todo.user.resolved_agent_icon : (todo.user.agent_icon.presence || '🤖')
     host = todo.user.agent_host.presence || 'cloud'
     name = todo.user.username.split('.').last.capitalize
     content_tag(:span, "🤖 #{icon}".html_safe, :class => 'agent_icon_inline', :title => "Autonomous Agent: #{name} on #{host}")
@@ -42,7 +43,7 @@ module TodosHelper
 
   def render_agent_second_row_badge(todo)
     return ''.html_safe unless todo.user && todo.user.agent?
-    icon = todo.user.agent_icon.presence || '🤖'
+    icon = todo.user.respond_to?(:resolved_agent_icon) ? todo.user.resolved_agent_icon : (todo.user.agent_icon.presence || '🤖')
     host = todo.user.agent_host.presence || 'cloud'
     name = todo.user.username.split('.').last.capitalize
     content_tag(:span, " [#{icon} #{name} @ #{host}]".html_safe, :class => 'agent_badge_secondary', :title => "Created by agent #{todo.user.username} on #{host}")

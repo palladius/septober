@@ -1,3 +1,4 @@
+# encoding: utf-8
 class TodosController < ApplicationController
   before_filter :login_required 
   helper :riccardo
@@ -6,7 +7,13 @@ class TodosController < ApplicationController
   
   def index
     allowed_ids = current_user.respond_to?(:family_user_ids) ? current_user.family_user_ids : [current_user.id]
-    filter_conditions = { :user_id => allowed_ids } 
+    if params[:agent_id].present?
+      target_id = params[:agent_id].to_i
+      query_ids = allowed_ids.include?(target_id) ? [target_id] : []
+    else
+      query_ids = allowed_ids
+    end
+    filter_conditions = { :user_id => query_ids } 
     #  Project: , :home_visible => true
     filter_conditions[:project_id] = Project.find_by_name_and_user_id(params[:add_project], current_user.id).id if params[:add_project]
     filter_conditions[:projects] = { :home_visible => true } unless params[:add_project] # in which case i show everything

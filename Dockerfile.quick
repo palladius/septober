@@ -4,6 +4,7 @@ WORKDIR /var/www/septober/
 COPY config/database.yml /var/www/septober/config/database.yml
 COPY app/controllers/application_controller.rb /var/www/septober/app/controllers/application_controller.rb
 COPY app/controllers/todos_controller.rb /var/www/septober/app/controllers/todos_controller.rb
+COPY app/controllers/users_controller.rb /var/www/septober/app/controllers/users_controller.rb
 COPY app/controllers/api/todos_controller.rb /var/www/septober/app/controllers/api/todos_controller.rb
 COPY app/helpers/todos_helper.rb /var/www/septober/app/helpers/todos_helper.rb
 COPY app/models/todo.rb /var/www/septober/app/models/todo.rb

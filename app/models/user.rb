@@ -1,3 +1,4 @@
+# encoding: utf-8
 require 'bcrypt'
 
 class User < ActiveRecord::Base
@@ -42,6 +43,18 @@ class User < ActiveRecord::Base
 
   def agent?
     is_agent == true
+  end
+
+  def resolved_agent_icon
+    val = read_attribute(:agent_icon)
+    return val if val.present? && val != '?'
+    slug = username.to_s.split('.').last.downcase
+    case slug
+    when 'ermete' then '🚛'
+    when 'lobby'  then '🦞'
+    when 'pux'    then '🐾'
+    else '🤖'
+    end
   end
 
   def human?

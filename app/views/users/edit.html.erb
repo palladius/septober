@@ -21,7 +21,7 @@
       <tbody>
         <% @user.agents.each do |agent| %>
           <tr>
-            <td align="center" style="font-size: 1.5em;"><%= agent.agent_icon || '🤖' %></td>
+            <td align="center" style="font-size: 1.5em;"><%= agent.respond_to?(:resolved_agent_icon) ? agent.resolved_agent_icon : (agent.agent_icon || '🤖') %></td>
             <td><b><%= agent.username %></b></td>
             <td><code><%= agent.agent_host || 'cloud' %></code></td>
             <td><small><%= agent.email %></small></td>
@@ -34,5 +34,57 @@
   <% else %>
     <p><i>No child agents registered yet.</i></p>
   <% end %>
+
+  <br/>
+  <h4>➕ Provision a New Sub-Agent</h4>
+  <%= form_for User.new(:parent_id => @user.id, :is_agent => true), :url => users_path do |af| %>
+    <%= af.hidden_field :parent_id, :value => @user.id %>
+    <%= af.hidden_field :is_agent, :value => true %>
+    <table border="0" cellpadding="4">
+      <tr>
+        <td><b>Agent Username:</b></td>
+        <td><%= af.text_field :username, :placeholder => "palladius.macbook-air" %> <small>(e.g. palladius.&lt;name&gt;)</small></td>
+      </tr>
+      <tr>
+        <td><b>Emoji Icon:</b></td>
+        <td><%= af.text_field :agent_icon, :size => 4, :placeholder => "💻" %> <small>(e.g. 💻, 🦞, 🚛, 🐾, 🤖)</small></td>
+      </tr>
+      <tr>
+        <td><b>Host / Machine:</b></td>
+        <td><%= af.text_field :agent_host, :placeholder => "mini-lobby" %> <small>(e.g. mini-lobby, openclaw, cloudrun)</small></td>
+      </tr>
+      <tr>
+        <td><b>Notification Email:</b></td>
+        <td><%= af.text_field :email, :placeholder => "palladiusbonton+subagent@gmail.com" %></td>
+      </tr>
+      <tr>
+        <td><b>Agent Password:</b></td>
+        <td><%= af.password_field :password, :placeholder => "Secret agent password" %></td>
+      </tr>
+      <tr>
+        <td><b>Confirm Password:</b></td>
+        <td><%= af.password_field :password_confirmation, :placeholder => "Confirm password" %></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><%= af.submit "🚀 Provision Sub-Agent" %></td>
+      </tr>
+    </table>
+  <% end %>
+
+  <hr/>
+  <h4>📖 How to Onboard & Connect your Sub-Agent</h4>
+  <p>Once provisioned, configure the agent's environment (e.g. in <code>~/.hermes/.env</code> or <code>~/.openclaw/.env</code>):</p>
+  <pre style="background: #f8fafc; padding: 10px; border: 1px solid #cbd5e1; border-radius: 4px;">
+# In your agent's .env file:
+SEPTOBER_USER="palladius.&lt;agent_name&gt;"
+SEPTOBER_PASSWORD="&lt;agent_password&gt;"
+SEPTOBER_AGENT="&lt;agent_name&gt;"
+
+# For CLI usage:
+septober-cli-26 --agent &lt;agent_name&gt; add --title "My task"
+  </pre>
+  <p><small>For complete instructions and troubleshooting, see <code>doc/AGENT_ONBOARDING.md</code> and skill <code>skills/septober/SKILL.md</code>.</small></p>
 </div>
+
 
