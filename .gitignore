@@ -25,3 +25,6 @@ build-out.json
 *.secret
 .env.local
 .worktrees/
+__pycache__/
+*.pyc
+__pycache__/
