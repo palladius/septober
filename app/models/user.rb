@@ -2,7 +2,8 @@ require 'bcrypt'
 
 class User < ActiveRecord::Base
   # new columns need to be added here to be writable through mass assignment
-  attr_accessible :username, :email, :password, :password_confirmation
+  attr_accessible :username, :email, :password, :password_confirmation,
+                  :parent_id, :is_agent, :agent_host, :agent_icon
   
 # 2020 https://stackoverflow.com/questions/6163759/cant-mass-assign-protected-attributes
   attr_accessible :todos_attributes, :projects_attributes
@@ -13,6 +14,10 @@ class User < ActiveRecord::Base
   
   has_many :projects # , :class_name => "object", :foreign_key => "reference_id"
   has_many :todos # , :class_name => "object", :foreign_key => "reference_id"
+
+  # Parent-child agent hierarchy
+  belongs_to :parent, :class_name => "User", :foreign_key => "parent_id"
+  has_many :agents, :class_name => "User", :foreign_key => "parent_id", :dependent => :destroy
   
   validates_presence_of :username
   validates_uniqueness_of :username, :email, :allow_blank => true
@@ -21,6 +26,36 @@ class User < ActiveRecord::Base
   validates_presence_of :password, :on => :create
   validates_confirmation_of :password
   validates_length_of :password, :minimum => 4, :allow_blank => true
+  validate :validate_single_level_depth
+
+  def validate_single_level_depth
+    if parent_id.present?
+      parent_user = User.find_by_id(parent_id)
+      if parent_user && parent_user.parent_id.present?
+        errors.add(:parent_id, "cannot have a parent that is already a child agent (max depth is 1)")
+      end
+      if is_agent? && agents.any?
+        errors.add(:base, "an agent cannot have child agents")
+      end
+    end
+  end
+
+  def agent?
+    is_agent == true
+  end
+
+  def human?
+    !agent?
+  end
+
+  # Returns array of user IDs in the family (self + all child agents if human)
+  def family_user_ids
+    if agent?
+      [self.id]
+    else
+      [self.id] + agents.map(&:id)
+    end
+  end
   
   def to_s
     username
