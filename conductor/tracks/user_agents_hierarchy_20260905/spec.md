@@ -20,9 +20,15 @@ Transform Septober's `User` model into a single-level parent-child hierarchy (`p
 - **Initial Agent Seeding / Provisioning:**
   - Provision sub-account `rcarlesso.ermete` (Icon: 🚛, Host: `mini-lobby`).
   - Provision sub-account `rcarlesso.lobby` (Icon: 🦞, Host: `mini-lobby`).
-- **CLI & Client Integration (`septober-cli-26`):**
-  - Support authenticating as an agent directly using `SEPTOBER_USER` / `SEPTOBER_PASSWORD` or config.
-  - Display agent icon badge (e.g. `[🚛 Ermete]`, `[🦞 Lobby]`) in `list` and `show` outputs.
+  - Provision sub-account `rcarlesso.pux` (Icon: 🐾, Host: `openclaw`).
+- **Agent Identity & ENV Auto-Resolution (`septober-cli-26`):**
+  - Priority resolution order for credentials:
+    1. Explicit `SEPTOBER_USER` and `SEPTOBER_PASSWORD` environment variables.
+    2. Explicit `--agent <name>` CLI flag or `SEPTOBER_AGENT` environment variable (resolving from `~/.septober.local.yml` agent section).
+    3. Auto-detected harness identity: if running under Hermes (`HARNESS_NICKNAME="Ermete Bottazzi"`), auto-select `rcarlesso.ermete`. If under OpenClaw, auto-select `rcarlesso.lobby` or `rcarlesso.pux`.
+    4. Fallback to master human account (`rcarlesso`).
+- **Documentation (`doc/AGENT_ONBOARDING.md`):**
+  - Step-by-step guide on how to configure each agent's environment file (`~/.hermes/.env`, `~/.openclaw/.env`, etc.) with copy-paste snippets.
 
 ## 3. Non-Functional Requirements
 - Backward compatibility with existing Rails 3 authentication (`User.authenticate`).

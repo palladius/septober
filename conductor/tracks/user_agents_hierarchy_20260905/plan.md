@@ -28,17 +28,22 @@
 - [ ] Task: Seed initial child agents under `rcarlesso`
   - [ ] Provision `rcarlesso.ermete` (🚛, host: `mini-lobby`)
   - [ ] Provision `rcarlesso.lobby` (🦞, host: `mini-lobby`)
+  - [ ] Provision `rcarlesso.pux` (🐾, host: `openclaw`)
 - [ ] Task: Verify agent authentication via HTTP Basic Auth
-  - [ ] Test authentication as `rcarlesso.ermete` with isolated credentials
+  - [ ] Test authentication for all 3 agents with isolated credentials
 - [ ] Task: Verify task creation by agent and attribution in parent workspace
   - [ ] Create todo as `rcarlesso.ermete` and verify `rcarlesso` sees it in family workspace
+- [ ] Task: Document agent onboarding in `doc/AGENT_ONBOARDING.md`
+  - [ ] Document ENV variables (`SEPTOBER_USER`, `SEPTOBER_PASSWORD`, `SEPTOBER_AGENT`)
+  - [ ] Provide ready-to-copy snippets for `~/.hermes/.env` and `~/.openclaw/.env`
 - [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
 
 ## Phase 4: CLI Enhancement & Cloud Run Deployment
-- [ ] Task: Write CLI tests for agent icon rendering
-  - [ ] Test that list/show output renders `[🚛 Ermete]` badge when todo belongs to an agent
-- [ ] Task: Update `septober-cli-26` to display agent attribution badges
+- [ ] Task: Implement agent auto-detection and badge rendering in `septober-cli-26`
+  - [ ] Support `--agent` flag and `SEPTOBER_AGENT` env variable
+  - [ ] Auto-detect identity when running inside Hermes or OpenClaw harness
   - [ ] Render agent icons in `list` and `show`
+- [ ] Task: Write CLI tests for agent detection and icon rendering
 - [ ] Task: Build and deploy updated container revision to Cloud Run
   - [ ] Submit Cloud Build patch image and deploy to `septober-mysql-2-3-12-prova`
 - [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
