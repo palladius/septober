@@ -8,3 +8,6 @@
 
 ---
 - [x] **Track: User Model Parent-Child Agent Hierarchy & Schema Migration** *Link: [tracks/user_agents_hierarchy_20260905/index.md](tracks/user_agents_hierarchy_20260905/index.md)*
+
+---
+- [x] **Track: UI Agent Badges, Copilot Upright Navigation & Sub-Agent Provisioning** *Link: [tracks/ui_agent_badges_20260905/index.md](tracks/ui_agent_badges_20260905/index.md)*

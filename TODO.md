@@ -12,6 +12,11 @@
   6. **Unified Workspace:** Parent user automatically queries family workspace (`Todo.where(user_id: family_user_ids)`).
 * **Reference Spec:** See `doc/spec_user_agents_subaccounts.md` for complete Rails migration, model validations, and UI blueprints.
 
+## 🧠 [P1] Semantic File Dependencies (`semantic-deps.yml` + `GEMINI.md`)
+* **Idea:** Link an explicit declarative dependency graph (e.g. `etc/semantic-deps.yml` referenced by `GEMINI.md` / `CLAUDE.md`) instructing LLM agents that edits to File A (e.g. `schema.rb`, API route, model) strictly require co-updating File B (e.g. serializers, migrations, docs, frontend types).
+* **Objective:** Prevent silent out-of-sync agent edits (co-change propagation for AI coding agents).
+* **Online State of the Art:** Investigated existing patterns (Cursor rules glob targeting, Aider RepoMap/PageRank, Claude Code CLAUDE.md file-specific rules, CodeQL semantic graphs, and Git co-change mining).
+
 ---
 
 Docker

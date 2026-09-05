@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.5.01] - 2026-09-05
+
+### Fixed
+- **Header Title Clipping**: Corrected `.header_table` navigation selector scoping to avoid clashing with the main application title.
+- **Banner Alignment**: Fixed vertical centering (`background-position: center center !important`) for the 2026 developer desk header.
+
+### Documentation
+- Updated Conductor tracks and semantic dependency blueprints.
+
 ## [2.5.00] - 2026-09-05
 
 ### Added

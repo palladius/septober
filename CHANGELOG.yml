@@ -1,6 +1,10 @@
 # PS TODO make this DRY, now you've to remember to update as well the following files:
 # - ./VERSION
 # - app/helpers/application_helper
+2.5.01: # 2026-09-05
+  - Fixed header navigation pill selector scoping to prevent clipping of title text.
+  - Centered 2026 developer desk banner vertically with cover sizing.
+  - Updated conductor tracks and semantic dependency blueprints.
 2.5.00: # 2026-09-05 Major UI Modernization
   - Modern Web Guidance overhaul projecting Septober into 2026.
   - Native Dark First architecture with instant light/dark toggle and persistence.
