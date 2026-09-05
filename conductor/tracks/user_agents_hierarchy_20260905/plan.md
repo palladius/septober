@@ -24,19 +24,19 @@
   - [x] Update `Api::TodosController#index` to use family workspace for human users
 - [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) [0368329]
 
-## Phase 3: Agent Seeding & End-to-End Authentication
-- [ ] Task: Seed initial child agents under `rcarlesso`
-  - [ ] Provision `rcarlesso.ermete` (🚛, host: `mini-lobby`)
-  - [ ] Provision `rcarlesso.lobby` (🦞, host: `mini-lobby`)
-  - [ ] Provision `rcarlesso.pux` (🐾, host: `openclaw`)
-- [ ] Task: Verify agent authentication via HTTP Basic Auth
-  - [ ] Test authentication for all 3 agents with isolated credentials
-- [ ] Task: Verify task creation by agent and attribution in parent workspace
-  - [ ] Create todo as `rcarlesso.ermete` and verify `rcarlesso` sees it in family workspace
-- [ ] Task: Document agent onboarding in `doc/AGENT_ONBOARDING.md`
-  - [ ] Document ENV variables (`SEPTOBER_USER`, `SEPTOBER_PASSWORD`, `SEPTOBER_AGENT`)
-  - [ ] Provide ready-to-copy snippets for `~/.hermes/.env` and `~/.openclaw/.env`
-- [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+## Phase 3: Agent Seeding & End-to-End Authentication [checkpoint: 68537fb]
+- [x] Task: Seed initial child agents under `rcarlesso` [68537fb]
+  - [x] Provision `rcarlesso.ermete` (🚛, host: `mini-lobby`)
+  - [x] Provision `rcarlesso.lobby` (🦞, host: `mini-lobby`)
+  - [x] Provision `rcarlesso.pux` (🐾, host: `openclaw`)
+- [x] Task: Verify agent authentication via HTTP Basic Auth [68537fb]
+  - [x] Test authentication for all 3 agents with isolated credentials
+- [x] Task: Verify task creation by agent and attribution in parent workspace [68537fb]
+  - [x] Create todo as `rcarlesso.ermete` and verify `rcarlesso` sees it in family workspace
+- [x] Task: Document agent onboarding in `doc/AGENT_ONBOARDING.md` [68537fb]
+  - [x] Document ENV variables (`SEPTOBER_USER`, `SEPTOBER_PASSWORD`, `SEPTOBER_AGENT`)
+  - [x] Provide ready-to-copy snippets for `~/.hermes/.env` and `~/.openclaw/.env`
+- [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) [68537fb]
 
 ## Phase 4: CLI Enhancement & Cloud Run Deployment
 - [ ] Task: Implement agent auto-detection and badge rendering in `septober-cli-26`
