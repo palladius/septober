@@ -10,19 +10,19 @@
   - [x] Verify `DESCRIBE users;` returns new columns
 - [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) [b3c0f06]
 
-## Phase 2: User Model & Family Workspace Logic (TDD & Implementation)
-- [ ] Task: Write tests for User parent-child association and depth validation
-  - [ ] Test that a user can have child agents
-  - [ ] Test that an agent cannot have its own child agents (single-level restriction)
-- [ ] Task: Implement parent-child associations and validations in `app/models/user.rb`
-  - [ ] Add `belongs_to :parent`, `has_many :agents`, and `validate_single_level_depth`
-  - [ ] Add helper methods: `human?`, `agent?`, and `family_user_ids`
-- [ ] Task: Write tests for `Todo.for_family(user)` scope
-  - [ ] Test that querying todos for a parent returns todos owned by parent and children
-  - [ ] Test that querying todos for a child agent returns only child todos
-- [ ] Task: Implement `for_family` scope in `app/models/todo.rb` and update `Api::TodosController`
-  - [ ] Update `Api::TodosController#index` to use family workspace for human users
-- [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+## Phase 2: User Model & Family Workspace Logic (TDD & Implementation) [checkpoint: 0368329]
+- [x] Task: Write tests for User parent-child association and depth validation [0368329]
+  - [x] Test that a user can have child agents
+  - [x] Test that an agent cannot have its own child agents (single-level restriction)
+- [x] Task: Implement parent-child associations and validations in `app/models/user.rb` [0368329]
+  - [x] Add `belongs_to :parent`, `has_many :agents`, and `validate_single_level_depth`
+  - [x] Add helper methods: `human?`, `agent?`, and `family_user_ids`
+- [x] Task: Write tests for `Todo.for_family(user)` scope [0368329]
+  - [x] Test that querying todos for a parent returns todos owned by parent and children
+  - [x] Test that querying todos for a child agent returns only child todos
+- [x] Task: Implement `for_family` scope in `app/models/todo.rb` and update `Api::TodosController` [0368329]
+  - [x] Update `Api::TodosController#index` to use family workspace for human users
+- [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) [0368329]
 
 ## Phase 3: Agent Seeding & End-to-End Authentication
 - [ ] Task: Seed initial child agents under `rcarlesso`
