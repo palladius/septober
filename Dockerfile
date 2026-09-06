@@ -1,40 +1,72 @@
-#################################
-# This is simply the latest version...
-# I take it and patch it with latest version.. not sure it works :)
-# 
-# Note that this version installs the DEV env with SQLite.
-#################################
-#
-# Dockerfile versions:
-#
-# - 20220108 v1.1 bundle installing BEFORE copying files :) This should derive time to compile WAY down! time docker build .
-#                 Time to build now: 13 seconds!
+# syntax=docker/dockerfile:1
+# check=error=true
 
-# ruby/gems 1.9.1
-FROM palladius/septober:v1.2 as base 
+# This Dockerfile is designed for production, not development. Use with Kamal or build'n'run by hand:
+# docker build -t septober_v8 .
+# docker run -d -p 80:80 -e RAILS_MASTER_KEY=<value from config/master.key> --name septober_v8 septober_v8
 
-# Linux
-RUN apt-get -y update && apt-get -y install libmysqlclient-dev mysql-common libmysqlclient18 mysql-client
+# For a containerized dev environment, see Dev Containers: https://guides.rubyonrails.org/getting_started_with_devcontainer.html
 
-WORKDIR /var/www-public/septober/
+# Make sure RUBY_VERSION matches the Ruby version in .ruby-version
+ARG RUBY_VERSION=3.4.5
+FROM docker.io/library/ruby:$RUBY_VERSION-slim AS base
 
-# 2. Add Gem and build. Takes time but should be done seldom
+# Rails app lives here
+WORKDIR /rails
 
-COPY Gemfile Gemfile.lock /var/www-public/septober/
-RUN bundle install
+# Install base packages
+RUN apt-get update -qq && \
+    apt-get install --no-install-recommends -y curl libjemalloc2 libvips sqlite3 && \
+    rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
-# 3. Latest Code. This is fast to iterate thru skaffold.
-ADD . /var/www-public/septober/
+# Set production environment
+ENV RAILS_ENV="production" \
+    BUNDLE_DEPLOYMENT="1" \
+    BUNDLE_PATH="/usr/local/bundle" \
+    BUNDLE_WITHOUT="development"
 
-# Added for MySQL but if you only use SQLite, its ok to remove the initializer.
-RUN mv ./config/initializers/abstract_mysql2_adapter.rb ./config/initializers/abstract_mysql2_adapter.rb.inutile
-#RUN /bin/sh /var/www-public/septober/dockerize/prep.sh
-#RUN bundle install
-ENV RAILS_ENV development
-# Pathching the bloody sqlite3 :/ #HORRIBLE I know!
-# https://stackoverflow.com/questions/17643897/cannot-load-such-file-sqlite3-sqlite3-native-loaderror-on-ruby-on-rails
-#RUN sed -e 's/s.require_paths = \["lib"\]/s.require_paths = \["lib\/sqlite3_native"\]/g' -i vendor/bundle#/ruby/1.9.1/specifications/sqlite3-1.3.5.gemspec
+# Throw-away build stage to reduce size of final image
+FROM base AS build
 
-# Unit Test :)
-RUN cat /var/www-public/septober/VERSION
-CMD ["./entrypoint-8080.sh"] 
+# Install packages needed to build gems
+RUN apt-get update -qq && \
+    apt-get install --no-install-recommends -y build-essential git libyaml-dev pkg-config && \
+    rm -rf /var/lib/apt/lists /var/cache/apt/archives
+
+# Install application gems
+COPY Gemfile Gemfile.lock ./
+RUN bundle install && \
+    rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git && \
+    bundle exec bootsnap precompile --gemfile
+
+# Copy application code
+COPY . .
+
+# Precompile bootsnap code for faster boot times
+RUN bundle exec bootsnap precompile app/ lib/
+
+# Precompiling assets for production without requiring secret RAILS_MASTER_KEY
+RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
+
+
+
+
+# Final stage for app image
+FROM base
+
+# Copy built artifacts: gems, application
+COPY --from=build "${BUNDLE_PATH}" "${BUNDLE_PATH}"
+COPY --from=build /rails /rails
+
+# Run and own only the runtime files as a non-root user for security
+RUN groupadd --system --gid 1000 rails && \
+    useradd rails --uid 1000 --gid 1000 --create-home --shell /bin/bash && \
+    chown -R rails:rails db log storage tmp
+USER 1000:1000
+
+# Entrypoint prepares the database.
+ENTRYPOINT ["/rails/bin/docker-entrypoint"]
+
+# Start server via Thruster by default, this can be overwritten at runtime
+EXPOSE 80
+CMD ["./bin/thrust", "./bin/rails", "server"]

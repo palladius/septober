@@ -1,42 +1,14 @@
-<div align='right' class='floating_right' >
-	<%= render_project_icon( @project, :height => 140 ) %>
-</div>
-<% title "#{@project.name.capitalize}" %>
-<p>
-  <%= link_to "Edit", edit_project_path(@project) %> |
-  <%= link_to "Destroy", @project, :confirm => 'Are you sure?', :method => :delete %> |
-  <%= link_to "View All", projects_path %>
-</p>
-<p>
-  <strong>Name:</strong>
-	<%= on_the_spot_edit @project, :name %>
-</p>
-<p>
-  <strong>Description:</strong>
-	<%= on_the_spot_edit @project, :description, :type => :textarea, :rows => 10, :columns => 55 %>
-</p>
-<p>
-  <strong>Color:</strong>
-  <%= render_editable_color @project %>
-</p>
-<p>
-  <strong>Active:</strong>
-  <%= @project.active %>
-</p>
-<p>
-  <strong>User:</strong>
-  <%= @project.user %>
-</p>
-	<p>
-	  <strong>Tags:</strong>
-	  <%= @project.tags.join(', ') %>
-	</p>
-	<p>
-		  <strong>Photo URL:</strong>
-		  <%= @project.photo_url %>
-	</p>
-<p>
-  <strong>Magic Tags:</strong>
-  <tt class='tag' ><%= @project.magic_tags.join(', ') %></tt>
-</p>
+<div class="card">
+  <h2><%= @project.name %></h2>
+  <p><%= @project.description %></p>
+  
+  <h3>Todos in this project</h3>
+  <ul>
+    <% @project.todos.each do |todo| %>
+      <li><%= link_to todo.name, todo %></li>
+    <% end %>
+  </ul>
 
+  <%= link_to "Edit", edit_project_path(@project), class: "btn btn-secondary" %>
+  <%= link_to "Back", projects_path, class: "btn" %>
+</div>

@@ -1,4 +1,4 @@
-class AddParentIdAndAgentMetadataToUsers < ActiveRecord::Migration
+class AddParentIdAndAgentMetadataToUsers < ActiveRecord::Migration[8.0]
   def self.up
     add_column :users, :parent_id,  :integer
     add_column :users, :is_agent,   :boolean, :default => false, :null => false

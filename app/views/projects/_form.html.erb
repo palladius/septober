@@ -1,36 +1,35 @@
-<%= form_for @project do |f| %>
-  <%= f.error_messages %>
-  <p>
-    <%= f.label :name %><br />
+<%= form_with model: project, local: true do |f| %>
+  <% if project.errors.any? %>
+    <div class="alert alert-danger">
+      <ul>
+        <% project.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="form-group">
+    <%= f.label :name %>
     <%= f.text_field :name %>
-  </p>
-  <p>
-  	<%= f.label :color %>
-	<%= render_colored_square( :color => @project.color, :height => 15) %>
-    <span style='color:<%@project.color%>' ><%= f.text_field :color %></span>
-  </p>
-  <p>
-    <%= f.check_box :home_visible %>
-    <%= f.label :home_visible %>
-    <%= f.check_box :public %>
-    <%= f.label :public %>    
-    <%= f.check_box :active %>
-    <%= f.label :active %>
-  </p>
-  <p>
-    <%= f.label      :photo_url %><br />
-    <%= f.text_field :photo_url %>
-  </p>
-<p>
-  <div class="field" id="project-magic-tags" >
-    <%= icon('tag_blue') %>
-    <%= f.label t(:magic_tag_list) %><br />
-    <%= f.text_field :magic_tag_list , :size => 70 %>
   </div>
-</p>
-  <p>
-    <%= f.label :description %><br />
+
+  <div class="form-group">
+    <%= f.label :description %>
     <%= f.text_area :description %>
-  </p>
-  <p><%= f.submit %></p>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :color %>
+    <%= f.text_field :color %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :active %>
+    <%= f.check_box :active %>
+  </div>
+
+  <div class="form-group">
+    <%= f.submit class: "btn btn-primary" %>
+  </div>
 <% end %>

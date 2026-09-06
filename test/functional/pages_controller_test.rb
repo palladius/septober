@@ -1,24 +1,19 @@
 require 'test_helper'
 
 class PagesControllerTest < ActionController::TestCase
-  test "should get index" do
-    get :index
+  test "should get healthz" do
+    get :healthz
+    assert_response :success
+    assert_equal "ok", @response.body
+  end
+
+  test "should get statusz" do
+    get :statusz
     assert_response :success
   end
 
-  test "should get docs" do
-    get :docs
+  test "should get varz" do
+    get :varz
     assert_response :success
   end
-
-  test "should get about" do
-    get :about
-    assert_response :success
-  end
-
-  test "should get search" do
-    get :search
-    assert_response :success
-  end
-
 end

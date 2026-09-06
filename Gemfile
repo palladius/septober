@@ -1,34 +1,67 @@
-source 'http://rubygems.org'
+source "https://rubygems.org"
 
-ruby "1.9.3" # septober image used this: 1.9.3-p484
+# Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
+gem "rails", "~> 8.0.4"
+# The modern asset pipeline for Rails [https://github.com/rails/propshaft]
+gem "propshaft"
+# Use sqlite3 as the database for Active Record
+gem "sqlite3", ">= 2.1"
+# Use the Puma web server [https://github.com/puma/puma]
+gem "puma", ">= 5.0"
+# Use JavaScript with ESM import maps [https://github.com/rails/importmap-rails]
+gem "importmap-rails"
+# Hotwire's SPA-like page accelerator [https://turbo.hotwired.dev]
+gem "turbo-rails"
+# Hotwire's modest JavaScript framework [https://stimulus.hotwired.dev]
+gem "stimulus-rails"
+# Build JSON APIs with ease [https://github.com/rails/jbuilder]
+gem "jbuilder"
 
-gem 'rails',            '3.0.3'
-#gem "activeresource", ">= 5.1.1" # TODO(ricc): VULNERABILITY! But if you enable this it stops working :/
-#gem "activerecord", ">= 3.2.19" # vulnerability CRITICAL: https://github.com/palladius/septober/network/alert/Gemfile.lock/activerecord/open
+# Use Active Model has_secure_password
+gem "bcrypt", "~> 3.1.7"
 
-gem "ric",              '>= 0.11.3'
-gem 'sqlite3-ruby',     :require => 'sqlite3'
-#gem 'sqlite3' # ,     :require => 'sqlite3'
-gem "nifty-generators"  #, :group => :development
-#gem "bcrypt-ruby",      :require => "bcrypt"
-#gem 'bcrypt-ruby',      '3.1.5' ,  :require => "bcrypt"
-gem 'bcrypt-ruby', '~> 3.0.0'
-gem 'acts-as-taggable-on'                         # For tags
+# Tags
+gem "acts-as-taggable-on"
 
-gem "jquery-rails",     '>= 0.2.6'   # For InPlaceEditing
-gem "on_the_spot"                    # .. https://github.com/nathanvda/on_the_spot 
+# Windows does not include zoneinfo files, so bundle the tzinfo-data gem
+gem "tzinfo-data", platforms: %i[ windows jruby ]
 
-gem 'lolcat'   # Totally useless but what is life without some color?
-gem "mocha",            :group => :test
-gem 'wirble', :groups => [:development,:test]
-#gem 'autotest', :groups => [:development,:test]
-#gem 'ZenTest', :groups => [:development,:test]
-# If you are developing actively, try this:
-#gem "ric", :path => "~/git/ric"
+# Use the database-backed adapters for Rails.cache, Active Job, and Action Cable
+gem "solid_cache"
+gem "solid_queue"
+gem "solid_cable"
 
-#gem 'sqlite3', :lib => "/usr/lib/"
-# trovata in: https://stackoverflow.com/questions/9609985/please-install-mysql-adapter-gem-install-activerecord-mysql-adapter
-#gem 'mysql2', "~>0.3.11"
-# even better: https://stackoverflow.com/questions/51228905/rails-error-installing-mysql2-mysql2-0-3-20
-gem 'mysql2', '0.3.20'
-gem 'activerecord-mysql2-adapter'
+# Reduces boot times through caching; required in config/boot.rb
+gem "bootsnap", require: false
+
+# Deploy this application anywhere as a Docker container [https://kamal-deploy.org]
+gem "kamal", require: false
+
+# Add HTTP asset caching/compression and X-Sendfile acceleration to Puma [https://github.com/basecamp/thruster/]
+gem "thruster", require: false
+
+# Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
+# gem "image_processing", "~> 1.2"
+
+group :development, :test do
+  # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
+  gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"
+
+  # Static analysis for security vulnerabilities [https://brakemanscanner.org/]
+  gem "brakeman", require: false
+
+  # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
+  gem "rubocop-rails-omakase", require: false
+end
+
+group :development do
+  # Use console on exceptions pages [https://github.com/rails/web-console]
+  gem "web-console"
+end
+
+group :test do
+  # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
+  gem "capybara"
+  gem "selenium-webdriver"
+  gem "rails-controller-testing"
+end

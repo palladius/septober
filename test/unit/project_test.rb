@@ -15,7 +15,6 @@ class ProjectTest < ActiveSupport::TestCase
   end
   
   def test_guest_is_ok
-    pyellow "Guest user: #{$guest.inspect}"
     assert_equal($guest.name, 'guest', "This should be a guest user")
     assert_valid($guest)
   end

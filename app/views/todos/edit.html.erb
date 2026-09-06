@@ -1,8 +1,5 @@
-<% title "Edit Todo" %>
-
-<%= render 'form' %>
-
-<p>
-  <%= link_to "Show", @todo %> |
-  <%= link_to "View All", todos_path %>
-</p>
+<div class="card">
+  <h2>Edit Todo</h2>
+  <%= render "form", todo: @todo %>
+  <%= link_to "Back", todos_path, class: "btn" %>
+</div>

@@ -1,145 +1,161 @@
-# encoding: utf-8
 class TodosController < ApplicationController
-  before_filter :login_required 
-  helper :riccardo
-  
-  can_edit_on_the_spot
-  
+  before_action :login_required, unless: -> { request.format.json? }
+
   def index
-    allowed_ids = current_user.respond_to?(:family_user_ids) ? current_user.family_user_ids : [current_user.id]
+    base_user = current_user || User.first
+    allowed_ids = base_user&.family_user_ids || [base_user&.id].compact
     if params[:agent_id].present?
       target_id = params[:agent_id].to_i
       query_ids = allowed_ids.include?(target_id) ? [target_id] : []
     else
       query_ids = allowed_ids
     end
-    filter_conditions = { :user_id => query_ids } 
-    #  Project: , :home_visible => true
-    filter_conditions[:project_id] = Project.find_by_name_and_user_id(params[:add_project], current_user.id).id if params[:add_project]
-    filter_conditions[:projects] = { :home_visible => true } unless params[:add_project] # in which case i show everything
-    @todos = Todo.find :all, 
-      :joins => :project,
-      :conditions => filter_conditions, 
-      :order => 'active DESC, priority DESC, updated_at DESC',
-      :limit => 20
-    respond_to do |format|
-      format.html 
-      format.xml  { render_todos_xml_or_json :xml,  @todos } # :due_explaination
-      format.json { render_todos_xml_or_json :json, @todos }
+
+    filter_conditions = { user_id: query_ids }
+    if params[:add_project].present? && base_user
+      project = Project.find_by(name: params[:add_project], user_id: allowed_ids)
+      filter_conditions[:project_id] = project.id if project
     end
-  end
-  
-  def set_todo_where
-    raise params.inspect
+
+    @todos = Todo.where(filter_conditions)
+                 .search(params[:q])
+                 .joins(:project)
+                 .order(active: :desc, priority: :desc, updated_at: :desc)
+                 .limit(params[:limit] || 50)
+
+    respond_to do |format|
+      format.html
+      format.json { render json: @todos }
+      format.xml  { render xml: @todos }
+    end
   end
 
   def show
-    @todo = Todo.find_securely(current_user,params[:id]) rescue nil
+    allowed_ids = current_user&.family_user_ids || [current_user&.id].compact
+    @todo = Todo.where(user_id: allowed_ids).find_by(id: params[:id])
     respond_to do |format|
-      format.html 
-      #format.xml  { render :xml  => @todo, $XML_TODO_OPTS } # :include => [:project] , :methods => [:due_explaination] }
-      format.xml  { render_todos_xml_or_json :xml ,  @todo }
-      format.json { render_todos_xml_or_json :json , @todo }
+      format.html
+      format.json { render json: @todo }
+      format.xml  { render xml: @todo }
     end
   end
 
   def new
     @todo = Todo.new
-    # 2019-05-12 TEST
-    #@todo.system_tags = [ "api_call" ]
-    #@todo.tags = []
   end
 
   def create
-    params[:todo][:user_id] = current_user.id
-    #params[:todo][:tags] ||= []
-    @todo = Todo.new(params[:todo])
+    @todo = Todo.new(todo_params)
+    @todo.user = current_user
     if @todo.save
       flash[:notice] = "Successfully created todo ##{@todo.id} '#{@todo.to_s}'"
       redirect_to todos_url
     else
-      render :action => 'new'
+      render :new, status: :unprocessable_entity
     end
   end
 
   def edit
-    @todo = Todo.find_securely(current_user,params[:id])
+    @todo = Todo.find_by(id: params[:id], user_id: current_user.id)
+    if turbo_frame_request?
+      render partial: "inline_form", locals: { todo: @todo }
+    else
+      render :edit
+    end
   end
 
   def update
     @todo = Todo.find(params[:id])
-    if @todo.update_attributes(params[:todo])
-      flash[:notice] = "Successfully updated todo ##{@todo.id}"
-      #redirect_to todo_url
-      redirect_to todos_url
+    if @todo.update(todo_params)
+      if turbo_frame_request?
+        render partial: "todo", locals: { todo: @todo }
+      else
+        flash[:notice] = "Successfully updated todo ##{@todo.id}"
+        redirect_to todos_url
+      end
     else
-      render :action => 'edit'
+      if turbo_frame_request?
+        render partial: "inline_form", locals: { todo: @todo }, status: :unprocessable_entity
+      else
+        render :edit, status: :unprocessable_entity
+      end
     end
   end
-  
-  def toggle; _update_active(:toggled) ; end 
-  def done;   _update_active(:deactivated,false) ; end
-  def undone; _update_active(:reactivated,true) ; end
-  def set_priority
-    _update_field(:priority,params[:new_priority])
-  end
-  
-  def procrastinate
-    # procrastinate by 7
-    n_days = params.fetch( :procrastinate_days, 7 )
-    _update_field(:due,Date.today + n_days )
-  end
-  
-  # sleep = hide_until
-  def sleep
-    # hide_untile by Time.now + 8.days
-    n_days = params.fetch( :hide_until_days, 8 )
-    _update_field(:hide_until, Time.now + n_days.to_i.days )
-  end
-  
-# Project.destroy which works to get inspired...
-  # def destroy
-  #   pred "I have a feeling the same bug also affects projects. Lets see if this line is ever reached when I click destroy. No its not then its JS"
-  #   @project = Project.find(params[:id])
-  #   @project.destroy
-  #   flash[:notice] = "Successfully destroyed project."
-  #   redirect_to projects_url
-  # end
 
   def destroy
-    #broken so lets debug
-    pyellow "TODO::Destroy. Params: #{params}"
     @todo = Todo.find(params[:id])
     @todo.destroy
     flash[:notice] = "Successfully destroyed todo ##{@todo.id}."
     redirect_to todos_url
   end
-  
-private
-  def _update_active(participle,new_active=nil)
-    # nil = toggle
-    pgreen '_update_active(participle=#{participle})...'
-    new_active ||= false # should be the REVERSE... TODO!
-    # copy the data from edit
-    #@todo = Todo.find(params[:id])
-    @todo = Todo.find_securely(current_user, params[:id])
-    if @todo.update_attributes( :active => new_active )
-      flash[:notice] = "Successfully '#{participle}' todo ##{params[:id]}"
-      redirect_to todos_url
-    else
-      render :action => 'edit'
-    end
-  end
-  
-  def _update_field(field_name,new_val)
-    @todo = Todo.find_securely(current_user,params[:id])
-    if @todo.update_attributes( field_name.to_sym => new_val )
-      flash[:notice] = "Successfully set '#{field_name}'='#{new_val}' for Todo ##{params[:id]}"
-      redirect_to todos_url
-    else
-      render :action => 'edit'
-    end
-  end
-  
 
-end #/TodosController
+  def toggle
+    _update_active(:toggled)
+  end
+
+  def done
+    _update_active(:deactivated, false)
+  end
+
+  def undone
+    _update_active(:reactivated, true)
+  end
+
+  def set_priority
+    _update_field(:priority, params[:new_priority])
+  end
+
+  def procrastinate
+    n_days = params.fetch(:procrastinate_days, 7).to_i
+    _update_field(:due, Date.today + n_days)
+  end
+
+  def sleep
+    n_days = params.fetch(:hide_until_days, 8).to_i
+    _update_field(:hide_until, Time.now + n_days.days)
+  end
+
+  private
+
+  def _update_active(participle, new_active = nil)
+    allowed_ids = current_user&.family_user_ids || [current_user&.id].compact
+    @todo = Todo.where(user_id: allowed_ids).find_by(id: params[:id])
+    return redirect_to(todos_url, alert: "Todo not found") unless @todo
+    new_active = !@todo.active if new_active.nil?
+    
+    if @todo.update(active: new_active)
+      respond_to do |format|
+        format.turbo_stream { render turbo_stream: turbo_stream.replace(@todo, partial: "todos/todo", locals: { todo: @todo }) }
+        format.html {
+          flash[:notice] = "Successfully '#{participle}' todo ##{params[:id]}"
+          redirect_to todos_url
+        }
+        format.json { render json: @todo }
+      end
+    else
+      render :edit, status: :unprocessable_entity
+    end
+  end
+
+  def _update_field(field_name, new_val)
+    allowed_ids = current_user&.family_user_ids || [current_user&.id].compact
+    @todo = Todo.where(user_id: allowed_ids).find_by(id: params[:id])
+    return redirect_to(todos_url, alert: "Todo not found") unless @todo
+    if @todo.update(field_name => new_val)
+      respond_to do |format|
+        format.turbo_stream { render turbo_stream: turbo_stream.replace(@todo, partial: "todos/todo", locals: { todo: @todo }) }
+        format.html {
+          flash[:notice] = "Successfully set '#{field_name}'='#{new_val}' for Todo ##{params[:id]}"
+          redirect_to todos_url
+        }
+        format.json { render json: @todo }
+      end
+    else
+      render :edit, status: :unprocessable_entity
+    end
+  end
+
+  def todo_params
+    params.require(:todo).permit(:name, :description, :active, :due, :priority, :project_id, :url, :progress_status, :favorite, :hide_until, :depends_on_id, :source, :photo_url, :tag_list)
+  end
+end

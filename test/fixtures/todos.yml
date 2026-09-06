@@ -2,24 +2,25 @@ one:
   name: "Buy milk and coffee ASAP!! @test @guest @shopping"
   description: A sample todo with two exclamatives
   active: true
-  due: 2011-01-25
+  due: 2026-09-25
   user: guest
-  project_id: 1
+  project: three
   priority: 4
+
 two:
-  name: Buy christms present for mum by xmas @guest
+  name: Buy christmas present for mum by xmas @guest
   description: Ive seen a lot of stuff. Probably the new ACME product is the best.
   active: true
-  due: 2011-12-25
+  due: 2026-12-25
   priority: 2
   user: guest
-  project_id: 2
-two:
-    name: Tell the world Im root!
-    description: Ive seen a lot of stuff. Probably the new ACME product is the best.
-    active: true
-    due: 2011-12-25
-    priority: 2
-    user: root
-    project_id: 2
+  project: someone_elses
 
+three:
+  name: Tell the world Im root!
+  description: Ive seen a lot of stuff. Probably the new ACME product is the best.
+  active: true
+  due: 2026-12-25
+  priority: 2
+  user: root
+  project: one

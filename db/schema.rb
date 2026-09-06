@@ -2,78 +2,104 @@
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
 #
-# Note that this schema.rb definition is the authoritative source for your
-# database schema. If you need to create the application database on another
-# system, you should be using db:schema:load, not running all the migrations
-# from scratch. The latter is a flawed and unsustainable approach (the more migrations
-# you'll amass, the slower it'll run and the greater likelihood for issues).
+# This file is the source Rails uses to define your schema when running `bin/rails
+# db:schema:load`. When creating a new database, `bin/rails db:schema:load` tends to
+# be faster and is potentially less error prone than running all of your
+# migrations from scratch. Old migrations may fail to apply correctly if those
+# migrations use external dependencies or application code.
 #
-# It's strongly recommended to check this file into your version control system.
+# It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110208152947) do
-
-  create_table "projects", :force => true do |t|
-    t.string   "name"
-    t.text     "description"
-    t.string   "color",        :default => "grey"
-    t.boolean  "active",       :default => true
-    t.integer  "user_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.boolean  "home_visible", :default => true
-    t.boolean  "public",       :default => false
-    t.boolean  "system",       :default => false
-    t.string   "photo_url"
-  end
-
-  create_table "taggings", :force => true do |t|
-    t.integer  "tag_id"
-    t.integer  "taggable_id"
-    t.string   "taggable_type"
-    t.integer  "tagger_id"
-    t.string   "tagger_type"
-    t.string   "context"
-    t.datetime "created_at"
-  end
-
-  add_index "taggings", ["tag_id"], :name => "index_taggings_on_tag_id"
-  add_index "taggings", ["taggable_id", "taggable_type", "context"], :name => "index_taggings_on_taggable_id_and_taggable_type_and_context"
-
-  create_table "tags", :force => true do |t|
+ActiveRecord::Schema[8.0].define(version: 2026_09_05_140000) do
+  create_table "projects", force: :cascade do |t|
     t.string "name"
+    t.text "description"
+    t.string "color"
+    t.boolean "active"
+    t.integer "user_id", null: false
+    t.boolean "home_visible"
+    t.boolean "public"
+    t.boolean "system"
+    t.string "photo_url"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_projects_on_user_id"
   end
 
-  create_table "todos", :force => true do |t|
-    t.string   "name"
-    t.text     "description"
-    t.boolean  "active",          :default => true
-    t.date     "due"
-    t.integer  "priority",        :default => 3
-    t.integer  "user_id"
-    t.integer  "project_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.string   "source",          :default => "web"
-    t.string   "where"
-    t.string   "url"
-    t.integer  "depends_on_id"
+  create_table "taggings", force: :cascade do |t|
+    t.integer "tag_id"
+    t.string "taggable_type"
+    t.integer "taggable_id"
+    t.string "tagger_type"
+    t.integer "tagger_id"
+    t.string "context", limit: 128
+    t.datetime "created_at", precision: nil
+    t.string "tenant", limit: 128
+    t.index ["context"], name: "index_taggings_on_context"
+    t.index ["tag_id", "taggable_id", "taggable_type", "context", "tagger_id", "tagger_type"], name: "taggings_idx", unique: true
+    t.index ["tag_id"], name: "index_taggings_on_tag_id"
+    t.index ["taggable_id", "taggable_type", "context"], name: "taggings_taggable_context_idx"
+    t.index ["taggable_id", "taggable_type", "tagger_id", "context"], name: "taggings_idy"
+    t.index ["taggable_id"], name: "index_taggings_on_taggable_id"
+    t.index ["taggable_type", "taggable_id"], name: "index_taggings_on_taggable_type_and_taggable_id"
+    t.index ["taggable_type"], name: "index_taggings_on_taggable_type"
+    t.index ["tagger_id", "tagger_type"], name: "index_taggings_on_tagger_id_and_tagger_type"
+    t.index ["tagger_id"], name: "index_taggings_on_tagger_id"
+    t.index ["tagger_type", "tagger_id"], name: "index_taggings_on_tagger_type_and_tagger_id"
+    t.index ["tenant"], name: "index_taggings_on_tenant"
+  end
+
+  create_table "tags", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "taggings_count", default: 0
+    t.index ["name"], name: "index_tags_on_name", unique: true
+  end
+
+  create_table "todos", force: :cascade do |t|
+    t.string "name"
+    t.text "description"
+    t.boolean "active"
+    t.date "due"
+    t.integer "priority"
+    t.integer "user_id", null: false
+    t.integer "project_id", null: false
+    t.string "source"
+    t.string "where"
+    t.string "url"
+    t.integer "depends_on_id"
     t.datetime "hide_until"
-    t.integer  "progress_status", :default => 0
-    t.boolean  "favorite",        :default => false
-    t.text     "sys_notes"
-    t.string   "photo_url"
+    t.integer "progress_status"
+    t.boolean "favorite"
+    t.text "sys_notes"
+    t.string "photo_url"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["project_id"], name: "index_todos_on_project_id"
+    t.index ["user_id"], name: "index_todos_on_user_id"
   end
 
-  create_table "users", :force => true do |t|
-    t.string   "username"
-    t.string   "email"
-    t.string   "password_hash"
-    t.string   "password_salt"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.string   "facebook_id"
-    t.boolean  "admin",         :default => false
-    t.text     "description"
+  create_table "users", force: :cascade do |t|
+    t.string "username"
+    t.string "email"
+    t.string "password_hash"
+    t.string "password_salt"
+    t.string "facebook_id"
+    t.boolean "admin"
+    t.text "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "parent_id"
+    t.boolean "is_agent", default: false, null: false
+    t.string "agent_host"
+    t.string "agent_icon"
+    t.index ["parent_id", "is_agent"], name: "index_users_on_parent_id_and_is_agent"
+    t.index ["parent_id"], name: "index_users_on_parent_id"
   end
 
+  add_foreign_key "projects", "users"
+  add_foreign_key "taggings", "tags"
+  add_foreign_key "todos", "projects"
+  add_foreign_key "todos", "users"
 end

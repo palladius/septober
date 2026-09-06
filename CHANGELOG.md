@@ -5,6 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.0.0] - 2026-09-06
+
+### Major Modernization (Rails 8 & Native PWA)
+- **Framework & Ruby Upgrade**: Leapfrogged from Rails 3.0.3 (Ruby 1.9.3) to **Rails 8.0.4** running natively on **Ruby 3.4.5**.
+- **Solid Suite**: Configured `solid_cache`, `solid_queue`, and `solid_cable` database-backed infrastructure.
+- **Propshaft & Importmaps**: Modern asset pipeline without Node.js or Webpack.
+- **Native PWA Support**:
+  - Web App Manifest (`/manifest`) with `display: standalone` and adaptive app icons.
+  - Service Worker (`/service-worker`) for offline asset shell caching and future web push support.
+  - "Add to Dock" macOS and Linux desktop launcher readiness.
+  - 20-year persistent encrypted authentication ("Remember Me on this Mac / Device").
+- **Touch & Pointer Gesture Engine**:
+  - Stimulus `swipe_controller.js` on every todo item: swipe-right to complete (green), swipe-left to snooze/procrastinate 7 days (amber).
+  - Turbo streams for instant zero-reload card updates.
+- **Multi-Agent Hierarchy Preservation**:
+  - Retained `parent_id`, `is_agent`, `agent_icon`, `agent_host`, and `family_user_ids`.
+  - Copilot badges (🚛 Ermete, 🦞 Lobby, 🐾 Pux, 🤖 generic) and filter chips.
+  - Modernized REST JSON API (`/api/todos`) with HTTP basic auth for CLI and Telegram/Hermes agents.
+- **Containerization**: Modern production `Dockerfile` powered by Thruster & Kamal.
+
 ## [2.5.04] - 2026-09-06
 
 ### Documentation & Architecture

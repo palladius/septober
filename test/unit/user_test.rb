@@ -12,6 +12,8 @@ class UserTest < ActiveSupport::TestCase
   end
 
   def setup
+    Todo.delete_all
+    Project.delete_all
     User.delete_all
   end
 

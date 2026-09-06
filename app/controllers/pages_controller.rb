@@ -1,25 +1,13 @@
 class PagesController < ApplicationController
-  def index
+  def healthz
+    render plain: "ok"
   end
 
-  def docs
-  end
-
-  def about
-  end
-
-  def search
+  def statusz
+    render plain: "ok"
   end
 
   def varz
+    render plain: "ok"
   end
-
-  def varz_testuale
-#      render :varz, :plain # :handelrs => :text
-#      render :text => "var: 42"
-      #https://guides.rubyonrails.org/layouts_and_rendering.html#using-render
-      #render :varz, :layout => false
-      render file: "#{Rails.root}/app/views/pages/varz.text.erb", :layout => false
-  end
-
 end

@@ -1,4 +1,5 @@
-<% title "New Todo" %>
-<%= render 'form' %>
-
-<p><%= link_to "Back to List", todos_path %></p>
+<div class="card">
+  <h2>New Todo</h2>
+  <%= render "form", todo: @todo %>
+  <%= link_to "Back", todos_path, class: "btn" %>
+</div>

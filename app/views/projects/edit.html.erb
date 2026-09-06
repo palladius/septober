@@ -1,8 +1,5 @@
-<% title "Edit Project" %>
-
-<%= render 'form' %>
-
-<p>
-  <%= link_to "Show", @project %> |
-  <%= link_to "View All", projects_path %>
-</p>
+<div class="card">
+  <h2>Edit Project</h2>
+  <%= render "form", project: @project %>
+  <%= link_to "Back", projects_path, class: "btn" %>
+</div>

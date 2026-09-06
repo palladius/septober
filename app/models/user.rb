@@ -1,37 +1,22 @@
-# encoding: utf-8
 require 'bcrypt'
 
-class User < ActiveRecord::Base
-  # new columns need to be added here to be writable through mass assignment
-  attr_accessible :username, :email, :password, :password_confirmation,
-                  :parent_id, :is_agent, :agent_host, :agent_icon
-  
-# 2020 https://stackoverflow.com/questions/6163759/cant-mass-assign-protected-attributes
-  attr_accessible :todos_attributes, :projects_attributes
-
-  attr_accessor :password
-  before_save :prepare_password
-  after_create :provision_projects_after_create
-  
-  has_many :projects # , :class_name => "object", :foreign_key => "reference_id"
-  has_many :todos # , :class_name => "object", :foreign_key => "reference_id"
+class User < ApplicationRecord
+  has_many :projects, dependent: :destroy
+  has_many :todos, dependent: :destroy
 
   # Parent-child agent hierarchy
-  belongs_to :parent, :class_name => "User", :foreign_key => "parent_id"
-  has_many :agents, :class_name => "User", :foreign_key => "parent_id", :dependent => :destroy
-  
-  validates_presence_of :username
-  validates_uniqueness_of :username, :email, :allow_blank => true
-  validates_format_of :username, :with => /^[-\w\._@]+$/i, :allow_blank => true, :message => "should only contain letters, numbers, or .-_@"
-  validates_format_of :email, :with => /^[-a-z0-9_+\.]+\@([-a-z0-9]+\.)+[a-z0-9]{2,4}$/i
-  validates_presence_of :password, :on => :create
-  validates_confirmation_of :password
-  validates_length_of :password, :minimum => 4, :allow_blank => true
+  belongs_to :parent, class_name: "User", foreign_key: :parent_id, optional: true
+  has_many :agents, class_name: "User", foreign_key: :parent_id, dependent: :destroy
+
+  validates :username, presence: true, uniqueness: { allow_blank: true }, format: { with: /\A[-\w\._@]+\z/i, message: "should only contain letters, numbers, or .-_@" }
+  validates :email, format: { with: /\A[-a-z0-9_+\.]+\@([-a-z0-9]+\.)+[a-z0-9]{2,4}\z/i }
+  validates :password, length: { minimum: 4, allow_blank: true }, on: :create
+  validates :password, confirmation: true
   validate :validate_single_level_depth
 
   def validate_single_level_depth
     if parent_id.present?
-      parent_user = User.find_by_id(parent_id)
+      parent_user = User.find_by(id: parent_id)
       if parent_user && parent_user.parent_id.present?
         errors.add(:parent_id, "cannot have a parent that is already a child agent (max depth is 1)")
       end
@@ -43,6 +28,10 @@ class User < ActiveRecord::Base
 
   def agent?
     is_agent == true
+  end
+
+  def human?
+    !agent?
   end
 
   def resolved_agent_icon
@@ -57,11 +46,6 @@ class User < ActiveRecord::Base
     end
   end
 
-  def human?
-    !agent?
-  end
-
-  # Returns array of user IDs in the family (self + all child agents if human)
   def family_user_ids
     if agent?
       [self.id]
@@ -69,26 +53,30 @@ class User < ActiveRecord::Base
       [self.id] + agents.map(&:id)
     end
   end
-  
+
+  attr_accessor :password
+
+  before_save :prepare_password
+  after_create :provision_projects_after_create
+
   def to_s
     username
   end
-  #alias :username :name
+
   def name
     username
   end
-  
-  # to be called after create!
-  def provision_projects_after_create()
+
+  def provision_projects_after_create
+    return if agent?
     puts "+ Creating projects for new user '#{self}'.."
-    Project.provision_for_user(self) # create normal projects for user.
-    puts "+ Creating projects for new user '#{self}'.."
-    Todo.provision_for_user(self) # create normal projects for user.
+    Project.provision_for_user(self)
+    puts "+ Creating todos for new user '#{self}'.."
+    Todo.provision_for_user(self)
   end
-  
-  # login can be either username or email address
+
   def self.authenticate(login, pass)
-    user = find_by_username(login) || find_by_email(login)
+    user = find_by(username: login) || find_by(email: login)
     return user if user && user.matching_password?(pass)
   end
 
@@ -100,8 +88,8 @@ class User < ActiveRecord::Base
 
   def prepare_password
     unless password.blank?
-      self.password_salt = BCrypt::Engine.generate_salt
-      self.password_hash = encrypt_password(password)
+      self.password_salt = BCrypt::Engine.generate_salt.to_s.force_encoding("UTF-8")
+      self.password_hash = encrypt_password(password).to_s.force_encoding("UTF-8")
     end
   end
 

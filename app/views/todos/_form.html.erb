@@ -1,67 +1,40 @@
-<%= form_for @todo do |f| %>
-  <%= f.error_messages %>
-    (by <b class='user' ><%= @todo.user rescue '?!?' %></b>)
-  <p>
-    <%= f.label :name %><br />
+<%= form_with model: todo, local: true do |f| %>
+  <% if todo.errors.any? %>
+    <div class="alert alert-danger">
+      <ul>
+        <% todo.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="form-group">
+    <%= f.label :name %>
     <%= f.text_field :name %>
-  </p>
-  <p>
-    <%= f.label :where %><br />
-    <%= f.text_field :where %>
-  </p>
-  <p>
-    <%= f.label :url %><br />
-    <%= f.text_field :url %>
-  </p>
-  <p>
-    <%= f.label :photo_url %><br />
-    <%= f.text_field :photo_url %>
-  </p>
-  <p>
-    <%= f.label      :tags %><br />
-    <%= f.text_field :tags %>
-  </p>
-  <p>
-    <%= f.label :active %><br />
-    <%= f.check_box :active %>
-  </p>
-  <p>
-    <%= f.label :favorite %><br />
-    <%= f.check_box :favorite %>
-  </p>
-  <p>
-    <%= f.label :priority %><br />
-    <% [1,2,3,4,5].each do |prio| %>
-      <%= render_priority_icon(prio) %>
-      <%= f.radio_button("priority", prio ) %>
-        <%= priority_name(prio) %> <br/>
-    <% end %>
-    <%#= f.range_field :priority %>
-  </p>
-  <p>
-    <%= f.label :due %><br />
-    <%= f.date_select :due %>
-  </p>
-  <p>	
-	<input type="range" min="0" max="100" id="todo_progress_status" name="todo[progress_status]" value="<%=@todo.progress_status %>"  >
-	<%= f.label( :progress_status ) %> (percentage. Works on Safari and Chrome!)
-  </p>
-  <p>
-    <%= f.label :hide_until %><br />
-    <%= f.datetime_select :hide_until %>
-  </p>
-  <p>
-    <%= f.label :depends_on %> (father)<br />
-    <%#= f.text_field :depends_on_id %>
-    <%= collection_select("todo", :depends_on_id , Todo.find_all_by_user_id_and_active(current_user.id,true, :order => :name) , :id, :name , :include_blank => true ) %>
-  </p>
-  <p>
-    <%= f.label :project_id %><br />
-    <%= f.collection_select(:project_id , Project.find_all_by_user_id(current_user.id, :order => "id") , :id, :name_and_activity , :include_blank => false ) %>
-  </p>
-  <p>
-    <%= f.label :description %><br />
+  </div>
+
+  <div class="form-group">
+    <%= f.label :project_id %>
+    <%= f.collection_select :project_id, Project.all, :id, :name, { prompt: "Select Project" }, { class: "form-control" } %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :due %>
+    <%= f.date_field :due %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :priority %>
+    <%= f.number_field :priority, in: 1..5 %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :description %>
     <%= f.text_area :description %>
-  </p>
-  <p><%= f.submit %></p>
+  </div>
+
+  <div class="form-group">
+    <%= f.submit class: "btn btn-primary" %>
+  </div>
 <% end %>

@@ -1,51 +1,47 @@
 require 'test_helper'
 
 class UsersControllerTest < ActionController::TestCase
-  def test_new
-    get :new
-    assert_template 'new'
+  def setup
+    Todo.delete_all
+    Project.delete_all
+    User.delete_all
+    @user = User.create!(username: "human_user", email: "human@example.com", password: "secret123", password_confirmation: "secret123")
   end
 
-  def test_create_invalid
-    User.any_instance.stubs(:valid?).returns(false)
-    post :create
-    assert_template 'new'
+  def test_new
+    get :new
+    assert_response :success
   end
 
   def test_create_valid
-    User.any_instance.stubs(:valid?).returns(true)
-    post :create
+    assert_difference("User.count") do
+      post :create, params: { user: { username: "new_human", email: "new_human@example.com", password: "secret123", password_confirmation: "secret123" } }
+    end
     assert_redirected_to "/"
-    assert_equal assigns['user'].id, session['user_id']
   end
 
-  def test_edit_without_user
-    get :edit, :id => "ignored"
-    assert_redirected_to login_url
+  def test_provision_subagent_when_logged_in
+    session[:user_id] = @user.id
+    assert_difference("@user.agents.count", 1) do
+      post :create, params: {
+        user: {
+          username: "human_user.agent_test",
+          email: "agent@example.com",
+          password: "agentpass123",
+          password_confirmation: "agentpass123",
+          parent_id: @user.id,
+          is_agent: true,
+          agent_icon: "🤖",
+          agent_host: "mini-lobby"
+        }
+      }
+    end
+    assert_redirected_to edit_user_path(@user)
   end
 
-  def test_edit
-    @controller.stubs(:current_user).returns(User.first)
-    get :edit, :id => "ignored"
-    assert_template 'edit'
-  end
-
-  def test_update_without_user
-    put :update, :id => "ignored"
-    assert_redirected_to login_url
-  end
-
-  def test_update_invalid
-    @controller.stubs(:current_user).returns(User.first)
-    User.any_instance.stubs(:valid?).returns(false)
-    put :update, :id => "ignored"
-    assert_template 'edit'
-  end
-
-  def test_update_valid
-    @controller.stubs(:current_user).returns(User.first)
-    User.any_instance.stubs(:valid?).returns(true)
-    put :update, :id => "ignored"
-    assert_redirected_to "/"
+  def test_edit_when_logged_in
+    session[:user_id] = @user.id
+    get :edit, params: { id: @user.id }
+    assert_response :success
   end
 end

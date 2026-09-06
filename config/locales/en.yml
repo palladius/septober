@@ -1,74 +1,31 @@
-# Sample localization file for English. Add more files in this directory for other locales.
-# See http://github.com/svenfuchs/rails-i18n/tree/master/rails%2Flocale for starting points.
+# Files in the config/locales directory are used for internationalization and
+# are automatically loaded by Rails. If you want to use locales other than
+# English, add the necessary files in this directory.
+#
+# To use the locales, use `I18n.t`:
+#
+#     I18n.t "hello"
+#
+# In views, this is aliased to just `t`:
+#
+#     <%= t("hello") %>
+#
+# To use a different locale, set it with `I18n.locale`:
+#
+#     I18n.locale = :es
+#
+# This would use the information in config/locales/es.yml.
+#
+# To learn more about the API, please read the Rails Internationalization guide
+# at https://guides.rubyonrails.org/i18n.html.
+#
+# Be aware that YAML interprets the following case-insensitive strings as
+# booleans: `true`, `false`, `on`, `off`, `yes`, `no`. Therefore, these strings
+# must be quoted to be interpreted as strings. For example:
+#
+#     en:
+#       "yes": yup
+#       enabled: "ON"
 
 en:
-  hello: "Hello"
-  hello_world: "Hello world"
-  # Options
-  New: New
-  new: new
-  Destroy: Destroy
-  Edit: Edit
-  Show: Show
-  # Models
-  Project: Project
-  Projects: Projects
-  Todo: Task
-  Todos: Tasks
-  User: User
-  Users: Users
-  # Attributes
-  ## Todo
-  Todo: Task
-  Todos: Tasks
-  Due: Due
-  Active: Done
-  Toggle: Toggle
-  Done: Done
-  new_todo: New Task
-  todo_not_found: Task not found
-  Undone: Reactivate
-  View All: View All
-  quick_create: Quick Creation
-  quick_created: Created though quick creation mask
-  mark_as_done: Mark as Done
-  ## Project
-  magic_tag_list: Magic tag list
-
-  ## Time
-  in_the_future_particle: in
-it:
-    hello: "Ciao a tutti"
-    hello_world: "Hello world"
-    # Options
-    Destroy: Distruggi
-    Edit: Modifica
-    New: Nuovo
-    new: nuovo
-    Options: Opzioni
-    Show: Mostra
-    # Models
-    Project: Progetto
-    Projects: Progetti
-    Todo: Coso
-    Todos: Cosi
-    User: Utente
-    Users: Utenti
-    # Attributes
-    ## Todo
-    Due: Scade
-    Active: Attivo
-    Done: Fatto
-    Undone: Attivo
-    mark_as_done: Segna come fatto
-    quick_created: Creato con la mascherina di Crezione Veloce
-    quick_create: Crezione Veloce
-    Todo: Voce
-    Todos: Voci
-    new_todo: Nuova Voce
-    todo_not_found: Voce non trovata
-    ## Project
-    magic_tag_list: Lista dei magic tags
-    
-    ## Time
-    in_the_future_particle: tra
+  hello: "Hello world"

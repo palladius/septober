@@ -1,6 +1,13 @@
 # PS TODO make this DRY, now you've to remember to update as well the following files:
 # - ./VERSION
 # - app/helpers/application_helper
+3.0.0: # 2026-09-06 Major Upgrade: Rails 8 & Native PWA
+  - Upgraded from legacy Rails 3.0.3 (Ruby 1.9.3) to Rails 8.0.4 (Ruby 3.4.5).
+  - Native PWA with manifest, service worker, and macOS/Linux standalone installation.
+  - Touch and mouse swipe gestures on todos via Stimulus swipe controller.
+  - Multi-agent parent/child hierarchy preservation with Copilot filter chips and badges.
+  - 20-year persistent encrypted authentication (Remember Me).
+  - Modernized JSON API for CLI and agent integration.
 2.5.04: # 2026-09-06
   - Added Rails 8 + Native PWA modernization strategy in doc/STRATEGY_RAILS8_PWA.md.
   - Added docs -> doc symlink.
