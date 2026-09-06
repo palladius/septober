@@ -3,6 +3,9 @@
 - **Branch**: `feat/ui-agent-badges`
 - **Worktree**: `.worktrees/ui-agent-badges`
 - **Status**: Complete / Verified
+- [Specification](./spec.md)
+- [Implementation Plan](./plan.md)
+- [Metadata](./metadata.json)
 
 ## Summary
 Build visual UI representation for autonomous copilots/sub-agents connected to personal account `palladius` (ID: 1):

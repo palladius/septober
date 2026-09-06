@@ -1,3 +1,4 @@
+# encoding: utf-8
 module TodosHelper
   
                 #  Priorities  1        2      3       4        5
@@ -10,7 +11,8 @@ module TodosHelper
       ].join("\n")
     klasses = "todo #{todo.done? ? 'done' : 'undone' }"
     coloured_todo = render_within_project(todo.project,on_the_spot_edit(todo, :name, :tooltip => todo.description ) ) rescue "TodoErr('#{$!}')"
-    ret = content_tag( (todo.active ? :b : :s) , coloured_todo , :title => title , :alt => :alt , :class => klasses ) # , :id => "todo_#{todo.id}")
+    name_content = [render_agent_first_row_icon(todo), coloured_todo].reject(&:blank?).join(' ').html_safe
+    ret = content_tag( (todo.active ? :b : :s) , name_content , :title => title , :alt => :alt , :class => klasses ) # , :id => "todo_#{todo.id}")
     return ret
   end
   
@@ -30,11 +32,28 @@ module TodosHelper
     #iconed_link_to('GugolMap', todo.where, "http://maps.google.com/q?#{todo.where}") 
     # , 
   end
+
+  def render_agent_first_row_icon(todo)
+    return ''.html_safe unless todo.user && todo.user.agent?
+    icon = todo.user.respond_to?(:resolved_agent_icon) ? todo.user.resolved_agent_icon : (todo.user.agent_icon.presence || '🤖')
+    host = todo.user.agent_host.presence || 'cloud'
+    name = todo.user.username.split('.').last.capitalize
+    content_tag(:span, "🤖 #{icon}".html_safe, :class => 'agent_icon_inline', :title => "Autonomous Agent: #{name} on #{host}")
+  end
+
+  def render_agent_second_row_badge(todo)
+    return ''.html_safe unless todo.user && todo.user.agent?
+    icon = todo.user.respond_to?(:resolved_agent_icon) ? todo.user.resolved_agent_icon : (todo.user.agent_icon.presence || '🤖')
+    host = todo.user.agent_host.presence || 'cloud'
+    name = todo.user.username.split('.').last.capitalize
+    content_tag(:span, " [#{icon} #{name} @ #{host}]".html_safe, :class => 'agent_badge_secondary', :title => "Created by agent #{todo.user.username} on #{host}")
+  end
   
   # This renders the second line after a todo name in todo Index
   def render_todo_second_row(todo,opts={})
     ret = ''
       # short things
+    ret += render_agent_second_row_badge(todo)
     ret += content_tag(:span, render_where(todo), :class => :where_small) if todo.where?
     ret += content_tag(:span, " (OverDue: #{time_ago_in_words(Time.now - todo.due)  rescue todo.due})", :class => :small_overdue ) if todo.overdue?
     ret += render_editable_project(todo.project)
