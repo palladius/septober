@@ -14,6 +14,7 @@ COPY app/views/users/ /var/www/septober/app/views/users/
 COPY app/views/layouts/ /var/www/septober/app/views/layouts/
 RUN rm -f /var/www/septober/app/views/api/todos/create.json.builder
 COPY bin/ /var/www/septober/bin/
+COPY public/ /var/www/septober/public/
 COPY VERSION /var/www/septober/VERSION
 
 RUN mkdir -p /var/www-public/septober/ && cp -r /var/www/septober/* /var/www-public/septober/ 2>/dev/null || true
