@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.5.03] - 2026-09-06
+
+### Improved
+- **In-Place Editing Experience**: Converted todo description in-place editing to a responsive, multi-line `textarea` with automatic text wrapping (`overflow-wrap: break-word`, `white-space: pre-wrap`) and modern `field-sizing: content` support.
+- **Form Controls & Modals**: Polished in-place edit containers with theme-aware elevation, subtle borders, focus glow, and modernized Ok/Cancel buttons.
+- **Action Icons & Micro-Animations**: Added smooth spring transforms, hover scaling, priority arrow micro-nudges, and checkmark glow effects.
+
 ## [2.5.02] - 2026-09-06
 
 ### Added

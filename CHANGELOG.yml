@@ -1,6 +1,10 @@
 # PS TODO make this DRY, now you've to remember to update as well the following files:
 # - ./VERSION
 # - app/helpers/application_helper
+2.5.03: # 2026-09-06
+  - Converted in-place description editing to auto-wrapping responsive textarea.
+  - Modernized on-the-spot form container, buttons, and focus glow.
+  - Polished action icons with smooth micro-animations and hover effects.
 2.5.02: # 2026-09-06
   - Autonomous Agent UI badges: first-row icon and second-row author pill.
   - Upright header navigation with quick agent filter and provisioning shortcut.

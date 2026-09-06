@@ -61,7 +61,7 @@ module TodosHelper
     ret += content_tag(:span, " #{on_the_spot_edit(todo, :progress_status)}%".html_safe, :class => :progress_status_small) if todo.progress_status?
       # long
     #ret += content_tag(:span, ' ' + truncate_words(todo.description), :class => :todo_description_snippet)
-    ret += content_tag(:span, (' ' + on_the_spot_edit(todo, :description, :tooltip => 'Edit Description')).html_safe, :class => :todo_description_snippet) 
+    ret += content_tag(:span, (' ' + on_the_spot_edit(todo, :description, :type => :textarea, :rows => 4, :tooltip => 'Click to edit description')).html_safe, :class => :todo_description_snippet) 
     ret += render_tags(todo)
     
     #ret.html_safe

@@ -250,21 +250,171 @@ tr.todo_line:hover {
   font-size: 0.75rem;
 }
 
-/* Action and options icons polish */
+/* Action and options icons polish & modern animations */
+td.todo_due_column a img,
+td[align='right'] a img,
+.todo_line td:first-child table img,
+.todo_line td:first-child a img {
+  border-radius: var(--radius-sm);
+  display: inline-block;
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.2s ease, box-shadow 0.2s ease;
+  vertical-align: middle;
+}
+
+td.todo_due_column a img:hover,
+td[align='right'] a img:hover,
+.todo_line td:first-child table img:hover,
+.todo_line td:first-child a img:hover {
+  filter: drop-shadow(0 4px 8px rgba(99, 102, 241, 0.35));
+  transform: scale(1.22) translateY(-2px);
+}
+
+/* Priority arrows micro-animation */
+a[href*='set_priority'] img {
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+a[href*='raise'] img:hover {
+  transform: translateY(-2px) scale(1.15);
+}
+a[href*='lower'] img:hover {
+  transform: translateY(2px) scale(1.15);
+}
+
+/* Done checkmark icon pulse on hover */
+a[href*='/done'] img {
+  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.2));
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.2s ease;
+}
+a[href*='/done'] img:hover {
+  filter: drop-shadow(0 0 10px rgba(34, 197, 94, 0.6)) brightness(1.1);
+  transform: scale(1.25) rotate(-5deg);
+}
+
 [data-theme='dark'] td.todo_due_column a img,
 [data-theme='dark'] td[align='right'] a img,
 [data-theme='dark'] .todo_line td:first-child table img {
-  background: rgba(255, 255, 255, 0.92);
-  border-radius: 4px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
-  padding: 1px;
-  transition: transform 0.15s ease;
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+  padding: 2px;
 }
 
-[data-theme='dark'] td.todo_due_column a img:hover,
-[data-theme='dark'] td[align='right'] a img:hover,
-[data-theme='dark'] .todo_line td:first-child table img:hover {
-  transform: scale(1.1);
+[data-theme='dark'] a[href*='/done'] img {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+[data-theme='light'] td.todo_due_column a img,
+[data-theme='light'] td[align='right'] a img,
+[data-theme='light'] .todo_line td:first-child table img {
+  background: rgba(241, 245, 249, 0.85);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  padding: 2px;
+}
+
+[data-theme='light'] a[href*='/done'] img {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+/* On-the-Spot In-Place Editing styling */
+.on_the_spot_editing {
+  border-bottom: 1px dashed var(--primary-subtle);
+  border-radius: 2px;
+  cursor: pointer;
+  display: inline;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.on_the_spot_editing:hover,
+.on_the_spot_over {
+  background-color: var(--primary-subtle);
+  border-bottom-color: var(--primary);
+}
+
+/* On-The-Spot Edit Form & Textarea Container */
+span.on_the_spot_editing form {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  display: block;
+  margin: 0.5rem 0;
+  max-width: 720px;
+  padding: 0.75rem;
+  width: 100%;
+  z-index: 100;
+}
+
+span.on_the_spot_editing form input[type='text'],
+span.on_the_spot_editing form textarea {
+  background-color: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  box-sizing: border-box;
+  color: var(--text-main);
+  font-family: inherit;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  outline: none;
+  overflow-wrap: break-word;
+  padding: 0.6rem 0.75rem;
+  resize: vertical;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  white-space: pre-wrap;
+  width: 100% !important;
+  word-break: break-word;
+}
+
+span.on_the_spot_editing form textarea {
+  field-sizing: content;
+  min-height: 90px;
+}
+
+span.on_the_spot_editing form input[type='text']:focus,
+span.on_the_spot_editing form textarea:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
+}
+
+span.on_the_spot_editing form button[type='submit'],
+span.on_the_spot_editing form input[type='submit'] {
+  background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+  border: none;
+  border-radius: var(--radius-sm);
+  color: #ffffff;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-right: 0.5rem;
+  margin-top: 0.5rem;
+  padding: 0.45rem 1rem;
+  transition: transform 0.1s ease, filter 0.15s ease;
+}
+
+span.on_the_spot_editing form button[type='submit']:hover,
+span.on_the_spot_editing form input[type='submit']:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+}
+
+span.on_the_spot_editing form button[type='cancel'] {
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin-top: 0.5rem;
+  padding: 0.45rem 0.85rem;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+span.on_the_spot_editing form button[type='cancel']:hover {
+  background-color: var(--surface-hover);
+  color: var(--text-main);
 }
 
 .progress_status_small {
