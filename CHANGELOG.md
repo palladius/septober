@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.5.02] - 2026-09-06
+
+### Added
+- **Autonomous Agent Badges**: Render first-row emoji (`🤖 <icon>`) and second-row author badge (`[<icon> <Agent> @ <host>]`) for copilots.
+- **Header Upright Navigation**: Added active agents synoptic list with filter links (`/todos?agent_id=<id>`) and `+ New Agent` shortcut.
+- **Sub-Agent Provisioning UI**: Embedded copilots table and self-service provisioning form on `/user/edit`.
+- **Sub-Agent Provisioning Skill**: Documented subagent architecture, environment configurations, and auth conventions in `septober-subagent-provisioning`.
+
+### Changed
+- **Sub-Agent Naming Convention**: Standardized agent usernames to `palladius.<slug>` (`palladius.ermete`, `palladius.lobby`, `palladius.pux` on host `pupurabbux`).
+- **Dark Mode Compatibility**: Removed hardcoded light backgrounds from tables, badges, and documentation code blocks.
+
 ## [2.5.01] - 2026-09-05
 
 ### Fixed

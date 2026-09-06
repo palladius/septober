@@ -10,9 +10,9 @@ This document describes how to configure and onboard autonomous copilots (**Erme
 - **Child Agents:**
   | Agent | Username | User ID | Icon | Host | Email |
   |---|---|---|---|---|---|
-  | **Ermete Bottazzi** | `rcarlesso.ermete` | `12` | 🚛 | `mini-lobby` | `palladiusbonton+ermete@gmail.com` |
-  | **Lobby** | `rcarlesso.lobby` | `13` | 🦞 | `mini-lobby` | `palladiusbonton+lobby@gmail.com` |
-  | **Pux** | `rcarlesso.pux` | `14` | 🐾 | `openclaw` | `palladiusbonton+pux@gmail.com` |
+  | **Ermete Bottazzi** | `palladius.ermete` | `12` | 🚛 | `mini-lobby` | `palladiusbonton+ermete@gmail.com` |
+  | **Lobby** | `palladius.lobby` | `13` | 🦞 | `mini-lobby` | `palladiusbonton+lobby@gmail.com` |
+  | **Pux** | `palladius.pux` | `14` | 🐾 | `pupurabbux` | `palladiusbonton+pux@gmail.com` |
 
 ### Key Properties:
 1. **Isolated Credentials:** Each agent has its own password hash and salt in MySQL. If an agent key is leaked, only that subaccount's password is rotated.

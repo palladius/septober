@@ -1,6 +1,12 @@
 # PS TODO make this DRY, now you've to remember to update as well the following files:
 # - ./VERSION
 # - app/helpers/application_helper
+2.5.02: # 2026-09-06
+  - Autonomous Agent UI badges: first-row icon and second-row author pill.
+  - Upright header navigation with quick agent filter and provisioning shortcut.
+  - In-app sub-agent management and self-service provisioning on /user/edit.
+  - Standardized agent usernames to palladius.<name> with Pux on pupurabbux.
+  - Full dark-theme compatibility across new subagent views.
 2.5.01: # 2026-09-05
   - Fixed header navigation pill selector scoping to prevent clipping of title text.
   - Centered 2026 developer desk banner vertically with cover sizing.
