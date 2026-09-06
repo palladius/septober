@@ -1,0 +1,22 @@
+<div class="card">
+  <h2><%= @todo.name %></h2>
+  <p><strong>Project:</strong> <%= link_to @todo.project.name, @todo.project %></p>
+  <p><strong>Due:</strong> <%= @todo.due %></p>
+  <p><strong>Priority:</strong> <%= @todo.priority %></p>
+  <p><strong>Status:</strong> <%= @todo.active ? "Active" : "Done" %></p>
+  
+  <% if @todo.description.present? %>
+    <p><strong>Description:</strong></p>
+    <p><%= @todo.description %></p>
+  <% end %>
+
+  <div style="margin-top: 1rem;">
+    <% unless @todo.done? %>
+      <%= link_to "Done", done_todo_path(@todo), class: "btn btn-secondary" %>
+    <% else %>
+      <%= link_to "Undone", undone_todo_path(@todo), class: "btn btn-secondary", style: "background-color: #9ca3af;" %>
+    <% end %>
+    <%= link_to "Edit", edit_todo_path(@todo), class: "btn btn-primary" %>
+    <%= link_to "Back", todos_path, class: "btn" %>
+  </div>
+</div>

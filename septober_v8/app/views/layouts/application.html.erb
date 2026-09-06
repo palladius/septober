@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Septober V8</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+    
+    <style>
+      :root {
+        --primary-color: #3b82f6;
+        --secondary-color: #10b981;
+        --bg-color: #f3f4f6;
+        --text-color: #1f2937;
+        --card-bg: #ffffff;
+      }
+      
+      body {
+        font-family: system-ui, -apple-system, sans-serif;
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        margin: 0;
+        padding: 0;
+      }
+      
+      header {
+        background-color: var(--card-bg);
+        padding: 1rem 2rem;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      
+      header h1 {
+        margin: 0;
+        font-size: 1.5rem;
+        color: var(--primary-color);
+      }
+      
+      nav a {
+        margin-left: 1rem;
+        text-decoration: none;
+        color: var(--text-color);
+        font-weight: 500;
+      }
+      
+      nav a:hover {
+        color: var(--primary-color);
+      }
+      
+      main {
+        max-width: 1200px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+      }
+      
+      .flash {
+        padding: 1rem;
+        margin-bottom: 1rem;
+        border-radius: 0.5rem;
+      }
+      
+      .flash.notice {
+        background-color: #d1fae5;
+        color: #065f46;
+      }
+      
+      .flash.alert {
+        background-color: #fee2e2;
+        color: #991b1b;
+      }
+      
+      .card {
+        background-color: var(--card-bg);
+        padding: 1.5rem;
+        border-radius: 0.5rem;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        margin-bottom: 1rem;
+      }
+      
+      .btn {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        border-radius: 0.375rem;
+        text-decoration: none;
+        font-weight: 500;
+        cursor: pointer;
+        border: none;
+      }
+      
+      .btn-primary {
+        background-color: var(--primary-color);
+        color: white;
+      }
+      
+      .btn-secondary {
+        background-color: var(--secondary-color);
+        color: white;
+      }
+      
+      .form-group {
+        margin-bottom: 1rem;
+      }
+      
+      label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+      }
+      
+      input[type="text"],
+      input[type="email"],
+      input[type="password"],
+      textarea {
+        width: 100%;
+        padding: 0.5rem;
+        border: 1px solid #d1d5db;
+        border-radius: 0.375rem;
+      }
+      
+      .todo-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.5rem 0;
+        border-bottom: 1px solid #e5e7eb;
+      }
+      
+      .todo-item.done {
+        opacity: 0.6;
+        text-decoration: line-through;
+      }
+    </style>
+  </head>
+
+  <body>
+    <header>
+      <h1><%= link_to "Septober", root_path, style: "text-decoration: none; color: inherit;" %></h1>
+      <nav>
+        <% if logged_in? %>
+          <%= link_to "Todos", todos_path %>
+          <%= link_to "Projects", projects_path %>
+          <%= link_to "Profile", edit_user_path(current_user) %>
+          <%= link_to "Logout", logout_path %>
+        <% else %>
+          <%= link_to "Login", login_path %>
+          <%= link_to "Signup", signup_path %>
+        <% end %>
+      </nav>
+    </header>
+
+    <main>
+      <% flash.each do |key, value| %>
+        <div class="flash <%= key %>"><%= value %></div>
+      <% end %>
+
+      <%= yield %>
+    </main>
+  </body>
+</html>

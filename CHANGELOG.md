@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.5.04] - 2026-09-06
+
+### Documentation & Architecture
+- **Rails 8 + PWA Strategy**: Added comprehensive architectural strategy blueprint in `doc/STRATEGY_RAILS8_PWA.md` detailing the migration path to Ruby 3.4+ / Rails 8.0, native PWA "Add to Dock", touch gesture support, and Solid suite integration.
+- **Convenience Symlink**: Symlinked `docs` -> `doc`.
+
 ## [2.5.03] - 2026-09-06
 
 ### Improved
