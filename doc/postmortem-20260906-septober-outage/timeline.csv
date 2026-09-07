@@ -1,0 +1,13 @@
+Time,Description,Milestone
+2021-12-22 00:40:54 US/Pacific,ricc@ creates GCE VM septober-docker-zrh-202112 in europe-west6-b from US VM boot disk,
+2021-12-22 01:10:00 US/Pacific,ricc@ adds /mnt/septober mount to /etc/fstab without nofail flag,
+2021-12-22 01:12:00 US/Pacific,ricc@ issues sudo reboot; systemd drops into Emergency Mode and halts boot,Start of Incident
+2026-09-06 02:36:34 US/Pacific,ricc@ reports septober.palladius.it is down and requests diagnosis,Incident Detected
+2026-09-06 02:39:15 US/Pacific,Serial console analysis proves VM is trapped in systemd Emergency Mode waiting for missing disk UUID,
+2026-09-06 03:07:02 US/Pacific,Hard reset of VM confirms reproducible 90s mount timeout and locked console barrier,
+2026-09-06 22:48:44 US/Pacific,VM powered off and boot disk attached to temporary Debian 12 rescue VM,
+2026-09-06 22:50:08 US/Pacific,/etc/fstab corrected on rescue mount and rescue VM safely decommissioned,
+2026-09-06 22:51:18 US/Pacific,Zurich GCE VM boots cleanly to multi-user target with Docker daemon active,
+2026-09-06 22:53:15 US/Pacific,Inspection reveals legacy GCE instance lacks Cloud SQL scopes and runs obsolete Debian 9,
+2026-09-06 22:55:38 US/Pacific,septober-mysql container deployed to Cloud Run in europe-west1 with native Cloud SQL socket,
+2026-09-06 22:56:04 US/Pacific,Cloud DNS record updated to CNAME ghs.googlehosted.com for Cloud Run domain mapping,End of Incident
