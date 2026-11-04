@@ -1,6 +1,9 @@
 # PS TODO make this DRY, now you've to remember to update as well the following files:
 # - ./VERSION
 # - app/helpers/application_helper
+2.5.05: # 2026-11-04
+  - Added A2UI Swipe-Right-to-Done with 10-second Undo countdown banner and auto-vanish.
+  - Added Swipe-Left-to-Procrastinate (+7 days) gesture for desktop mouse drag and mobile touch.
 2.5.04: # 2026-09-06
   - Added Rails 8 + Native PWA modernization strategy in doc/STRATEGY_RAILS8_PWA.md.
   - Added docs -> doc symlink.

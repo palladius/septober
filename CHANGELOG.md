@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.5.05] - 2026-11-04
+
+### Added
+- **A2UI Swipe-to-Done (10s Undo Countdown) & Swipe-Left-to-Procrastinate**:
+  - Added mouse/touch swipe gestures to todo rows (`tr.todo_line` in classic Rails and `.todo-item` in `septober_v8`).
+  - **Swipe Right (or click Done)**: Marks the todo as completed via `/todos/:id/done`, displays an inline 10-second animated countdown banner with an `↩️ Annulla` (Undo) button (`/todos/:id/undone`), and smoothly collapses and removes the row after 10 seconds.
+  - **Swipe Left**: Procrastinates the todo by +7 days (`/todos/:id/procrastinate`) with an inline badge confirmation.
+
 ## [2.5.04] - 2026-09-06
 
 ### Documentation & Architecture

@@ -1,5 +1,5 @@
 <%= turbo_frame_tag todo do %>
-  <div class="todo-item <%= 'done' if todo.done? %>" style="border-bottom: 1px solid #e5e7eb; padding: 0.5rem 0; display: flex; justify-content: space-between; align-items: flex-start;">
+  <div class="todo-item <%= 'done' if todo.done? %>" data-todo-id="<%= todo.id %>" style="border-bottom: 1px solid #e5e7eb; padding: 0.5rem 0; display: flex; justify-content: space-between; align-items: flex-start;">
     <div style="flex-grow: 1;">
       <div>
         <%= render_todo_icons(todo) %>

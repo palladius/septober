@@ -585,3 +585,83 @@ A.tag:hover {
   padding: 1rem;
   width: 12rem;
 }
+
+/* --- A2UI Swipe-to-Done (10s Undo Countdown) & Swipe-Left-to-Procrastinate --- */
+tr.todo_line {
+  cursor: grab;
+  position: relative;
+  touch-action: pan-y;
+  user-select: none;
+  will-change: transform, background-color, opacity;
+}
+
+tr.todo_line:active {
+  cursor: grabbing;
+}
+
+tr.todo_line.swiping-right {
+  background-color: rgba(16, 185, 129, 0.18) !important;
+  box-shadow: inset 4px 0 0 #10b981;
+}
+
+tr.todo_line.swiping-left {
+  background-color: rgba(245, 158, 11, 0.18) !important;
+  box-shadow: inset -4px 0 0 #f59e0b;
+}
+
+tr.todo_line.pending-vanish {
+  background-color: rgba(16, 185, 129, 0.10) !important;
+}
+
+tr.todo_line.vanishing {
+  opacity: 0 !important;
+  transform: translateX(60px) scale(0.97) !important;
+  transition: opacity 0.35s ease, transform 0.35s ease !important;
+}
+
+.a2ui-undo-banner {
+  align-items: center;
+  background: rgba(16, 185, 129, 0.14);
+  border: 1px solid rgba(16, 185, 129, 0.4);
+  border-radius: 0.5rem;
+  display: flex;
+  gap: 0.75rem;
+  justify-content: space-between;
+  margin-top: 0.5rem;
+  overflow: hidden;
+  padding: 0.45rem 0.75rem;
+  position: relative;
+}
+
+.a2ui-undo-text {
+  color: #10b981;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.a2ui-undo-btn {
+  background: #10b981;
+  border: none;
+  border-radius: 9999px;
+  color: #0b0f19;
+  cursor: pointer;
+  font-size: 0.75rem;
+  font-weight: 800;
+  padding: 0.25rem 0.75rem;
+  transition: transform 0.15s ease, filter 0.15s ease;
+}
+
+.a2ui-undo-btn:hover {
+  filter: brightness(1.1);
+  transform: scale(1.04);
+}
+
+.a2ui-undo-progress {
+  background: #10b981;
+  bottom: 0;
+  height: 3px;
+  left: 0;
+  position: absolute;
+  transition: width 0.1s linear;
+  width: 100%;
+}
