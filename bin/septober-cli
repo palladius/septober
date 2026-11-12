@@ -1,3 +1,650 @@
-#!/bin/bash
+#!/usr/bin/env ruby
+# frozen_string_literal: true
 
-echo "gem install ric; septober"
+# If Ruby < 3.4 is first in PATH (e.g. system Ruby 3.3 on Linux), re-exec into rbenv Ruby 3.4.5+ if available
+if RUBY_VERSION < "3.4.0"
+  rbenv_ruby = File.expand_path("~/.rbenv/versions/3.4.5/bin/ruby")
+  exec(rbenv_ruby, $PROGRAM_NAME, *ARGV) if File.executable?(rbenv_ruby)
+end
+
+require "optparse"
+require "net/http"
+require "uri"
+require "json"
+require "yaml"
+require "socket"
+require "base64"
+require "date"
+require "time"
+
+PROG_VER = "2.6.1"
+
+# Optional ric gem support; built-in ANSI fallback so CLI is 100% zero-dependency on Ruby 3.4.5+
+$colors_active = $stdout.tty?
+def colorize(code, str)
+  return str.to_s unless $colors_active
+  "\e[#{code}m#{str}\e[0m"
+end
+def red(s)    = colorize(31, s)
+def green(s)  = colorize(32, s)
+def yellow(s) = colorize(33, s)
+def blue(s)   = colorize(34, s)
+def purple(s) = colorize(35, s)
+def cyan(s)   = colorize(36, s)
+def gray(s)   = colorize(90, s)
+def bold(s)   = colorize(1, s)
+
+CONFIG_PATH       = File.expand_path("~/.septober.yml")
+LOCAL_CONFIG_PATH = File.expand_path("~/.septober.local.yml")
+
+AGENT_ICONS = {
+  "ermete"   => "🚛",
+  "lobby"    => "🦞",
+  "pux"      => "🐾",
+  "freevola" => "🧚‍♀️",
+  "derek"    => "🖥️"
+}.freeze
+
+AGENT_ENV_FILES = {
+  "lobby"    => "~/.openclaw/.env",
+  "ermete"   => "~/.hermes/.env",
+  "pux"      => "~/.openclaw/.env",
+  "freevola" => "~/.hermes-freevola/.env"
+}.freeze
+
+def parse_dotenv_file(path)
+  res = {}
+  expanded = File.expand_path(path.to_s)
+  return res unless File.file?(expanded)
+
+  File.readlines(expanded, chomp: true).each do |line|
+    stripped = line.strip
+    next if stripped.empty? || stripped.start_with?("#")
+    next unless stripped.include?("=")
+
+    k, v = stripped.split("=", 2)
+    res[k.strip] = v.strip.gsub(/\A['"]|['"]\z/, "")
+  end
+  res
+rescue StandardError
+  res
+end
+
+def load_config(conf_path: nil, target_env: nil, target_agent: nil, cli_user: nil, cli_password: nil)
+  resolved_path = conf_path
+  if resolved_path.nil? || resolved_path.empty?
+    candidates = [
+      ENV["SEPTOBER_CONFIG"],
+      LOCAL_CONFIG_PATH,
+      CONFIG_PATH,
+      File.expand_path("~/git/gic/.septober.yml"),
+      File.expand_path("~/git/gic25/.septober.yml"),
+      File.expand_path("../.septober.yml", __dir__)
+    ].compact
+    resolved_path = candidates.find { |p| File.file?(p) }
+  else
+    resolved_path = File.expand_path(resolved_path)
+  end
+
+  unless resolved_path && File.file?(resolved_path)
+    warn red("Error: Config file not found (checked #{LOCAL_CONFIG_PATH}, #{CONFIG_PATH})")
+    exit 1
+  end
+
+  begin
+    raw_yaml = File.read(resolved_path)
+    data = YAML.safe_load(raw_yaml, aliases: true, permitted_classes: [Symbol, Date, Time]) || {}
+  rescue StandardError => e
+    warn red("Error reading YAML config #{resolved_path}: #{e.message}")
+    exit 1
+  end
+
+  env_name = target_env || ENV["SEPTOBER_ENV"]
+  if env_name.nil? || env_name.empty?
+    %w[septober production remote local septober_local].each do |cand|
+      if data[cand].is_a?(Hash)
+        env_name = cand
+        break
+      end
+    end
+  end
+
+  if (env_name.nil? || !data[env_name].is_a?(Hash)) && target_env == "local" && data["septober_local"].is_a?(Hash)
+    env_name = "septober_local"
+  end
+
+  if env_name.nil? || !data[env_name].is_a?(Hash)
+    pair = data.find { |_k, v| v.is_a?(Hash) && (v["site"] || v[:site]) }
+    env_name = pair[0] if pair
+  end
+
+  unless env_name && data[env_name].is_a?(Hash)
+    warn red("Error: Could not find valid environment '#{target_env || 'septober'}' in #{resolved_path}")
+    warn "Available environments: #{data.keys.join(', ')}"
+    exit 1
+  end
+
+  cfg = data[env_name]
+  site = ENV["SEPTOBER_SITE"] || cfg["site"] || cfg[:site] || "http://localhost:8080/api/"
+  site = "#{site.to_s.sub(%r{/+\z}, '')}/"
+  user = cli_user || ENV["SEPTOBER_USER"] || cfg["user"] || cfg[:user] || "guest"
+  password = cli_password || ENV["SEPTOBER_PASSWORD"] || (cfg["password"] || cfg[:password] || "guest").to_s
+  agent_icon = nil
+
+  # Resolve agent profile
+  agent_name = target_agent || ENV["SEPTOBER_AGENT"]
+  if (agent_name.nil? || agent_name.empty?) && ENV["SEPTOBER_USER"].nil? && cli_user.nil?
+    if ENV["HARNESS_NAME"] == "Hermes" || ENV["HARNESS_NICKNAME"] == "Ermete Bottazzi"
+      agent_name = "ermete"
+    elsif ENV["HARNESS_NAME"] == "Lobby" || ENV["HARNESS_NICKNAME"] == "Lobby"
+      agent_name = "lobby"
+    elsif ENV["OPENCLAW_AGENT"] && !ENV["OPENCLAW_AGENT"].empty?
+      agent_name = ENV["OPENCLAW_AGENT"]
+    elsif Dir.pwd.include?(".openclaw")
+      agent_name = "lobby"
+    elsif Dir.pwd.include?(".hermes")
+      agent_name = "ermete"
+    end
+  end
+
+  if agent_name && !agent_name.empty?
+    agent_icon = AGENT_ICONS[agent_name]
+    yaml_agents = data["agents"].is_a?(Hash) ? data["agents"][agent_name] : nil
+    env_file = AGENT_ENV_FILES[agent_name] ? File.expand_path(AGENT_ENV_FILES[agent_name]) : nil
+
+    agent_user = nil
+    agent_pass = nil
+
+    if ENV["SEPTOBER_AGENT"] == agent_name && ENV["SEPTOBER_USER"] && ENV["SEPTOBER_PASSWORD"]
+      agent_user = ENV["SEPTOBER_USER"]
+      agent_pass = ENV["SEPTOBER_PASSWORD"]
+    elsif env_file && File.file?(env_file)
+      dotenv = parse_dotenv_file(env_file)
+      agent_user = dotenv["SEPTOBER_USER"]
+      agent_pass = dotenv["SEPTOBER_PASSWORD"]
+    elsif yaml_agents.is_a?(Hash)
+      agent_user = yaml_agents["user"] || yaml_agents[:user]
+      agent_pass = (yaml_agents["password"] || yaml_agents[:password]).to_s
+      agent_icon ||= yaml_agents["icon"] || yaml_agents[:icon]
+    end
+
+    if agent_user && agent_pass && !agent_user.empty? && !agent_pass.empty?
+      user = agent_user
+      password = agent_pass
+    else
+      hint_file = env_file || "~/.#{agent_name}/.env"
+      warn "\n❌ Error: ENV credentials missing for agent '#{agent_name}'!"
+      warn "   Configure SEPTOBER_USER, SEPTOBER_PASSWORD, SEPTOBER_AGENT in #{hint_file} or environment."
+      exit 1
+    end
+  end
+
+  {
+    "env"         => env_name,
+    "site"        => site,
+    "user"        => user,
+    "password"    => password,
+    "agent"       => agent_name,
+    "agent_icon"  => agent_icon,
+    "description" => cfg["description"] || "",
+    "config_path" => resolved_path
+  }
+end
+
+def make_request(cfg, endpoint, method: "GET", body: nil, timeout: 25)
+  base_uri = URI.join(cfg["site"], endpoint.to_s.sub(%r{\A/+}, ""))
+  http = Net::HTTP.new(base_uri.host, base_uri.port)
+  http.use_ssl = (base_uri.scheme == "https")
+  http.open_timeout = timeout
+  http.read_timeout = timeout
+
+  req_class = case method.to_s.upcase
+              when "GET"    then Net::HTTP::Get
+              when "POST"   then Net::HTTP::Post
+              when "PUT"    then Net::HTTP::Put
+              when "DELETE" then Net::HTTP::Delete
+              else raise "Unsupported HTTP method: #{method}"
+              end
+
+  req = req_class.new(base_uri.request_uri)
+  req.basic_auth(cfg["user"].to_s, cfg["password"].to_s)
+  req["Accept"] = "application/json"
+  req["User-Agent"] = "septober-cli/#{PROG_VER} (Ruby/#{RUBY_VERSION})"
+
+  if body
+    req["Content-Type"] = "application/json"
+    req.body = JSON.generate(body)
+  end
+
+  resp = http.request(req)
+  code = resp.code.to_i
+  raw_body = resp.body.to_s
+
+  if code >= 200 && code < 300
+    return { "status" => code, "data" => nil } if raw_body.strip.empty?
+    parsed = begin
+      JSON.parse(raw_body)
+    rescue StandardError
+      raw_body
+    end
+    { "status" => code, "data" => parsed }
+  else
+    parsed_err = begin
+      JSON.parse(raw_body)
+    rescue StandardError
+      raw_body
+    end
+    { "status" => code, "error" => parsed_err }
+  end
+rescue StandardError => e
+  { "status" => 0, "error" => e.message }
+end
+
+def format_priority(prio)
+  case prio.to_i
+  when 5 then "🔴 P0/Urgent"
+  when 4 then "🟠 P1/High"
+  when 3 then "🟡 P2/Med"
+  when 2 then "🟢 P3/Low"
+  when 1 then "⚪️ P4/Backlog"
+  else "P#{prio}"
+  end
+end
+
+def extract_todo_id(raw_arg)
+  str = raw_arg.to_s.strip
+  if str =~ %r{/todos/(\d+)}
+    Regexp.last_match(1).to_i
+  elsif str =~ /\A#?(\d+)\z/
+    Regexp.last_match(1).to_i
+  else
+    warn red("Error: Invalid Todo ID or URL '#{raw_arg}'. Expected an integer ID (e.g. 235) or URL (.../todos/235).")
+    exit 1
+  end
+end
+
+def local_hostname
+  Socket.gethostname.split(".").first
+rescue StandardError
+  "unknown-host"
+end
+
+def harness_co_author(agent_name = nil)
+  return ENV["CARLESSIAN_HARNESS_CO_AUTHOR"] if ENV["CARLESSIAN_HARNESS_CO_AUTHOR"]
+
+  env_file = AGENT_ENV_FILES[agent_name]
+  if env_file
+    dotenv = parse_dotenv_file(env_file)
+    return dotenv["CARLESSIAN_HARNESS_CO_AUTHOR"] if dotenv["CARLESSIAN_HARNESS_CO_AUTHOR"]
+  end
+
+  case agent_name
+  when "ermete"   then "Ermete Bottazzi <ermete.bottazzi@romagnatrucking.it>"
+  when "lobby"    then "Lobby <lobby@openclaw.local>"
+  when "pux"      then "Pux <pux@openclaw.local>"
+  when "freevola" then "Freevola <freevola@pupurabbux.local>"
+  end
+end
+
+def harness_nickname(agent_name = nil)
+  return ENV["HARNESS_NICKNAME"] if ENV["HARNESS_NICKNAME"]
+  return ENV["HARNESS_NAME"] if ENV["HARNESS_NAME"]
+
+  env_file = AGENT_ENV_FILES[agent_name]
+  if env_file
+    dotenv = parse_dotenv_file(env_file)
+    return dotenv["HARNESS_NICKNAME"] || dotenv["HARNESS_NAME"] if dotenv["HARNESS_NICKNAME"] || dotenv["HARNESS_NAME"]
+  end
+
+  case agent_name
+  when "ermete"   then "Ermete Bottazzi"
+  when "lobby"    then "Lobby"
+  when "pux"      then "Pux"
+  when "freevola" then "Freevola"
+  end
+end
+
+def format_agent_badge(todo)
+  u = todo["user"]
+  if u.is_a?(Hash) && u["is_agent"]
+    icon = u["agent_icon"]
+    uname = u["username"].to_s
+    agent_key = uname.include?(".") ? uname.split(".").last.downcase : uname.downcase
+    icon = AGENT_ICONS.fetch(agent_key, "🤖") if icon.nil? || icon.empty? || icon == "?"
+    short_name = agent_key.capitalize
+    return " [#{icon} #{short_name}]"
+  elsif todo["source"].to_s.include?("cli-26/")
+    s = todo["source"].to_s
+    agent_part = s.split("cli-26/", 2)[1].to_s.split("@").first.to_s
+    icon = agent_part.include?("Ermete") ? "🚛" : "🤖"
+    return " [#{icon} #{agent_part}]" unless agent_part.empty?
+  end
+  ""
+end
+
+def cmd_list(opts, cfg)
+  res = make_request(cfg, "todos.json", timeout: opts[:timeout])
+  if res["error"]
+    warn red("Error (#{res['status']}): #{res['error']}")
+    exit 1
+  end
+
+  todos = res["data"] || []
+  if opts[:json]
+    puts JSON.pretty_generate(todos)
+    return
+  end
+
+  puts "\n#{bold("🚛 Septober [#{cfg['env']}]")} (#{cyan(cfg['site'])}) - User: #{yellow(cfg['user'])} #{gray("[Ruby #{RUBY_VERSION}]")}"
+  puts "=" * 75
+
+  shown = 0
+  todos.each do |raw_t|
+    t = raw_t.is_a?(Hash) && raw_t["todo"].is_a?(Hash) ? raw_t["todo"] : raw_t
+    next unless t.is_a?(Hash)
+
+    active = t.key?("active") ? t["active"] : true
+    next if !opts[:all] && !active
+
+    tags = Array(t["tag_list"])
+    if opts[:tag]
+      wanted = opts[:tag].to_s.sub(/\A[@#]/, "").downcase
+      next unless tags.map { |x| x.to_s.downcase }.include?(wanted)
+    end
+
+    badge = format_agent_badge(t)
+    if opts[:filter_agent]
+      fa = opts[:filter_agent].to_s.downcase
+      uname = t.dig("user", "username").to_s.downcase
+      src = t["source"].to_s.downcase
+      next if !uname.include?(fa) && !src.include?(fa) && !badge.downcase.include?(fa)
+    end
+
+    tid   = t["id"]
+    name  = t["name"] || "Untitled"
+    prio  = format_priority(t["priority"] || 3)
+    due   = t["due"] || "No date"
+    where = t["where"]
+    url   = t["url"]
+    desc  = t["description"].to_s.strip
+    state_icon = active ? "⏳" : "✅"
+
+    puts "#{state_icon} [#{bold("##{tid}")}] #{prio} | Due: #{due}#{badge}"
+    puts "   #{bold('Title:')} #{name}"
+    puts "   #{bold('Where:')} #{where}" if where && !where.to_s.empty?
+    puts "   #{bold('URL:')}   #{cyan(url)}" if url && !url.to_s.empty?
+    puts "   #{bold('Tags:')}  #{tags.map { |tg| "##{tg}" }.join(' ')}" unless tags.empty?
+    if !desc.empty?
+      first_line = desc.lines.first.to_s.strip
+      snippet = first_line.length > 90 ? "#{first_line[0..87]}..." : first_line
+      puts "   #{bold('Ctx:')}   #{gray(snippet)}"
+    end
+    puts "-" * 75
+
+    shown += 1
+    break if opts[:limit] && shown >= opts[:limit]
+  end
+
+  puts "No matching todos found." if shown == 0
+end
+
+def cmd_show(id_arg, opts, cfg)
+  todo_id = extract_todo_id(id_arg)
+  res = make_request(cfg, "todos/#{todo_id}.json", timeout: opts[:timeout])
+  if res["error"]
+    warn red("Error fetching todo ##{todo_id} (#{res['status']}): #{res['error']}")
+    exit 1
+  end
+
+  raw_t = res["data"]
+  t = raw_t.is_a?(Hash) && raw_t["todo"].is_a?(Hash) ? raw_t["todo"] : raw_t
+  if t.nil? || !t.is_a?(Hash) || t["id"].nil?
+    warn red("❌ Error: Todo ##{todo_id} not found (or not visible to user '#{cfg['user']}' on #{cfg['site']}).")
+    exit 1
+  end
+
+  if opts[:json]
+    puts JSON.pretty_generate(t)
+    return
+  end
+
+  u = t["user"]
+  agent_str = ""
+  if u.is_a?(Hash) && u["is_agent"]
+    icon = u["agent_icon"]
+    uname = u["username"].to_s
+    agent_key = uname.include?(".") ? uname.split(".").last.downcase : uname.downcase
+    icon = AGENT_ICONS.fetch(agent_key, "🤖") if icon.nil? || icon.empty? || icon == "?"
+    agent_str = "\nAgent:    #{icon} #{uname} (host: #{u['agent_host'] || 'unknown'})"
+  end
+
+  web_base = cfg["site"].to_s.sub(%r{/api/?\z}, "")
+  web_link = "#{web_base}/todos/#{t['id']}"
+
+  puts "\n📋 #{bold("Todo ##{t['id']} - #{t['name']}")}\n" + ("=" * 60)
+  puts "Status:   #{t['active'] ? green('Active') : gray('Done')}"
+  puts "Priority: #{format_priority(t['priority'] || 3)}"
+  puts "Project:  #{t.dig('project', 'name') || t['project_id']}" if t["project"] || t["project_id"]
+  puts "Due:      #{t['due'] || 'None'}"
+  puts "Where:    #{t['where'] || 'None'}"
+  puts "URL:      #{t['url'] || 'None'}"
+  puts "Web Link: #{cyan(web_link)}"
+  puts "Tags:     #{Array(t['tag_list']).inspect}#{agent_str}"
+  puts "\n#{bold('Context / Description:')}\n#{t['description'] || 'None'}\n"
+  puts "-" * 60
+  if t["active"]
+    puts "💡 #{bold('Mark done:')}    #{green("septober-cli done #{t['id']}")}"
+  else
+    puts "💡 #{bold('Reopen todo:')}  #{yellow("septober-cli undone #{t['id']}")}"
+  end
+  puts "💡 #{bold('Toggle state:')} #{cyan("septober-cli toggle #{t['id']}")}"
+  puts "💡 #{bold('Delete todo:')}  #{red("septober-cli delete #{t['id']}")}\n\n"
+end
+
+def cmd_add(positional_args, opts, cfg)
+  title = opts[:title] || positional_args.join(" ").strip
+  if title.nil? || title.empty?
+    warn red("Error: Todo title is required (pass --title '...' or positional text).")
+    exit 1
+  end
+
+  hostname = local_hostname
+  agent_id = cfg["agent"]
+  co_author = harness_co_author(agent_id)
+  harness_nick = harness_nickname(agent_id)
+
+  where_val = opts[:where] || hostname
+  source_val = harness_nick ? "cli-26/#{harness_nick}@#{hostname}" : "cli-26@#{hostname}"
+
+  desc = opts[:description]
+  if co_author && (desc.nil? || !desc.include?("Co-authored-by"))
+    co_note = "Collected via CLI on #{hostname} (Co-authored-by: #{co_author})"
+    desc = desc && !desc.empty? ? "#{desc}\n\n#{co_note}" : co_note
+  end
+
+  proj = opts[:project] || "septober"
+  todo_payload = {
+    "name"     => title,
+    "priority" => opts[:priority] || 3,
+    "source"   => source_val,
+    "project"  => proj,
+    "where"    => where_val
+  }
+  todo_payload["description"] = desc if desc && !desc.empty?
+  todo_payload["url"]         = opts[:url] if opts[:url]
+  todo_payload["due"]         = opts[:due] if opts[:due]
+
+  if opts[:tags] && !opts[:tags].empty?
+    tag_items = opts[:tags].split(",").map { |x| x.strip.sub(/\A[#@]+/, "") }.reject(&:empty?)
+    unless tag_items.empty?
+      todo_payload["tags"] = tag_items
+      todo_payload["name"] = "#{title} #{tag_items.map { |t| "@#{t}" }.join(' ')}"
+    end
+  end
+
+  res = make_request(cfg, "todos.json", method: "POST", body: todo_payload, timeout: opts[:timeout])
+  if res["error"]
+    warn red("Error creating todo (#{res['status']}): #{res['error']}")
+    exit 1
+  end
+
+  raw_data = res["data"]
+  new_id = if raw_data.is_a?(Hash)
+             (raw_data["todo"] || raw_data)["id"] || "?"
+           elsif raw_data.to_s =~ /\A\d+\z/
+             raw_data.to_s
+           else
+             "new"
+           end
+
+  web_base = cfg["site"].to_s.sub(%r{/api/?\z}, "")
+  puts "✅ #{green("Todo ##{new_id} created successfully!")}"
+  puts "   Title:    #{title}"
+  puts "   Priority: #{format_priority(opts[:priority] || 3)}"
+  puts "   Where:    📍 #{where_val}" if where_val
+  puts "   URL:      #{opts[:url]}" if opts[:url]
+  puts "   Web Link: #{cyan("#{web_base}/todos/#{new_id}")}" if new_id.to_s =~ /\A\d+\z/
+  puts "   Context:  #{desc}" if desc
+end
+
+def cmd_action(action_name, id_arg, opts, cfg)
+  todo_id = extract_todo_id(id_arg)
+  endpoint = "todos/#{todo_id}/#{action_name}.json"
+  res = make_request(cfg, endpoint, method: "PUT", timeout: opts[:timeout])
+  if res["error"]
+    warn red("Error running '#{action_name}' on todo ##{todo_id} (#{res['status']}): #{res['error']}")
+    exit 1
+  end
+  puts "✅ #{green("Todo ##{todo_id}: #{action_name.upcase} completed!")}"
+end
+
+def main(argv = ARGV)
+  opts = {
+    conf:         nil,
+    env:          nil,
+    agent:        nil,
+    local:        false,
+    timeout:      25,
+    all:          false,
+    limit:        20,
+    tag:          nil,
+    json:         false,
+    title:        nil,
+    description:  nil,
+    url:          nil,
+    where:        nil,
+    priority:     3,
+    project:      "septober",
+    due:          nil,
+    tags:         nil,
+    user:         nil,
+    password:     nil,
+    verbose:      false,
+    debug:        false
+  }
+
+  parser = OptionParser.new do |o|
+    o.banner = <<~BANNER
+      🚛 Septober CLI v#{PROG_VER} (Ruby #{RUBY_VERSION})
+      Usage:
+        #{File.basename($PROGRAM_NAME)} [options] list [--all] [--limit N] [--tag TAG] [--json]
+        #{File.basename($PROGRAM_NAME)} [options] show <ID_OR_URL> [--json]
+        #{File.basename($PROGRAM_NAME)} [options] add <TITLE> [--description "..."] [--priority 1-5] [--where "..."] [--url "..."] [--tags t1,t2]
+        #{File.basename($PROGRAM_NAME)} [options] done <ID_OR_URL>
+        #{File.basename($PROGRAM_NAME)} [options] toggle <ID_OR_URL>
+        #{File.basename($PROGRAM_NAME)} [options] delete <ID_OR_URL>
+
+      Options:
+    BANNER
+
+    o.on("-c", "--conf FILE", "--config FILE", "Path to .septober.yml") { |v| opts[:conf] = v }
+    o.on("-e", "-s", "--env ENV", "--subconf ENV", "Target environment (e.g. septober, local)") { |v| opts[:env] = v }
+    o.on("--agent AGENT", "Agent profile (e.g. ermete, lobby, pux)") { |v| opts[:agent] = v; opts[:filter_agent] = v }
+    o.on("-l", "--local", "Force local environment") { opts[:local] = true }
+    o.on("-u", "--user USER", "Override Septober username/email") { |v| opts[:user] = v }
+    o.on("-p", "--password PASS", "Override Septober password") { |v| opts[:password] = v }
+    o.on("-t", "--timeout SEC", Integer, "HTTP timeout in seconds (default: 25)") { |v| opts[:timeout] = v }
+    o.on("-n", "--no-colors", "Disable ANSI colors") { $colors_active = false }
+    o.on("-a", "--all", "Include completed todos in list") { opts[:all] = true }
+    o.on("--limit N", Integer, "Max todos to show in list (default: 20)") { |v| opts[:limit] = v }
+    o.on("--tag TAG", "Filter list by tag") { |v| opts[:tag] = v }
+    o.on("--json", "Output raw JSON") { opts[:json] = true }
+    o.on("--title TITLE", "Todo title for add") { |v| opts[:title] = v }
+    o.on("--description DESC", "--desc DESC", "Rich narrative context for add") { |v| opts[:description] = v }
+    o.on("--url URL", "Primary reference URL for add") { |v| opts[:url] = v }
+    o.on("--where WHERE", "Location/event anchor for add") { |v| opts[:where] = v }
+    o.on("--priority PRIO", Integer, "Priority 1 (low) to 5 (urgent)") { |v| opts[:priority] = v }
+    o.on("--project PROJ", "Project name (default: septober)") { |v| opts[:project] = v }
+    o.on("--due DUE", "Due date (YYYY-MM-DD or today/tomorrow)") { |v| opts[:due] = v }
+    o.on("--tags TAGS", "Comma-separated tags (e.g. lavoro,google,tech)") { |v| opts[:tags] = v }
+    o.on("-d", "--debug", "Enable debug output") { opts[:debug] = true }
+    o.on("-v", "--verbose", "Enable verbose output") { opts[:verbose] = true }
+    o.on("-V", "--version", "Show version") do
+      puts "septober-cli v#{PROG_VER} (ruby #{RUBY_VERSION})"
+      exit 0
+    end
+    o.on("-h", "--help", "Show this help") do
+      puts o
+      exit 0
+    end
+  end
+
+  remaining = parser.parse(argv.dup)
+  subcommand = remaining.shift
+
+  if subcommand.nil?
+    puts parser
+    exit 0
+  end
+
+  # Support passing a bare ID or Septober URL directly (e.g. `septober-cli 235` or `septober-cli https://.../todos/235`)
+  if subcommand =~ /\A#?\d+\z/ || subcommand =~ %r{/todos/\d+}
+    remaining.unshift(subcommand)
+    subcommand = "show"
+  end
+
+  target_env = opts[:local] ? "local" : opts[:env]
+  # For `list`, `--agent` filters by agent unless SEPTOBER_AGENT is explicitly set; for write/show commands, `--agent` selects credentials
+  cred_agent = (subcommand == "list") ? ENV["SEPTOBER_AGENT"] : opts[:agent]
+  cfg = load_config(
+    conf_path: opts[:conf],
+    target_env: target_env,
+    target_agent: cred_agent,
+    cli_user: opts[:user],
+    cli_password: opts[:password]
+  )
+
+  case subcommand.downcase
+  when "list", "ls"
+    cmd_list(opts, cfg)
+  when "show", "get", "view"
+    id_arg = remaining.first
+    if id_arg.nil?
+      warn red("Error: 'show' requires a Todo ID or URL.")
+      exit 1
+    end
+    cmd_show(id_arg, opts, cfg)
+  when "add", "create", "new"
+    cmd_add(remaining, opts, cfg)
+  when "done", "complete"
+    id_arg = remaining.first || abort(red("Error: 'done' requires a Todo ID."))
+    cmd_action("done", id_arg, opts, cfg)
+  when "undone"
+    id_arg = remaining.first || abort(red("Error: 'undone' requires a Todo ID."))
+    cmd_action("undone", id_arg, opts, cfg)
+  when "toggle"
+    id_arg = remaining.first || abort(red("Error: 'toggle' requires a Todo ID."))
+    cmd_action("toggle", id_arg, opts, cfg)
+  when "delete", "del", "rm"
+    id_arg = remaining.first || abort(red("Error: 'delete' requires a Todo ID."))
+    cmd_action("delete", id_arg, opts, cfg)
+  when "version"
+    puts "septober-cli v#{PROG_VER} (ruby #{RUBY_VERSION})"
+  else
+    warn red("Unknown subcommand: '#{subcommand}'")
+    puts parser
+    exit 1
+  end
+end
+
+main(ARGV) unless ENV["SEPTOBER_CLI_NO_AUTORUN"] == "1"
