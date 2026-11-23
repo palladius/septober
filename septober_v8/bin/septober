@@ -65,8 +65,30 @@ case command
 when 'list'
   list_todos
 when 'add'
-  puts "Adding todo: #{ARGV[1]}"
-  # Implement add logic
+  name = ARGV[1..-1].join(' ')
+  if name.empty?
+    puts "Usage: septober add <todo name>"
+    exit 1
+  end
+  
+  uri = URI("#{BASE_URL}/todos.json")
+  puts "Adding todo: '#{name}' to #{uri}..."
+  
+  http = Net::HTTP.new(uri.host, uri.port)
+  request = Net::HTTP::Post.new(uri.path, {'Content-Type' => 'application/json'})
+  request.body = { todo: { name: name } }.to_json
+  
+  begin
+    response = http.request(request)
+    if response.is_a?(Net::HTTPSuccess) || response.is_a?(Net::HTTPRedirection)
+      puts "Todo added successfully!"
+    else
+      puts "Error adding todo: #{response.code} - #{response.message}"
+      puts "Response body: #{response.body}"
+    end
+  rescue StandardError => e
+    puts "Failed to connect to #{BASE_URL}: #{e.message}"
+  end
 else
   puts "Unknown command: #{command}"
 end

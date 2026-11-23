@@ -1,164 +1,246 @@
 <!DOCTYPE html>
-<html>
+<html lang="it" data-theme="dark">
   <head>
-    <title>Septober V8</title>
+    <title>Septober v2.6 — A2UI Living Todo Synoptic</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
+    <script src="https://cdn.tailwindcss.com"></script>
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
-    
+
     <style>
-      :root {
-        --primary-color: #3b82f6;
-        --secondary-color: #10b981;
-        --bg-color: #f3f4f6;
-        --text-color: #1f2937;
-        --card-bg: #ffffff;
+      :root, [data-theme="dark"] {
+        --bg-page: #0F1115;
+        --bg-surface: #14171E;
+        --bg-odd: #16181D;
+        --bg-even: #1B1E26;
+        --bg-hover: #222631;
+        --bg-track: #111319;
+        --bg-segment-active: #252B38;
+        --border-subtle: #232733;
+        --border-strong: #323846;
+        --text-primary: #F1F5F9;
+        --text-secondary: #94A3B8;
+        --text-muted: #64748B;
+        --accent: #F59E0B;
       }
-      
+      [data-theme="light"] {
+        --bg-page: #F8FAFC;
+        --bg-surface: #FFFFFF;
+        --bg-odd: #FAFAFC;
+        --bg-even: #F2F4F8;
+        --bg-hover: #E2E8F0;
+        --bg-track: #E2E8F0;
+        --bg-segment-active: #FFFFFF;
+        --border-subtle: #E2E8F0;
+        --border-strong: #CBD5E1;
+        --text-primary: #0F172A;
+        --text-secondary: #475569;
+        --text-muted: #64748B;
+        --accent: #D97706;
+      }
       body {
-        font-family: system-ui, -apple-system, sans-serif;
-        background-color: var(--bg-color);
-        color: var(--text-color);
+        background-color: var(--bg-page);
+        color: var(--text-primary);
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+        font-variant-numeric: tabular-nums;
+        font-feature-settings: "tnum" 1, "zero" 1;
         margin: 0;
-        padding: 0;
       }
-      
-      header {
-        background-color: var(--card-bg);
-        padding: 1rem 2rem;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
+      table, .tabular {
+        font-variant-numeric: tabular-nums;
+        font-feature-settings: "tnum" 1, "zero" 1;
       }
-      
-      header h1 {
-        margin: 0;
-        font-size: 1.5rem;
-        color: var(--primary-color);
-      }
-      
-      nav a {
-        margin-left: 1rem;
-        text-decoration: none;
-        color: var(--text-color);
-        font-weight: 500;
-      }
-      
-      nav a:hover {
-        color: var(--primary-color);
-      }
-      
-      main {
-        max-width: 1200px;
-        margin: 2rem auto;
-        padding: 0 1rem;
-      }
-      
-      .flash {
-        padding: 1rem;
-        margin-bottom: 1rem;
-        border-radius: 0.5rem;
-      }
-      
-      .flash.notice {
-        background-color: #d1fae5;
-        color: #065f46;
-      }
-      
-      .flash.alert {
-        background-color: #fee2e2;
-        color: #991b1b;
-      }
-      
-      .card {
-        background-color: var(--card-bg);
-        padding: 1.5rem;
-        border-radius: 0.5rem;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        margin-bottom: 1rem;
-      }
-      
-      .btn {
-        display: inline-block;
-        padding: 0.5rem 1rem;
-        border-radius: 0.375rem;
-        text-decoration: none;
-        font-weight: 500;
-        cursor: pointer;
-        border: none;
-      }
-      
-      .btn-primary {
-        background-color: var(--primary-color);
-        color: white;
-      }
-      
-      .btn-secondary {
-        background-color: var(--secondary-color);
-        color: white;
-      }
-      
-      .form-group {
-        margin-bottom: 1rem;
-      }
-      
-      label {
-        display: block;
-        margin-bottom: 0.5rem;
-        font-weight: 500;
-      }
-      
-      input[type="text"],
-      input[type="email"],
-      input[type="password"],
-      textarea {
+      .synoptic-table {
         width: 100%;
-        padding: 0.5rem;
-        border: 1px solid #d1d5db;
-        border-radius: 0.375rem;
+        border-collapse: collapse;
+        font-size: 13px;
       }
-      
-      .todo-item {
-        display: flex;
-        justify-content: space-between;
+      .synoptic-table thead th {
+        text-align: left;
+        font-weight: 600;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--text-secondary);
+        padding: 6px 10px;
+        border-bottom: 1px solid var(--border-strong);
+        background: var(--bg-surface);
+      }
+      .synoptic-table tbody tr.row-odd { background-color: var(--bg-odd); }
+      .synoptic-table tbody tr.row-even { background-color: var(--bg-even); }
+      .synoptic-table tbody tr:hover { background-color: var(--bg-hover); }
+      .synoptic-table td {
+        height: 31px;
+        padding: 3px 10px;
+        border-bottom: 1px solid var(--border-subtle);
+        vertical-align: middle;
+        white-space: nowrap;
+      }
+      .macro-spine {
+        background-color: var(--bg-surface) !important;
+        border-right: 2px solid var(--border-strong);
+        font-weight: 600;
+        font-size: 12px;
+        color: var(--text-secondary);
+        cursor: pointer;
+        user-select: none;
+        padding: 4px 10px !important;
+      }
+      .macro-spine:hover { color: var(--text-primary); }
+
+      /* 4-Tier Salience Ladder Soft-Tinted Numeric Micro-Chips */
+      .num-chip {
+        display: inline-block;
+        min-width: 48px;
+        text-align: center;
+        padding: 1px 7px;
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 11px;
+        font-variant-numeric: tabular-nums;
+      }
+      .num-chip--p5 { background: #e11d48; border: 1px solid #f43f5e; color: #ffffff; font-weight: 700; }
+      .num-chip--p4 { background: rgba(245, 158, 11, 0.14); border: 1px solid rgba(245, 158, 11, 0.40); color: #fbbf24; }
+      .num-chip--p3 { background: rgba(234, 179,  8, 0.08); border: 1px solid rgba(234, 179,  8, 0.28); color: #eab308; }
+      .num-chip--p2 { background: transparent; border: 1px solid transparent; color: #34d399; }
+      .num-chip--p1 { background: transparent; border: 1px solid transparent; color: #64748B; }
+
+      /* Engineering Date Sub-Grid: DoW + YYYY-MM-DD + Delta */
+      .date-grid {
+        display: inline-grid;
+        grid-template-columns: 3.4ch 10.5ch 4.5ch;
+        align-items: baseline;
+        gap: 4px;
+        font-size: 12px;
+      }
+      .date-dow { color: var(--text-secondary); font-weight: 400; }
+      .date-dow.weekend { color: #38BDF8; }
+      .date-iso { font-weight: 600; color: var(--text-primary); }
+      .date-slot { text-align: right; color: var(--text-muted); font-size: 11px; }
+
+      .seg-group {
+        display: inline-flex;
+        background: var(--bg-track);
+        padding: 2px;
+        border-radius: 8px;
+        border: 1px solid var(--border-subtle);
+      }
+      .seg-btn {
+        padding: 3px 10px;
+        font-size: 12px;
+        font-weight: 500;
+        border-radius: 6px;
+        color: var(--text-secondary);
+        cursor: pointer;
+        display: inline-flex;
         align-items: center;
-        padding: 0.5rem 0;
-        border-bottom: 1px solid #e5e7eb;
+        gap: 5px;
+        text-decoration: none;
+        transition: all 0.12s ease;
       }
-      
-      .todo-item.done {
-        opacity: 0.6;
-        text-decoration: line-through;
+      .seg-btn[aria-checked="true"], .seg-btn[aria-pressed="true"] {
+        background: var(--bg-segment-active);
+        color: var(--text-primary);
+        box-shadow: 0 1px 2px rgba(0,0,0,0.25);
       }
     </style>
   </head>
 
-  <body>
-    <header>
-      <h1><%= link_to "Septober", root_path, style: "text-decoration: none; color: inherit;" %></h1>
-      <nav>
+  <body class="min-h-screen flex flex-col justify-between">
+    <!-- 10. Carlessian Header: Single Row, Colorful Brand, Live Search (/), Theme & Lang Toggles -->
+    <header style="background: var(--bg-surface); border-bottom: 1px solid var(--border-subtle);" class="px-4 py-2.5 flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-4">
+        <a href="<%= root_path %>" class="flex items-center gap-2 text-decoration-none">
+          <svg class="w-5 h-5 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+            <path d="m9 16 2 2 4-4"></path>
+          </svg>
+          <span class="font-bold text-base tracking-tight bg-gradient-to-r from-amber-400 via-orange-400 to-rose-400 bg-clip-text text-transparent">Septober</span>
+          <span class="text-[11px] font-mono px-1.5 py-0.5 rounded border" style="border-color: var(--border-strong); color: var(--text-secondary);">Rails 8 • A2UI</span>
+        </a>
+
+        <nav class="seg-group" aria-label="Main Navigation">
+          <a href="<%= todos_path %>" class="seg-btn" aria-pressed="<%= controller_name == 'todos' %>">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+            <span data-i18n="nav_todos">Todos</span>
+          </a>
+          <a href="<%= projects_path %>" class="seg-btn" aria-pressed="<%= controller_name == 'projects' %>">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+            <span data-i18n="nav_projects">Progetti</span>
+          </a>
+        </nav>
+      </div>
+
+      <!-- Instant Live Search (/) -->
+      <div class="relative flex-1 max-w-xs">
+        <svg class="w-3.5 h-3.5 absolute left-2.5 top-2.5" style="color: var(--text-muted);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+          <circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input id="live-search" type="search" placeholder="Filtra todo (premi / )..."
+          style="background: var(--bg-track); border: 1px solid var(--border-subtle); color: var(--text-primary);"
+          class="w-full pl-8 pr-3 py-1 rounded-lg text-xs outline-none focus:border-amber-500" />
+      </div>
+
+      <!-- Right Controls: Human User Avatar (Canonical Carlesso Gold Ring #FACC15) + IT/EN + Theme -->
+      <div class="flex items-center gap-2.5">
         <% if logged_in? %>
-          <%= link_to "Todos", todos_path %>
-          <%= link_to "Projects", projects_path %>
-          <%= link_to "Profile", edit_user_path(current_user) %>
-          <%= link_to "Logout", logout_path %>
+          <a href="<%= edit_user_path(current_user) %>" class="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full border text-decoration-none" style="border-color: var(--border-subtle); background: var(--bg-track);" title="Human User: <%= current_user.username %>">
+            <span class="w-5 h-5 rounded-full overflow-hidden inline-flex shrink-0" style="box-shadow: 0 0 0 2px #FACC15;">
+              <svg viewBox="0 0 24 24" class="w-full h-full"><circle cx="12" cy="12" r="12" fill="#1E293B"/><circle cx="12" cy="11" r="6" fill="#FDBA74"/><path d="M6 9c1-3 11-3 12 0" fill="#78350F"/><rect x="7.5" y="9.5" width="3.5" height="2.2" rx="0.6" fill="none" stroke="#0F172A" stroke-width="1.1"/><rect x="13" y="9.5" width="3.5" height="2.2" rx="0.6" fill="none" stroke="#0F172A" stroke-width="1.1"/><line x1="11" y1="10.5" x2="13" y2="10.5" stroke="#0F172A" stroke-width="1.1"/><path d="M9.5 14c1.2 1.2 3.8 1.2 5 0" fill="none" stroke="#7C2D12" stroke-width="1.2" stroke-linecap="round"/></svg>
+            </span>
+            <span class="text-xs font-medium" style="color: var(--text-primary);"><%= current_user.username %></span>
+            <span class="text-[10px] px-1 rounded" style="background: rgba(250,204,21,0.12); color: #FACC15;">Human</span>
+          </a>
         <% else %>
-          <%= link_to "Login", login_path %>
-          <%= link_to "Signup", signup_path %>
+          <a href="<%= login_path %>" class="seg-btn">Login</a>
         <% end %>
-      </nav>
+
+        <div class="seg-group" role="radiogroup" aria-label="Language">
+          <button type="button" data-lang="it" class="seg-btn" aria-pressed="true">IT</button>
+          <button type="button" data-lang="en" class="seg-btn" aria-pressed="false">EN</button>
+        </div>
+
+        <button id="theme-toggle" type="button" class="p-1.5 rounded-lg border cursor-pointer" style="border-color: var(--border-subtle); background: var(--bg-track); color: var(--text-secondary);" title="Toggle Dark/Light Mode">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </button>
+      </div>
     </header>
 
-    <main>
+    <main class="flex-1 max-w-6xl w-full mx-auto px-4 py-4 space-y-3">
       <% flash.each do |key, value| %>
-        <div class="flash <%= key %>"><%= value %></div>
+        <div class="px-3.5 py-2 rounded-xl text-xs border" style="background: var(--bg-surface); border-color: var(--border-strong); color: var(--text-primary);">
+          <%= value %>
+        </div>
       <% end %>
 
       <%= yield %>
     </main>
+
+    <!-- 11. Carlessian Footer: v<VERSION>, ENV Badge, GH / GHP / GHI / Add a Bug -->
+    <% app_ver = (File.read(Rails.root.join("../VERSION")).strip rescue "2.6.0") %>
+    <footer style="background: var(--bg-surface); border-top: 1px solid var(--border-subtle); color: var(--text-secondary);" class="px-4 py-2.5 text-xs flex flex-wrap items-center justify-between gap-2">
+      <div class="flex items-center gap-2">
+        <strong style="color: var(--text-primary);">Septober</strong>
+        <a href="https://github.com/palladius/septober/blob/master/CHANGELOG.yml" target="_blank" rel="noopener" class="font-mono hover:underline" data-version="<%= app_ver %>">v<%= app_ver %></a>
+        <span class="font-mono text-[11px] px-2 py-0.5 rounded border" style="background: var(--bg-track); border-color: var(--border-strong); color: #34d399;" data-env="<%= Rails.env %>">ENV: <%= Rails.env %> (localhost)</span>
+      </div>
+      <div class="flex items-center gap-3">
+        <a href="https://github.com/palladius/septober" target="_blank" rel="noopener" class="hover:underline">GH Repo</a>
+        <a href="https://septober-mysql-2-3-12-prova-134140879415.europe-central2.run.app" target="_blank" rel="noopener" class="hover:underline">Cloud Run Prod</a>
+        <a href="https://github.com/palladius/septober/issues" target="_blank" rel="noopener" class="hover:underline">GHI Issues</a>
+        <a id="add-bug-link" href="https://github.com/palladius/septober/issues/new" target="_blank" rel="noopener" class="hover:underline inline-flex items-center gap-1 text-amber-400">
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><rect width="8" height="14" x="8" y="6" rx="4"/><path d="m19 7-3 2"/><path d="m5 7 3 2"/><path d="m19 19-3-2"/><path d="m5 19 3-2"/><path d="M20 13h-4"/><path d="M4 13h4"/></svg>
+          <span>Add a Bug</span>
+        </a>
+      </div>
+    </footer>
   </body>
 </html>

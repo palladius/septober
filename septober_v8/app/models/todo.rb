@@ -130,6 +130,15 @@ class Todo < ApplicationRecord
         if personal
             log << "PersProject: #{personal.inspect}"
             self.project_id = personal.id
+        else
+            # Fallback to the first project for this user if 'personal' not found
+            project = Project.where(user_id: self.user_id).first
+            if project
+                log << "Assigned Project: #{project.name} (ID: #{project.id})"
+                self.project_id = project.id
+            else
+                 log << "WARNING: No project found for user #{self.user_id}!"
+            end
         end
       end
       

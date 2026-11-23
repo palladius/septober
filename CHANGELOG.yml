@@ -1,9 +1,19 @@
 # PS TODO make this DRY, now you've to remember to update as well the following files:
 # - ./VERSION
 # - app/helpers/application_helper
+2.6.0: # minor 2026-11-23
+  - UI Overhaul ("Risciacquo in Arno", GHI #14) with Google A2UI + /webapp-that-riccardo-likes design system in septober_v8.
+  - Added 3-column compact minimalist cards with Auto-Banana (>150B) background covers, 40ch title cap, compact DoW + relative time, and Vedi/Fatto/Snooze action bar.
+  - Replaced polychrome OS emojis with monochrome currentColor Lucide SVGs and Carlesso family cartoon avatars (Riccardo #FACC15, Ale #EF4444, Seby #3B82F6).
+  - Fixed header alpha-channel transparency issue (opacity:0.6) in app/views/layouts/_header.html.erb that blended with localhost background (#fca).
+  - Added `just dev` and `just auto-banana` recipes and synced live production todos into local SQLite database for localhost testing.
 2.5.05: # 2026-11-04
   - Added A2UI Swipe-Right-to-Done with 10-second Undo countdown banner and auto-vanish.
   - Added Swipe-Left-to-Procrastinate (+7 days) gesture for desktop mouse drag and mobile touch.
+2.5.2: # patch 2026-10-23
+  - Added septober-classify-move skill (skills/septober-classify-move/SKILL.md) and CLI dispatcher (bin/septober-classify-move).
+  - Added justfile recipes for daily GTD travaso (classify, close-safe, drain-work, drain-personal, drain-all, install-skill, test).
+  - Preserved Septober Genesis Google Doc link in README.md.
 2.5.04: # 2026-09-06
   - Added Rails 8 + Native PWA modernization strategy in doc/STRATEGY_RAILS8_PWA.md.
   - Added docs -> doc symlink.
@@ -30,8 +40,21 @@
   - Improved contrast and pill badges for overdue tasks and project colors.
 2.4.04: # 2026-01-17
   - Maintenance release: version bump and blueprint update.
+2.5.1: # patch 2025-12-01
+  - Enhanced UI with inline editing and project filters.
+  - Restored rich todo list visuals (icons, colors, due dates).
+  - Added Footer with version number.
+2.5.0: # major 2025-11-28
+  - Migrated to Rails 8.0 (Fresh Start in septober_v8 subdirectory).
+  - Ported User, Project, Todo models.
+  - Replaced attr_accessible with Strong Parameters.
+  - Replaced acts_as_carlesso gem with local concern.
+  - Added acts-as-taggable-on.
+  - Modernized UI with Vanilla CSS and Hotwire.
+  - Fixed Search engine.
+  - Added CLI tool (bin/septober) with API support.
 2.4.03: # major 2022-01-08
-  - faster dockerfile! now build with just gemfile and THEN copy stuff. This means ai revuild ONLY if Gemfile has changed. 
+  - faster dockerfile! now build with just gemfile and THEN copy stuff. This means I rebuild ONLY if Gemfile has changed. 
 2.4.02: # major 2022-01-04
   - nothing here. Updated septober script on `ric` gem. Yuppie! I should move the script here - maybe. 
 2.4.01: # major 2022-01-04
@@ -59,7 +82,7 @@
 2.2.15: # 2020-12-10
   - Project images support now HTTPS which became kind of a thing in the latest 8 years :)
 2.2.14: # 2020-12-10
-  - Fixed footer and hear. Now newer links and header aligns perfectly in center b:)
+  - Fixed footer and header. Now newer links and header aligns perfectly in center b:)
 2.2.7:
   - Fixes the edit_in_place error. Now you can edit a TODO with a single click.
 2.1.5:
@@ -78,8 +101,8 @@
   - fixed yay! - Bug is here. depends on using jquery instead of prototype: http://asciicasts.com/episodes/227-upgrading-to-rails-3-part-3
 1.6.8:
   - bug solved due date in todo regex magic!
-  - small bug in authenticaiton sovled (if u r logged in and u change the |DB and the user is not there anymore it should log you out... lets hope it doesnt log you out more than needed!)
-  - STULL PRESENT BUG CANT DFELETE A TODO!!! @bug 
+  - small bug in authentication solved (if u r logged in and u change the |DB and the user is not there anymore it should log you out... lets hope it doesnt log you out more than needed!)
+  - STILL PRESENT BUG CANT DELETE A TODO!!! @bug 
 1.6.7:
   - Tags are completely parsed from fast insert, yay!
   - Better testing (better but NOT complete)
@@ -95,14 +118,14 @@
   - tag recognition in magic subject parsing!! (only one so far)
 1.6.2:
   - ran migration on heroku.
-  - added skleep/postpone
+  - added sleep/postpone
   - fixed photo_url
 1.6.1:
   - parsing URL! Https very cool
-  - much betre test (with user password in fixture from 33 to 13 errors!)
+  - much better test (with user password in fixture from 33 to 13 errors!)
 1.6.0:
  - added photo_url to todos as well. Where would i go without a pic every now and then??
- - rempoved bin/septober (now for good put into ric gem! Lets do this experiment!)
+ - removed bin/septober (now for good put into ric gem! Lets do this experiment!)
 1.5.5:
   - fixed search. Now it has ONLY MY TODOS (goes with current user)
   - and supports bad fields like 'where'
@@ -146,7 +169,7 @@
 1.3.0:
   - Added to todos: hide_until,favorite, progress_status
   - better view/edit/list
-  - BUG! in local populated all progress_status of old todos to 0, in production it DIDNT. I had to do on prodyction the following
+  - BUG! in local populated all progress_status of old todos to 0, in production it DIDNT. I had to do on production the following
   - "Todo.all.each{|t| t.progress_status = 0 ; t.save }"
 1.2.0:
   - Migrated with TAGS
@@ -155,7 +178,7 @@
   - Fatal auth bug!!
 1.1.2:
     - Priority toggles!!
-  - 20110127 Rewoking on Projects. New ActsAsCarlesso implementations (need to backport to AAC plugin!)
+  - 20110127 Reworking on Projects. New ActsAsCarlesso implementations (need to backport to AAC plugin!)
 1.1.1:
   - 20110126 Search on TODOs fixed
 1.1.0:
@@ -167,10 +190,10 @@
   - post create hook
   - TODO index interface now rocks!
 1.0.4:
-  - 20110125 SubProjects Todo view bug corrected (now corectly visualizes corretcly)
+  - 20110125 SubProjects Todo view bug corrected (now correctly visualizes correctly)
 1.0.3:
  - More internationalization. A few plau
- - ripristined English as dflt locale. Some nasty err in oneline_create with trnslation
+ - restored English as dflt locale. Some nasty err in oneline_create with trnslation
  - put italian as default locale
 1.0.2:
 - Added this changelog

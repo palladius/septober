@@ -1,0 +1,371 @@
+#!/usr/bin/env python3
+"""
+septober-classify-move — Daily GTD Dispatcher ("Travaso") for Riccardo's Septober.
+
+Fetches active todos for `palladius` (including sub-agents Ermete, Lobby, Pux),
+classifies each item into its permanent sink:
+  1. ALREADY_TRACKED   -> Already has a GitHub/GitLab Issue URL
+  2. TEST_OR_VINTAGE   -> Agent provisioning tests or pre-2025 archaeology
+  3. PAST_EVENT        -> Past trips/conferences (e.g. Modena Oct 2-4, Sardegna)
+  4. WORK_TODO         -> ~/git/life/work/TODO.md
+  5. SALUTE            -> ~/git/ricc-personal-life/personal/salute/TODO.md
+  6. CASA_SABATODO     -> ~/git/ricc-personal-life/home/SABATODO.md (#sabatodo!)
+  7. RESPEC_OR_CODE    -> ~/git/respec/TODO.md or repo GHI
+  8. SOLDI_FINANZE     -> ~/git/ricc-personal-life/personal/finanze/TODO.md
+  9. OBSIDIAN_PERSONAL -> ~/git/ricc-personal-life/personal/TODO.md
+
+And marks drained items as DONE on Septober so Septober stays permanently LEAN!
+"""
+
+import argparse
+import base64
+import datetime
+import json
+import os
+import re
+import sys
+import urllib.error
+import urllib.parse
+import urllib.request
+
+DEFAULT_SITE = "https://septober-mysql-2-3-12-prova-134140879415.europe-central2.run.app/api/"
+DEFAULT_USER = os.environ.get("SEPTOBER_USER", "palladius")
+DEFAULT_PASS = os.environ.get("SEPTOBER_PASSWORD", "septober42")
+
+LIFE_WORK_TODO = os.path.expanduser("~/git/life/work/TODO.md")
+LIFE_GEMINI_MD = os.path.expanduser("~/git/life/GEMINI.md")
+PERSONAL_ROOT = os.path.expanduser("~/git/ricc-personal-life")
+SALUTE_TODO = os.path.join(PERSONAL_ROOT, "personal", "salute", "TODO.md")
+FINANZE_TODO = os.path.join(PERSONAL_ROOT, "personal", "finanze", "TODO.md")
+PERSONAL_TODO = os.path.join(PERSONAL_ROOT, "personal", "TODO.md")
+SABATODO_FILE = os.path.join(PERSONAL_ROOT, "home", "SABATODO.md")
+RESPEC_TODO = os.path.expanduser("~/git/respec/TODO_FROM_SEPTOBER.md")
+
+
+def api_request(site, user, password, endpoint, method="GET", body=None, timeout=25):
+    url = urllib.parse.urljoin(site.rstrip("/") + "/", endpoint.lstrip("/"))
+    req = urllib.request.Request(url, method=method)
+    auth_str = f"{user}:{password}"
+    auth_b64 = base64.b64encode(auth_str.encode("utf-8")).decode("ascii")
+    req.add_header("Authorization", f"Basic {auth_b64}")
+    req.add_header("Accept", "application/json")
+    req.add_header("User-Agent", "septober-classify-move/1.0")
+    if body is not None:
+        req.add_header("Content-Type", "application/json")
+        req.data = json.dumps(body).encode("utf-8")
+    with urllib.request.urlopen(req, timeout=timeout) as resp:
+        raw = resp.read().decode("utf-8", errors="replace")
+        if not raw.strip():
+            return None
+        return json.loads(raw)
+
+
+def classify_todo(t):
+    tid = t.get("id")
+    name = t.get("name") or ""
+    desc = t.get("description") or ""
+    url = t.get("url") or ""
+    where = t.get("where") or ""
+    created_at = t.get("created_at") or ""
+    due = t.get("due") or ""
+    tags = [str(x).lower() for x in (t.get("tag_list") or [])]
+    proj = (t.get("project") or {}).get("name", "personal").lower()
+    text_blob = f"{name} {desc} {url} {where} {' '.join(tags)}".lower()
+
+    # 1. Already tracked in GitHub or GitLab issue
+    if (
+        re.search(r"github\.com/[^/\s]+/[^/\s]+/issues/\d+", text_blob)
+        or re.search(r"gitlab\.com/[^/\s]+/[^/\s]+/-/(issues|work_items)/\d+", text_blob)
+        or re.search(r"github issue #\d+", text_blob)
+    ):
+        return ("ALREADY_TRACKED", "🐙 Già in GitHub/GitLab Issue", "Close on Septober (already tracked)")
+
+    # 2. Agent provisioning tests or vintage (< 2025)
+    if (
+        "test" in tags
+        or "auto-identity verification" in text_blob
+        or "test firma" in text_blob
+        or tid in (144, 145, 146, 147, 155)
+    ):
+        return ("TEST_OR_VINTAGE", "🧪 Test Agenti (Provisioning)", "Close on Septober")
+
+    if created_at and created_at[:4].isdigit() and int(created_at[:4]) < 2025:
+        return ("TEST_OR_VINTAGE", f"🏛️ Archeologia ({created_at[:4]})", "Archive & Close on Septober")
+
+    # 3. Past events / completed items (Modena Oct 2-4, Sardegna, Campobasso MCP slide, #198 Immich)
+    if tid in (168, 169, 171, 172, 173, 198):
+        return ("PAST_EVENT", "📅 Evento Passato / Già Fatto", "Log to archive & Close on Septober")
+
+    # 4. Salute
+    if any(k in text_blob for k in ["salute", "medico", "podologa", "dentista", "ospedale", "dottore"]):
+        return ("SALUTE", "🏥 Gruppo SALUTE", SALUTE_TODO)
+
+    # 5. Soldi / Finanze
+    if proj == "soldi" or any(k in text_blob for k in ["banche", "iban", "tasse", "finanze", "rick-fa-soldi"]):
+        return ("SOLDI_FINANZE", "💰 Gruppo SOLDI & Finanze", FINANZE_TODO)
+
+    # 6. Respec / Code Specs
+    if (
+        "respec" in text_blob
+        or "specs/" in text_blob
+        or any(k in text_blob for k in ["agent on rails", "pi durable", "earendil-works", "spec-kit"])
+        or tid in (161, 170, 177, 189, 191)
+    ):
+        return ("RESPEC_OR_CODE", "📐 Gruppo RESPEC / Code", RESPEC_TODO)
+
+    # 7. Work
+    if proj == "work" or any(
+        k in text_blob
+        for k in [
+            "#lavoro",
+            "sre day",
+            "warsaw",
+            "workshop",
+            "concur",
+            "gcard",
+            "g-card",
+            "patrick winston",
+            "semantic-deps",
+            "drive.google.com/corp",
+            "corp.google.com",
+            "jurek",
+            "antigravity",
+            "karl",
+            "inner e outer loop",
+            "harness²",
+            "adversarial swarm",
+            "mastra",
+            "langfuse",
+            "adk",
+            "alphabet",
+        ]
+    ):
+        return ("WORK_TODO", "💼 Gruppo LAVORO", LIFE_WORK_TODO)
+
+    # 8. Casa & #sabatodo (Weekend chores / Home / Homelab)
+    if any(
+        k in text_blob
+        for k in ["sabatodo", "casa", "bici", "colnago", "pompa", "jellyfin", "homelab", "t27", "palladius.eu/otto"]
+    ):
+        return ("CASA_SABATODO", "🏠🛠️ Gruppo CASA / #sabatodo", SABATODO_FILE)
+
+    # 9. Personal / Obsidian fallback
+    return ("OBSIDIAN_PERSONAL", "💎 Gruppo PERSONAL / Obsidian", PERSONAL_TODO)
+
+
+def format_markdown_entry(t):
+    tid = t.get("id")
+    name = t.get("name", "Untitled")
+    prio_map = {5: "🔴 P0", 4: "🟠 P1", 3: "🟡 P2", 2: "🟢 P3", 1: "⚪️ P4"}
+    prio = prio_map.get(t.get("priority", 3), "🟡 P2")
+    due = t.get("due") or "N/A"
+    where = t.get("where") or "N/A"
+    url = t.get("url") or ""
+    tags = t.get("tag_list") or []
+    tag_str = " ".join(f"#{x}" for x in tags) if tags else ""
+    desc = (t.get("description") or "").strip()
+    # Strip boilerplate CLI footer for cleaner markdown
+    desc_clean = re.sub(r"\n*Collected via CLI on [^\n]+", "", desc).strip()
+
+    lines = [f"- [ ] {prio} **[Septober #{tid}]** **{name}**"]
+    meta = [f"**Due:** `{due}`", f"**Where:** `{where}`"]
+    if tag_str:
+        meta.append(f"**Tags:** `{tag_str}`")
+    if url:
+        meta.append(f"**URL:** {url}")
+    lines.append("  - " + " | ".join(meta))
+    if desc_clean and desc_clean != "Created though quick creation mask":
+        lines.append(f"  - **Contesto:** {desc_clean}")
+    return "\n".join(lines) + "\n"
+
+
+def append_items_to_file(filepath, header_title, header_intro, items):
+    if not items:
+        return []
+    os.makedirs(os.path.dirname(filepath), exist_ok=True)
+    existing = ""
+    if os.path.exists(filepath):
+        with open(filepath, "r", encoding="utf-8") as f:
+            existing = f.read()
+    else:
+        existing = f"# {header_title}\n\n{header_intro}\n\n---\n\n"
+
+    written_ids = []
+    new_blocks = []
+    for t in items:
+        tid = t.get("id")
+        marker = f"[Septober #{tid}]"
+        if marker in existing:
+            written_ids.append(tid)
+            continue
+        new_blocks.append(format_markdown_entry(t))
+        written_ids.append(tid)
+
+    if new_blocks:
+        with open(filepath, "w", encoding="utf-8") as f:
+            f.write(existing.rstrip() + "\n\n" + "\n".join(new_blocks))
+    return written_ids
+
+
+def ensure_work_gemini_rule():
+    if not os.path.exists(LIFE_GEMINI_MD):
+        return False
+    with open(LIFE_GEMINI_MD, "r", encoding="utf-8") as f:
+        content = f.read()
+    if "work/TODO.md" in content:
+        return False
+    target = "## WORK: drc\n\nUnder work/ you'll see a plethora of bugs, codelabs, ..."
+    replacement = (
+        target
+        + "\n* **Work Inbox (`work/TODO.md`)**: If `work/TODO.md` is **not empty**, read the work TODOs inside it right away and try to drain/triage them ASAP! "
+        "Draining ('smaltire') does **not** mean finishing the entire work task immediately — it means ensuring every item has a proper **hosting bug or home** "
+        "(e.g., an open Buganizer/TaskFlow `b/...` bug, a `work/bugs/YYYYMMDD-b<id>-<slug>/` folder, a GitHub Issue on the target repo, or a tracked entry in `TOM.md`) "
+        "so `work/TODO.md` stays lean and empty."
+    )
+    if target in content:
+        with open(LIFE_GEMINI_MD, "w", encoding="utf-8") as f:
+            f.write(content.replace(target, replacement, 1))
+        return True
+    return False
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Septober Classify & Move (Daily GTD Travaso)")
+    parser.add_argument("--site", default=DEFAULT_SITE)
+    parser.add_argument("--user", default=DEFAULT_USER)
+    parser.add_argument("--password", default=DEFAULT_PASS)
+    parser.add_argument("--input-json", help="Optional path to cached todos.json file")
+    parser.add_argument("--dry-run", action="store_true", help="Print classification table without modifying anything")
+    parser.add_argument("--close-safe", action="store_true", help="Close ALREADY_TRACKED, TEST_OR_VINTAGE, PAST_EVENT")
+    parser.add_argument("--drain-work", action="store_true", help="Drain WORK_TODO into ~/git/life/work/TODO.md")
+    parser.add_argument("--drain-personal", action="store_true", help="Drain SALUTE, CASA_SABATODO, SOLDI, PERSONAL")
+    parser.add_argument("--drain-all", action="store_true", help="Drain all categories and close safe/drained items")
+    parser.add_argument("--apply", action="store_true", help="Actually mark drained/safe items as DONE on Septober")
+    args = parser.parse_args()
+
+    if args.input_json and os.path.exists(args.input_json):
+        with open(args.input_json, "r", encoding="utf-8") as f:
+            raw_text = f.read()
+            idx = raw_text.find("[{")
+            if idx != -1:
+                raw_text = raw_text[idx:]
+            raw_list = json.loads(raw_text)
+    else:
+        raw_list = api_request(args.site, args.user, args.password, "todos.json?limit=500") or []
+
+    active_todos = []
+    for item in raw_list:
+        t = item.get("todo", item) if isinstance(item, dict) else item
+        if t.get("active", True):
+            active_todos.append(t)
+
+    buckets = {}
+    for t in active_todos:
+        cat_key, cat_label, dest = classify_todo(t)
+        buckets.setdefault(cat_key, {"label": cat_label, "dest": dest, "items": []})["items"].append(t)
+
+    print(f"\n🚛 SEPTOBER CLASSIFY & MOVE — {len(active_todos)} Active Todos Found\n" + "=" * 78)
+    for cat_key, info in buckets.items():
+        items = info["items"]
+        print(f"\n{info['label']} ({len(items)} items) ➔ {info['dest']}")
+        print("-" * 78)
+        for t in items:
+            print(f"  [#{t.get('id'):3d}] P{t.get('priority', 3)} | {t.get('name')[:62]}")
+
+    ids_to_close = []
+
+    if args.close_safe or args.drain_all:
+        for k in ("ALREADY_TRACKED", "TEST_OR_VINTAGE", "PAST_EVENT"):
+            for t in buckets.get(k, {}).get("items", []):
+                ids_to_close.append(t["id"])
+
+    if args.drain_work or args.drain_all:
+        work_items = buckets.get("WORK_TODO", {}).get("items", [])
+        if work_items:
+            written = append_items_to_file(
+                LIFE_WORK_TODO,
+                "💼 Work TODO Inbox (Travasati da Septober 🚛)",
+                "> **Regola per Agenti (Gemini / Antigravity / Hermes):** Se questo file **non è vuoto**, leggi i TODO lavorativi qui sotto e cerca di **smaltirli ASAP** aprendo/associando un bug ospitante (`b/...`), una cartella `work/bugs/`, o una GitHub Issue!",
+                work_items,
+            )
+            ensure_work_gemini_rule()
+            print(f"\n✅ Wrote {len(written)} WORK items to {LIFE_WORK_TODO}")
+            ids_to_close.extend(written)
+
+    if args.drain_personal or args.drain_all:
+        salute_items = buckets.get("SALUTE", {}).get("items", [])
+        if salute_items:
+            written = append_items_to_file(
+                SALUTE_TODO,
+                "🏥 Salute & Medico TODOs (Travasati da Septober)",
+                "> Appuntamenti medici, controlli periodici e salute personale/familiare.",
+                salute_items,
+            )
+            print(f"✅ Wrote {len(written)} SALUTE items to {SALUTE_TODO}")
+            ids_to_close.extend(written)
+
+        sabatodo_items = buckets.get("CASA_SABATODO", {}).get("items", [])
+        if sabatodo_items:
+            written = append_items_to_file(
+                SABATODO_FILE,
+                "🏠🛠️ #sabatodo — Cose da fare a Casa / Weekend & Homelab",
+                "> La leggendaria lista `#sabatodo` di RiccardinoCM26 🦖 per il weekend a Casa T27, LDE, Argenta e Homelab!",
+                sabatodo_items,
+            )
+            print(f"✅ Wrote {len(written)} CASA/#sabatodo items to {SABATODO_FILE}")
+            # Keep physical #sabatodo items in Septober unless --drain-all is explicitly requested
+            if args.drain_all:
+                ids_to_close.extend(written)
+
+        soldi_items = buckets.get("SOLDI_FINANZE", {}).get("items", [])
+        if soldi_items:
+            written = append_items_to_file(
+                FINANZE_TODO,
+                "💰 Soldi, Banche & Side-Business TODOs (Travasati da Septober)",
+                "> Flussi finanziari CH ↔ IT, IBAN, tasse e progetti di monetizzazione.",
+                soldi_items,
+            )
+            print(f"✅ Wrote {len(written)} SOLDI items to {FINANZE_TODO}")
+            ids_to_close.extend(written)
+
+        respec_items = buckets.get("RESPEC_OR_CODE", {}).get("items", [])
+        if respec_items:
+            written = append_items_to_file(
+                RESPEC_TODO,
+                "📐 Respec & Code Backlog (Travasati da Septober)",
+                "> Idee progettuali e spec in `~/git/respec/specs/{apps,tools,games,agents,meta}/<slug>/`.",
+                respec_items,
+            )
+            print(f"✅ Wrote {len(written)} RESPEC items to {RESPEC_TODO}")
+            ids_to_close.extend(written)
+
+        obs_items = buckets.get("OBSIDIAN_PERSONAL", {}).get("items", [])
+        if obs_items:
+            written = append_items_to_file(
+                PERSONAL_TODO,
+                "💎 Personal & Obsidian TODOs (Travasati da Septober)",
+                "> Task personali, 50° Compleanno, e note da sincronizzare su Obsidian.",
+                obs_items,
+            )
+            print(f"✅ Wrote {len(written)} PERSONAL items to {PERSONAL_TODO}")
+            ids_to_close.extend(written)
+
+    ids_to_close = sorted(set(ids_to_close))
+    if ids_to_close:
+        print(f"\n🎯 Candidate IDs to mark DONE on Septober ({len(ids_to_close)}): {ids_to_close}")
+        if args.apply:
+            closed = 0
+            for tid in ids_to_close:
+                try:
+                    api_request(args.site, args.user, args.password, f"todos/{tid}/done.json", method="PUT")
+                    print(f"  ✅ Marked #{tid} as DONE on Septober")
+                    closed += 1
+                except Exception as e:
+                    print(f"  ⚠️ Failed to mark #{tid} done: {e}")
+            print(f"\n🎉 Completed! Marked {closed}/{len(ids_to_close)} items as DONE.")
+        else:
+            print("💡 Run with --apply to mark these items as DONE on Septober.")
+
+
+if __name__ == "__main__":
+    main()

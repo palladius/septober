@@ -13,9 +13,9 @@ class TodosController < ApplicationController
 
     @todos = Todo.where(filter_conditions)
                  .search(params[:q])
-                 .joins(:project)
+                 .includes(:project)
                  .order(active: :desc, priority: :desc, updated_at: :desc)
-                 .limit(20)
+                 .limit(100)
 
     respond_to do |format|
       format.html
