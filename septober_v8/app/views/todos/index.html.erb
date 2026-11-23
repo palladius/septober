@@ -84,13 +84,22 @@
 
     raw_name = t.name.to_s.strip
     short_name = raw_name.length > 40 ? "#{raw_name[0, 37]}..." : raw_name
-    raw_desc = t.description.to_s.gsub(/\s+/, " ").sub(/Collected via CLI.*/i, "").strip
-    raw_desc = "Created through quick mask" if raw_desc.empty?
+    raw_desc = t.description.to_s.gsub(/\s+/, " ").sub(/Collected via CLI.*/i, "").sub(/Translation missing:\s*en\.quick_created/i, "Creato via Quick Add").strip
+    raw_desc = "Creato via Quick Add" if raw_desc.empty?
     short_desc = raw_desc.length > 68 ? "#{raw_desc[0, 65]}..." : raw_desc
+
+    color_palette = {
+      "green" => "#10B981", "yellow" => "#FACC15", "orange" => "#F97316",
+      "pink" => "#EC4899", "magenta" => "#EC4899", "cyan" => "#06B6D4",
+      "blue" => "#3B82F6", "purple" => "#A855F7", "red" => "#F43F5E", "gray" => "#94A3B8", "grey" => "#94A3B8"
+    }
+    raw_pcolor = t.project&.color.to_s.strip.presence || (card_type == "work" ? "green" : (card_type == "family" ? "pink" : "yellow"))
+    css_pcolor = color_palette[raw_pcolor.downcase] || (raw_pcolor.start_with?("#") ? raw_pcolor : "#FACC15")
 
     {
       id: t.id,
-      project: t.project&.name&.capitalize || "Personal",
+      project: t.project&.name || "personal",
+      projectColor: css_pcolor,
       cardType: card_type, # "work" (green) | "personal" (yellow) | "family" (pink)
       topicIcon: topic_icon,
       personKey: person_key,
@@ -315,7 +324,7 @@
   <span class="pl-1.5 text-slate-400 inline-flex items-center">
     <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
   </span>
-  <%= f.text_field :name, required: true, placeholder: "Nuovo todo (max 40ch visibili, se >150B genera Auto-Banana in sfondo)...",
+  <%= f.text_field :name, id: "quick-todo-name", autofocus: true, required: true, placeholder: "Nuovo todo (max 40ch visibili, se >150B genera Auto-Banana in sfondo)...",
         style: "background: var(--bg-track); border: 1px solid var(--border-subtle); color: var(--text-primary);",
         class: "flex-1 min-w-[200px] rounded-lg px-2.5 py-1 text-xs outline-none focus:border-amber-500" %>
   <%= f.text_field :description, placeholder: "Dettagli (>150B = Auto-Banana)...",
@@ -444,6 +453,24 @@
     </div>
   </div>
 </div>
+
+<!-- DEV/TEST ONLY EMPTY STATE: Shown ONLY when there are ZERO todos and NEVER in production! -->
+<% if (Rails.env.development? || Rails.env.test?) && @todos.empty? %>
+  <div class="card text-center py-8 space-y-3" style="border: 1.5px dashed var(--accent); background: linear-gradient(145deg, rgba(245, 158, 11, 0.08) 0%, var(--bg-surface) 100%);">
+    <div class="inline-flex items-center justify-center w-10 h-10 rounded-xl border mx-auto" style="border-color: var(--accent); color: var(--accent); background: rgba(245, 158, 11, 0.12);">
+      <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M10 2v7.527a2 2 0 0 1-.211.896L4.72 20.55a1 1 0 0 0 .9 1.45h12.76a1 1 0 0 0 .9-1.45l-5.069-10.127A2 2 0 0 1 14 9.527V2"/><path d="M8.5 2h7"/><path d="M7 16h10"/></svg>
+    </div>
+    <div class="space-y-1">
+      <h3 class="text-sm font-bold m-0" style="color: var(--text-primary);">Zero Todos nel Database (<%= Rails.env %>)</h3>
+      <p class="text-xs m-0" style="color: var(--text-secondary);">Popola subito il DB SQLite locale con i 14 fake/test todos completi di progetti colorati e sfondi Auto-Banana.</p>
+    </div>
+    <div>
+      <%= button_to "Aggiungi fake/test data", seed_fake_data_todos_path, method: :post,
+            class: "btn btn-primary cursor-pointer",
+            form: { style: "display: inline-block;" } %>
+    </div>
+  </div>
+<% end %>
 
 <!-- VIEW 1: 3-Column Minimalist Cards with Background Image & Lucide Icons -->
 <div id="cards-grid-container" class="cards-3col-grid"></div>
@@ -633,6 +660,10 @@
                 <span class="topic-icon inline-flex items-center" title="Topic: ${t.topicIcon}">${lucide(t.topicIcon, "w-3.5 h-3.5")}</span>
                 <a href="${t.showUrl}" onclick="event.stopPropagation();" class="font-mono font-bold text-amber-300 hover:underline">#${t.id}</a>
                 <span class="num-chip ${prioClass}" style="min-width: 28px; padding: 0 5px; font-size: 10px;">P${t.priority}</span>
+                <span class="inline-flex items-center gap-1 px-1.5 py-0.2 rounded text-[10px] font-mono border" style="background: ${t.projectColor}22; border-color: ${t.projectColor}77; color: ${t.projectColor};" title="Project color from model">
+                  <span class="w-2 h-2 rounded-xs inline-block" style="background: ${t.projectColor};"></span>
+                  <span>${t.project}</span>
+                </span>
               </div>
               <div class="flex items-center gap-2">
                 <span class="text-[11px] font-mono">
@@ -821,4 +852,6 @@
   }
 
   render();
+  const quickInput = document.getElementById("quick-todo-name");
+  if (quickInput) quickInput.focus();
 </script>

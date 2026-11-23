@@ -17,6 +17,10 @@ Rails.application.routes.draw do
   end
 
   resources :todos do
+    collection do
+      post :seed_fake_data
+      post :clear_all_dev
+    end
     member do
       get :sleep
       get :done

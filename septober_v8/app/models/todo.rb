@@ -110,7 +110,7 @@ class Todo < ApplicationRecord
       self.priority = 2 if str.match /^\-|\.\.$/
       self.priority = 4 if str.match /^\+|!$/
       self.priority = 5 if str.match /^\+\+|!!$/
-      self.description = I18n.t(:quick_created) unless attribute_present?('description')
+      self.description = I18n.t(:quick_created, default: "Creato via Quick Add") unless attribute_present?('description')
 
       if str.match(/ (http(s)?:\/\/\S+)($|\s)/)
         self.url = $1

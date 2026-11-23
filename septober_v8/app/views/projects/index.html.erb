@@ -1,16 +1,153 @@
-<div class="card">
-  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-    <h2>Projects</h2>
-    <%= link_to "New Project", new_project_path, class: "btn btn-primary" %>
+<%
+  color_palette = {
+    "green"   => "#10B981",
+    "yellow"  => "#FACC15",
+    "orange"  => "#F97316",
+    "pink"    => "#EC4899",
+    "magenta" => "#EC4899",
+    "cyan"    => "#06B6D4",
+    "blue"    => "#3B82F6",
+    "purple"  => "#A855F7",
+    "red"     => "#F43F5E",
+    "gray"    => "#94A3B8",
+    "grey"    => "#94A3B8"
+  }
+%>
+
+<div class="space-y-4">
+  <!-- Header Bar -->
+  <div class="flex flex-wrap items-center justify-between gap-3">
+    <div class="flex items-center gap-2.5">
+      <h2 class="text-base font-bold tracking-tight m-0">Projects</h2>
+      <span class="num-chip num-chip--p2"><%= @projects.count %></span>
+    </div>
+    <a href="<%= new_project_path %>" class="btn btn-primary">
+      <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      <span>New Project</span>
+    </a>
   </div>
 
-  <ul>
+  <!-- 3-Column Colored Project Cards (Driven by project.color from Model!) -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
     <% @projects.each do |project| %>
-      <li>
-        <%= link_to project.name, project %>
-        (<%= project.todos.count %> todos)
-        <%= link_to "Edit", edit_project_path(project), style: "font-size: 0.8rem;" %>
-      </li>
+      <%
+        raw_color = project.color.to_s.strip.presence || "amber"
+        css_color = color_palette[raw_color.downcase] || (raw_color.start_with?("#") ? raw_color : "#F59E0B")
+        active_count = project.todos.where(active: true).count
+        done_count   = project.todos.where(active: false).count
+        total_count  = active_count + done_count
+        clean_desc   = project.description.to_s.sub(/--\s*AutoProvisioned.*/m, "").strip.presence || "Progetto Septober"
+      %>
+      <div class="rounded-xl p-3.5 flex flex-col justify-between gap-3 transition hover:-translate-y-0.5"
+           style="background: linear-gradient(145deg, <%= css_color %>22 0%, var(--bg-surface) 65%); border: 1.5px solid <%= css_color %>88; box-shadow: inset 4px 0 0 <%= css_color %>;">
+        <div class="space-y-2">
+          <!-- Top Row: Colored Swatch + Model Color Badge + Todo Counters -->
+          <div class="flex items-center justify-between gap-2">
+            <div class="flex items-center gap-2">
+              <!-- Colored Square Swatch from Model (project.color) -->
+              <span class="w-4 h-4 rounded-md inline-block shrink-0 border border-white/30 shadow-sm"
+                    style="background-color: <%= css_color %>;"
+                    title="Model project.color = '<%= raw_color %>'"></span>
+              <a href="<%= project_path(project) %>" class="font-bold text-sm hover:underline" style="color: <%= css_color %>;">
+                <%= project.name %>
+              </a>
+              <span class="text-[10px] font-mono px-1.5 py-0.5 rounded border"
+                    style="background: <%= css_color %>20; border-color: <%= css_color %>66; color: <%= css_color %>;">
+                <%= raw_color %>
+              </span>
+            </div>
+
+            <div class="flex items-center gap-1 text-[11px] font-mono">
+              <span class="px-1.5 py-0.5 rounded bg-slate-900/80 text-slate-200 border border-slate-700" title="Active Todos">
+                <strong><%= active_count %></strong> active
+              </span>
+              <% if done_count > 0 %>
+                <span class="px-1.5 py-0.5 rounded bg-slate-900/50 text-slate-400" title="Completed Todos">
+                  <%= done_count %> done
+                </span>
+              <% end %>
+            </div>
+          </div>
+
+          <p class="text-xs m-0 line-clamp-2" style="color: var(--text-secondary);">
+            <%= clean_desc %>
+          </p>
+        </div>
+
+        <!-- Bottom Row: Flags + Quick Actions -->
+        <div class="pt-2 border-t flex items-center justify-between gap-2 text-[11px]" style="border-color: var(--border-subtle);">
+          <div class="flex items-center gap-1.5" style="color: var(--text-muted);">
+            <% if project.home_visible %>
+              <span class="px-1.5 py-0.5 rounded bg-slate-800/80 text-slate-300" title="Visible on Home">Home</span>
+            <% end %>
+            <% if project.system %>
+              <span class="px-1.5 py-0.5 rounded bg-slate-800/80 text-slate-400" title="System Project">Sys</span>
+            <% end %>
+          </div>
+
+          <div class="inline-flex items-center gap-1.5">
+            <a href="<%= todos_path(add_project: project.name) %>" class="btn" style="padding: 2px 8px; font-size: 11px;">
+              Filtra (<%= total_count %>)
+            </a>
+            <a href="<%= edit_project_path(project) %>" class="btn" style="padding: 2px 8px; font-size: 11px;">
+              Edit
+            </a>
+          </div>
+        </div>
+      </div>
     <% end %>
-  </ul>
+  </div>
+
+  <!-- L1 Synoptic Table of Projects (with Explicit Model Color Column) -->
+  <div class="rounded-xl overflow-hidden border" style="border-color: var(--border-subtle); background: var(--bg-surface);">
+    <table class="synoptic-table">
+      <thead>
+        <tr>
+          <th style="width: 130px;">Colore Modello</th>
+          <th style="width: 140px;">Progetto</th>
+          <th style="width: 90px;">Active Todos</th>
+          <th style="width: 90px;">Done Todos</th>
+          <th>Descrizione</th>
+          <th style="width: 90px;">Flags</th>
+          <th style="width: 130px; text-align: right;">Azioni</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @projects.each_with_index do |project, idx| %>
+          <%
+            raw_color = project.color.to_s.strip.presence || "amber"
+            css_color = color_palette[raw_color.downcase] || (raw_color.start_with?("#") ? raw_color : "#F59E0B")
+            active_count = project.todos.where(active: true).count
+            done_count   = project.todos.where(active: false).count
+            clean_desc   = project.description.to_s.sub(/--\s*AutoProvisioned.*/m, "").strip
+          %>
+          <tr class="<%= idx.even? ? 'row-odd' : 'row-even' %>">
+            <td>
+              <span class="inline-flex items-center gap-2">
+                <span class="w-3.5 h-3.5 rounded inline-block border border-white/30" style="background-color: <%= css_color %>;"></span>
+                <code class="text-xs font-mono" style="color: <%= css_color %>;"><%= raw_color %></code>
+              </span>
+            </td>
+            <td>
+              <a href="<%= project_path(project) %>" class="font-bold hover:underline" style="color: <%= css_color %>;">
+                <%= project.name %>
+              </a>
+            </td>
+            <td class="font-mono font-semibold"><%= active_count %></td>
+            <td class="font-mono" style="color: var(--text-muted);"><%= done_count %></td>
+            <td class="max-w-md truncate" style="color: var(--text-secondary);"><%= clean_desc %></td>
+            <td class="text-xs" style="color: var(--text-muted);">
+              <%= project.home_visible ? "Home" : "" %> <%= project.system ? "· Sys" : "" %>
+            </td>
+            <td style="text-align: right;">
+              <div class="inline-flex items-center gap-1">
+                <a href="<%= todos_path(add_project: project.name) %>" class="btn" style="padding: 1px 7px; font-size: 11px;">Todos</a>
+                <a href="<%= edit_project_path(project) %>" class="btn" style="padding: 1px 7px; font-size: 11px;">Edit</a>
+              </div>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
 </div>
