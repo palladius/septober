@@ -10,6 +10,7 @@
 
 * [Demo Site](http://septober.heroku.com/)
 * [Screenshot](https://github.com/palladius/septober/raw/master/doc/Screenshot.png)
+* [Septober Genesis Doc (Google Doc)](https://docs.google.com/document/d/147aGSbWz_-MQ4m2ZxuDRBg3ReLmo8MJKPuZzRItN3GI/edit)
 
 <img src="https://github.com/palladius/septober/raw/master/doc/Screenshot.png" width="300" alt="Screenshot for Septober" align='right' />
 
@@ -17,6 +18,18 @@
 ## Synopsis 
 
   Welcome to my first vanilla RubyOnRails Application generated with my generator.
+
+## Data Model
+
+```mermaid
+graph TD
+    User -- has many --> Project
+    User -- has many --> Todo
+    Project -- has many --> Todo
+    Project -- belongs to --> User
+    Todo -- belongs to --> User
+    Todo -- belongs to --> Project
+```
   
 ## INSTALL 
 
@@ -149,4 +162,3 @@ And try the ENV variables manually until they work with your MYSQL server.
     - remove todos (They're app specific, consider them a proof of concept)
     - ask for root password on create (in rake db:seed more security) 
     - Add tags to models.. and appropriate `acts_as_taggable` gem
-    

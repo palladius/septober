@@ -1,0 +1,824 @@
+<%
+  projects = Project.where(user_id: current_user&.id).order(:id)
+  default_proj_id = projects.first&.id
+  now_time = Time.now
+  today_date = Date.today
+
+  todos_json = @todos.map do |t|
+    src = (t.source.to_s + " " + t.description.to_s).downcase
+    source_type = if src.include?("ermete")
+                    "ermete"
+                  elsif src.include?("lobby") || src.include?("openclaw")
+                    "lobby"
+                  else
+                    "human"
+                  end
+    is_bot = (source_type != "human")
+    blob = "#{t.name} #{t.description} #{t.project&.name}".downcase
+    card_type = if blob =~ /\b(sebi|ale|kids|pony|fotoquad|mounjaro|peclavus|podologa|casa|family|bimbi|cavalletto|cutie)\b/
+                  "family"
+                elsif blob =~ /\b(hslu|slide|sre|distilleria|1ps|glossario|work|google|meeting|boss|stanford|osmani|verification|harness|semantic-router|litellm)\b/
+                  "work"
+                else
+                  "personal"
+                end
+
+    # Semantic Lucide Icon name based on topic (§2 & §5.1 of /webapp-that-riccardo-likes)
+    topic_icon = if blob =~ /\b(mounjaro|peclavus|podologa|salute)\b/
+                   "heart-pulse"
+                 elsif blob =~ /\b(slide|deck|hslu|talk|present)\b/
+                   "presentation"
+                 elsif blob =~ /\b(krynn|dots|cutie|shooter|game|gioco)\b/
+                   "gamepad-2"
+                 elsif blob =~ /\b(fotoquad|foto|photo)\b/
+                   "camera"
+                 elsif blob =~ /\b(stories|storia|reader|pony|cavalletto|obsidian|glossario)\b/
+                   "book-open"
+                 elsif blob =~ /\b(newsletter|distilleria|mail)\b/
+                   "mail"
+                 elsif blob =~ /\b(shoes|shopping|buy)\b/
+                   "shopping-bag"
+                 elsif blob =~ /\b(guinness|drink|beer)\b/
+                   "cup-soda"
+                 elsif blob =~ /\b(room|cleanup|casa)\b/
+                   "home"
+                 else
+                   "terminal"
+                 end
+
+    # Family member detection for Carlesso Cartoon Avatar (§5.2: Riccardo #FACC15, Ale #EF4444, Seby #3B82F6)
+    person_key = if blob =~ /\bsebi\b/
+                   "seby"
+                 elsif blob =~ /\bale\b/
+                   "ale"
+                 else
+                   "riccardo"
+                 end
+
+    note_bytes = "#{t.name} #{t.description}".strip.bytesize
+    has_banana = (note_bytes > 150 && t.photo_url.present?)
+
+    ref_time = (t.updated_at || t.created_at || now_time)
+    ref_date = (t.due&.to_date rescue ref_time.to_date)
+    wday_it = %w[Dom Lun Mar Mer Gio Ven Sab][ref_date.wday]
+    weekend = (ref_date.wday == 0 || ref_date.wday == 6)
+
+    diff_days = (ref_date - today_date).to_i
+    compact_time = if diff_days == 0
+                     ref_time.strftime("%H:%M")
+                   elsif diff_days == -1
+                     "ieri"
+                   elsif diff_days == 1
+                     "domani"
+                   elsif diff_days.between?(-6, -2)
+                     "#{diff_days.abs}g fa"
+                   elsif diff_days.between?(2, 6)
+                     "tra #{diff_days}g"
+                   elsif diff_days <= -7
+                     w = (diff_days.abs / 7.0).round
+                     "#{w} sett fa"
+                   else
+                     w = (diff_days / 7.0).round
+                     "tra #{w} sett"
+                   end
+
+    raw_name = t.name.to_s.strip
+    short_name = raw_name.length > 40 ? "#{raw_name[0, 37]}..." : raw_name
+    raw_desc = t.description.to_s.gsub(/\s+/, " ").sub(/Collected via CLI.*/i, "").strip
+    raw_desc = "Created through quick mask" if raw_desc.empty?
+    short_desc = raw_desc.length > 68 ? "#{raw_desc[0, 65]}..." : raw_desc
+
+    {
+      id: t.id,
+      project: t.project&.name&.capitalize || "Personal",
+      cardType: card_type, # "work" (green) | "personal" (yellow) | "family" (pink)
+      topicIcon: topic_icon,
+      personKey: person_key,
+      isBot: is_bot,
+      noteBytes: note_bytes,
+      hasBanana: has_banana,
+      photoUrl: has_banana ? t.photo_url : nil,
+      priority: (t.priority || 3).to_i.clamp(1, 5),
+      dow: wday_it,
+      weekend: weekend,
+      due: ref_date.strftime("%Y-%m-%d"),
+      compactTime: compact_time,
+      name: raw_name,
+      shortName: short_name,
+      desc: raw_desc,
+      shortDesc: short_desc,
+      owner: current_user&.username || "palladius",
+      sourceType: source_type,
+      sourceHost: t.source.presence || "web/localhost",
+      where: (t.respond_to?(:where) ? t.where.to_s : "").presence || "Zurigo",
+      active: !!t.active,
+      showUrl: todo_path(t),
+      doneUrl: done_todo_path(t),
+      undoneUrl: undone_todo_path(t),
+      editUrl: edit_todo_path(t),
+      raiseUrl: set_priority_todo_path(t, new_priority: [(t.priority || 3).to_i + 1, 5].min),
+      lowerUrl: set_priority_todo_path(t, new_priority: [(t.priority || 3).to_i - 1, 1].max),
+      snoozeUrl: procrastinate_todo_path(t, procrastinate_days: 5)
+    }
+  end
+%>
+
+<style>
+  /* Strict 3-Column Compact Minimalist Grid */
+  .cards-3col-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+  }
+  @media (max-width: 720px) {
+    .cards-3col-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 480px) {
+    .cards-3col-grid { grid-template-columns: 1fr; }
+  }
+
+  /* Compact Minimalist Card with Background Image */
+  .todo-card {
+    position: relative;
+    border-radius: 11px;
+    overflow: hidden;
+    padding: 10px 12px;
+    min-height: 104px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    cursor: pointer;
+    transition: transform 0.12s ease, border-color 0.12s ease, box-shadow 0.12s ease;
+    background-color: var(--bg-surface);
+  }
+  .todo-card:hover { transform: translateY(-1px); }
+  .todo-card__bg {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    opacity: 0.26;
+    filter: saturate(1.15) contrast(1.05);
+    transition: opacity 0.18s ease, transform 0.25s ease;
+    z-index: 0;
+    pointer-events: none;
+  }
+  .todo-card:hover .todo-card__bg {
+    opacity: 0.36;
+    transform: scale(1.03);
+  }
+  .todo-card__tint {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+  }
+  .todo-card__content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 6px;
+    height: 100%;
+  }
+
+  /* Category Color Borders & Tints: Green = Work, Yellow = Personal, Pink = Family */
+  .todo-card--work {
+    border: 1.5px solid rgba(16, 185, 129, 0.55);
+    box-shadow: inset 3px 0 0 #10B981;
+  }
+  .todo-card--work .todo-card__tint {
+    background: linear-gradient(135deg, rgba(6, 78, 59, 0.72) 0%, rgba(15, 17, 21, 0.88) 100%);
+  }
+  .todo-card--work .topic-icon { color: #34D399; }
+
+  .todo-card--personal {
+    border: 1.5px solid rgba(250, 204, 21, 0.55);
+    box-shadow: inset 3px 0 0 #FACC15;
+  }
+  .todo-card--personal .todo-card__tint {
+    background: linear-gradient(135deg, rgba(113, 63, 18, 0.70) 0%, rgba(15, 17, 21, 0.88) 100%);
+  }
+  .todo-card--personal .topic-icon { color: #FACC15; }
+
+  .todo-card--family {
+    border: 1.5px solid rgba(236, 72, 153, 0.58);
+    box-shadow: inset 3px 0 0 #EC4899;
+  }
+  .todo-card--family .todo-card__tint {
+    background: linear-gradient(135deg, rgba(131, 24, 67, 0.72) 0%, rgba(15, 17, 21, 0.88) 100%);
+  }
+  .todo-card--family .topic-icon { color: #F472B6; }
+
+  /* Distinct Bot-Generated Styling */
+  .todo-card--bot { border-style: dashed; }
+  .todo-card--bot::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 36px;
+    height: 3px;
+    background: #38BDF8;
+    z-index: 3;
+  }
+
+  .todo-title-40ch {
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.25;
+    color: #F8FAFC;
+    max-width: 40ch;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.85);
+  }
+  .todo-desc-cap {
+    font-size: 11px;
+    line-height: 1.3;
+    color: #CBD5E1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.85);
+  }
+
+  /* Pulsantiera Minimalista con Icone Lucide currentColor (§2 /webapp-that-riccardo-likes) */
+  .card-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 7px;
+    border-radius: 6px;
+    font-size: 10.5px;
+    font-weight: 600;
+    border: 1px solid rgba(255,255,255,0.14);
+    background: rgba(15, 17, 21, 0.75);
+    color: #94A3B8;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.12s ease;
+  }
+  .card-btn:hover {
+    background: rgba(30, 41, 59, 0.95);
+    border-color: rgba(255,255,255,0.35);
+    color: #F8FAFC;
+  }
+  .card-btn--done {
+    color: #34D399;
+    border-color: rgba(16, 185, 129, 0.45);
+    background: rgba(16, 185, 129, 0.14);
+  }
+  .card-btn--done:hover {
+    background: #10B981;
+    color: #052E16;
+  }
+  .card-btn--snooze:hover {
+    border-color: #38BDF8;
+    color: #38BDF8;
+  }
+
+  .rich-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 9px;
+    border: 1px solid var(--border-subtle);
+    background: var(--bg-surface);
+    color: var(--text-secondary);
+    font-size: 11.5px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.12s ease;
+  }
+  .rich-tab:hover { color: var(--text-primary); }
+  .rich-tab[aria-pressed="true"] {
+    background: var(--bg-segment-active);
+    color: var(--text-primary);
+    border-color: var(--accent);
+  }
+  .rich-tab img {
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+    object-fit: cover;
+  }
+</style>
+
+<!-- Compact Quick-Add Bar with Lucide Plus SVG -->
+<%= form_with model: Todo.new, url: todos_path, local: true, html: { style: "background: var(--bg-surface); border: 1px solid var(--border-subtle);", class: "rounded-xl p-2 flex flex-wrap md:flex-nowrap items-center gap-2" } do |f| %>
+  <%= f.hidden_field :active, value: true %>
+  <%= f.hidden_field :source, value: "web/a2ui-localhost" %>
+  <span class="pl-1.5 text-slate-400 inline-flex items-center">
+    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+  </span>
+  <%= f.text_field :name, required: true, placeholder: "Nuovo todo (max 40ch visibili, se >150B genera Auto-Banana in sfondo)...",
+        style: "background: var(--bg-track); border: 1px solid var(--border-subtle); color: var(--text-primary);",
+        class: "flex-1 min-w-[200px] rounded-lg px-2.5 py-1 text-xs outline-none focus:border-amber-500" %>
+  <%= f.text_field :description, placeholder: "Dettagli (>150B = Auto-Banana)...",
+        style: "background: var(--bg-track); border: 1px solid var(--border-subtle); color: var(--text-primary);",
+        class: "w-48 rounded-lg px-2.5 py-1 text-xs outline-none focus:border-amber-500" %>
+  <%= f.select :priority, [["P5", 5], ["P4", 4], ["P3", 3], ["P2", 2], ["P1", 1]], { selected: 4 },
+        style: "background: var(--bg-track); border: 1px solid var(--border-subtle); color: var(--text-primary);",
+        class: "rounded-lg px-2 py-1 text-xs outline-none" %>
+  <%= f.collection_select :project_id, projects, :id, :name, { selected: default_proj_id },
+        style: "background: var(--bg-track); border: 1px solid var(--border-subtle); color: var(--text-primary);",
+        class: "rounded-lg px-2 py-1 text-xs outline-none" %>
+  <button type="submit" class="px-3 py-1 rounded-lg text-xs font-semibold bg-amber-500 hover:bg-amber-400 text-slate-950 transition cursor-pointer inline-flex items-center gap-1">
+    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    <span>Add</span>
+  </button>
+<% end %>
+
+<!-- Top Tabs + Toggles with Monochrome Lucide currentColor SVGs (§2 /webapp-that-riccardo-likes) -->
+<div class="flex flex-wrap items-center justify-between gap-2">
+  <div class="flex flex-wrap items-center gap-1.5" role="tablist" aria-label="Visual Todo Tabs">
+    <button type="button" data-tab="cards" class="rich-tab" aria-pressed="true">
+      <img src="/auto_banana/todo_28.png" alt="" onerror="this.style.display='none'" />
+      <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>
+      <span>Tutte</span>
+      <span id="tab-count-all" class="text-[10px] px-1.5 rounded bg-slate-800 text-slate-300">0</span>
+    </button>
+    <button type="button" data-tab="work" class="rich-tab" aria-pressed="false" style="border-color: rgba(16,185,129,0.4);">
+      <img src="/auto_banana/todo_34.png" alt="" onerror="this.style.display='none'" />
+      <svg class="w-3.5 h-3.5 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><rect width="20" height="14" x="2" y="7" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+      <span>Work</span>
+      <span id="tab-count-work" class="text-[10px] px-1.5 rounded bg-emerald-500/20 text-emerald-300">0</span>
+    </button>
+    <button type="button" data-tab="personal" class="rich-tab" aria-pressed="false" style="border-color: rgba(250,204,21,0.4);">
+      <img src="/auto_banana/todo_30.png" alt="" onerror="this.style.display='none'" />
+      <svg class="w-3.5 h-3.5 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+      <span>Personal</span>
+      <span id="tab-count-personal" class="text-[10px] px-1.5 rounded bg-amber-500/20 text-amber-300">0</span>
+    </button>
+    <button type="button" data-tab="family" class="rich-tab" aria-pressed="false" style="border-color: rgba(236,72,153,0.4);">
+      <img src="/auto_banana/todo_39.png" alt="" onerror="this.style.display='none'" />
+      <svg class="w-3.5 h-3.5 text-pink-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+      <span>Family</span>
+      <span id="tab-count-family" class="text-[10px] px-1.5 rounded bg-pink-500/20 text-pink-300">0</span>
+    </button>
+    <button type="button" data-tab="bots" class="rich-tab" aria-pressed="false" style="border-color: rgba(56,189,248,0.4);">
+      <img src="/auto_banana/todo_43.png" alt="" onerror="this.style.display='none'" />
+      <svg class="w-3.5 h-3.5 text-sky-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/></svg>
+      <span>Bot</span>
+      <span id="tab-count-bots" class="text-[10px] px-1.5 rounded bg-sky-500/20 text-sky-300">0</span>
+    </button>
+    <button type="button" data-tab="synoptic" class="rich-tab" aria-pressed="false">
+      <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M12 3v18"/><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M3 15h18"/></svg>
+      <span>Tabella L1</span>
+    </button>
+  </div>
+
+  <!-- Right Toggles: Segmented Radio Group | Vertical Divider | Boolean Switches with SVG Check -->
+  <div class="flex flex-wrap items-center gap-1.5">
+    <div class="seg-group" role="radiogroup" aria-label="Filter by Creator">
+      <button type="button" data-source="all" class="seg-btn source-filter" role="radio" aria-checked="true" aria-pressed="true">Tutti</button>
+      <button type="button" data-source="human" class="seg-btn source-filter" role="radio" aria-checked="false" aria-pressed="false">
+        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <span>Umano</span>
+      </button>
+      <button type="button" data-source="ermete" class="seg-btn source-filter" role="radio" aria-checked="false" aria-pressed="false">
+        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></svg>
+        <span>Ermete</span>
+      </button>
+      <button type="button" data-source="lobby" class="seg-btn source-filter" role="radio" aria-checked="false" aria-pressed="false">
+        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+        <span>Lobby</span>
+      </button>
+    </div>
+
+    <div class="h-4 w-px" style="background: var(--border-strong);"></div>
+
+    <button id="toggle-banana" type="button" role="switch" aria-checked="false"
+      style="border: 1px solid var(--border-subtle); background: var(--bg-track); color: var(--text-secondary);"
+      class="px-2 py-0.5 rounded-lg text-[11px] font-medium inline-flex items-center gap-1 cursor-pointer"
+      title="Mostra solo note > 150B con sfondo Auto-Banana">
+      <span id="box-banana" class="w-3.5 h-3.5 rounded border inline-flex items-center justify-center" style="border-color: var(--border-strong);"></span>
+      <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+      <span>&gt;150B</span>
+    </button>
+
+    <button id="toggle-high" type="button" role="switch" aria-checked="false"
+      style="border: 1px solid var(--border-subtle); background: var(--bg-track); color: var(--text-secondary);"
+      class="px-2 py-0.5 rounded-lg text-[11px] font-medium inline-flex items-center gap-1 cursor-pointer">
+      <span id="box-high" class="w-3.5 h-3.5 rounded border inline-flex items-center justify-center" style="border-color: var(--border-strong);"></span>
+      <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+      <span>P4–P5</span>
+    </button>
+
+    <button id="toggle-done" type="button" role="switch" aria-checked="false"
+      style="border: 1px solid var(--border-subtle); background: var(--bg-track); color: var(--text-secondary);"
+      class="px-2 py-0.5 rounded-lg text-[11px] font-medium inline-flex items-center gap-1 cursor-pointer">
+      <span id="box-done" class="w-3.5 h-3.5 rounded border inline-flex items-center justify-center" style="border-color: var(--border-strong);"></span>
+      <span>Chiusi</span>
+    </button>
+  </div>
+</div>
+
+<!-- L3 Detail Modal / Drawer -->
+<div id="l3-drawer" class="hidden rounded-xl border p-3.5" style="background: var(--bg-surface); border-color: var(--accent);">
+  <div class="flex items-center justify-between pb-2 mb-2.5 border-b" style="border-color: var(--border-subtle);">
+    <div class="flex items-center gap-2">
+      <span id="l3-prio" class="num-chip num-chip--p4">P4</span>
+      <a id="l3-id-link" href="#" class="font-mono text-xs text-amber-400 hover:underline">#0</a>
+      <h3 id="l3-title" class="text-sm font-bold m-0">Dettaglio Todo</h3>
+    </div>
+    <button id="l3-close" type="button" class="text-xs px-2 py-1 rounded border cursor-pointer inline-flex items-center gap-1" style="border-color: var(--border-subtle); color: var(--text-secondary);">
+      <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+      <span>Esc</span>
+    </button>
+  </div>
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+    <div id="l3-image-box" class="rounded-lg overflow-hidden border flex items-center justify-center" style="background: var(--bg-track); border-color: var(--border-subtle); min-height: 110px;"></div>
+    <div class="space-y-1 p-2.5 rounded-lg" style="background: var(--bg-track); border: 1px solid var(--border-subtle);">
+      <div class="font-semibold uppercase tracking-wider text-[10px]" style="color: var(--text-secondary);">Ground Truth</div>
+      <div id="l3-ground" class="space-y-1"></div>
+    </div>
+    <div class="space-y-2 p-2.5 rounded-lg" style="background: var(--bg-track); border: 1px solid var(--border-subtle);">
+      <div class="font-semibold uppercase tracking-wider text-[10px]" style="color: var(--text-secondary);">Descrizione Completa &amp; Azioni</div>
+      <p id="l3-desc" class="m-0 leading-relaxed" style="color: var(--text-primary);"></p>
+      <div id="l3-actions" class="flex flex-wrap gap-1.5 pt-1.5"></div>
+    </div>
+  </div>
+</div>
+
+<!-- VIEW 1: 3-Column Minimalist Cards with Background Image & Lucide Icons -->
+<div id="cards-grid-container" class="cards-3col-grid"></div>
+
+<!-- VIEW 2: L1 Synoptic Table with 28px Icon Column (§5.1) & Cartoon Avatars (§5.2) -->
+<div id="synoptic-table-container" class="hidden rounded-xl overflow-hidden border" style="border-color: var(--border-subtle); background: var(--bg-surface);">
+  <table class="synoptic-table">
+    <thead>
+      <tr>
+        <th style="width: 95px;">Tipo</th>
+        <th style="width: 28px; text-align: center;" title="Topic Micro-Icon"></th>
+        <th style="width: 55px;">ID</th>
+        <th style="width: 52px;">Prio</th>
+        <th style="width: 115px;">Tempo</th>
+        <th>Titolo (max 40ch)</th>
+        <th style="width: 115px;">Owner / Bot</th>
+        <th style="width: 145px; text-align: right;">Pulsantiera</th>
+      </tr>
+    </thead>
+    <tbody id="synoptic-tbody"></tbody>
+  </table>
+</div>
+
+<script>
+  const TODOS = <%= raw(todos_json.to_json) %>;
+
+  // Centralized Monochrome Lucide SVG Icon Library (stroke="currentColor", §2 /webapp-that-riccardo-likes)
+  const LUCIDE_PATHS = {
+    "check":        `<polyline points="20 6 9 17 4 12"/>`,
+    "eye":          `<path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/>`,
+    "clock":        `<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>`,
+    "bot":          `<rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/>`,
+    "truck":        `<path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/>`,
+    "terminal":     `<polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/>`,
+    "presentation": `<path d="M2 3h20"/><path d="M21 3v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V3"/><path d="m7 21 5-5 5 5"/>`,
+    "gamepad-2":    `<line x1="6" x2="10" y1="11" y2="11"/><line x1="8" x2="8" y1="9" y2="13"/><line x1="15" x2="15.01" y1="12" y2="12"/><line x1="18" x2="18.01" y1="10" y2="10"/><path d="M17.32 5H6.68a4 4 0 0 0-3.978 3.59c-.006.052-.01.101-.017.152C2.604 9.416 2 14.456 2 16a3 3 0 0 0 3 3c1 0 1.5-.5 2-1l1.414-1.414A2 2 0 0 1 9.828 16h4.344a2 2 0 0 1 1.414.586L17 18c.5.5 1 1 2 1a3 3 0 0 0 3-3c0-1.545-.604-6.584-.685-7.258-.007-.05-.011-.1-.017-.151A4 4 0 0 0 17.32 5z"/>`,
+    "camera":       `<path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/>`,
+    "book-open":    `<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>`,
+    "heart-pulse":  `<path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/><path d="M3.22 12H9.5l.5-1 2 4.5 2-7 1.5 3.5h5.27"/>`,
+    "mail":         `<rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>`,
+    "shopping-bag": `<path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/>`,
+    "cup-soda":     `<path d="m6 8 1.75 12.28a2 2 0 0 0 2 1.72h4.54a2 2 0 0 0 2-1.72L18 8"/><path d="M5 8h14"/><path d="M7 15a6.47 6.47 0 0 1 5 0 6.47 6.47 0 0 0 5 0"/><path d="m12 8 1-6h2"/>`,
+    "home":         `<path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>`,
+    "image":        `<rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>`,
+    "pencil":       `<path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/>`
+  };
+
+  function lucide(name, cls = "w-3.5 h-3.5") {
+    const inner = LUCIDE_PATHS[name] || LUCIDE_PATHS["terminal"];
+    return `<svg class="${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">${inner}</svg>`;
+  }
+
+  // Stylized Carlesso Family Cartoon Face Avatars (§5.2: Riccardo #FACC15, Ale #EF4444, Seby #3B82F6)
+  const CARLESSO_AVATARS = {
+    riccardo: {
+      ring: "#FACC15",
+      label: "Riccardo (Human Owner)",
+      svg: `<svg viewBox="0 0 24 24" class="w-full h-full"><circle cx="12" cy="12" r="12" fill="#1E293B"/><circle cx="12" cy="11" r="6" fill="#FDBA74"/><path d="M6 9c1-3 11-3 12 0" fill="#78350F"/><rect x="7.5" y="9.5" width="3.5" height="2.2" rx="0.6" fill="none" stroke="#0F172A" stroke-width="1.1"/><rect x="13" y="9.5" width="3.5" height="2.2" rx="0.6" fill="none" stroke="#0F172A" stroke-width="1.1"/><line x1="11" y1="10.5" x2="13" y2="10.5" stroke="#0F172A" stroke-width="1.1"/><path d="M9.5 14c1.2 1.2 3.8 1.2 5 0" fill="none" stroke="#7C2D12" stroke-width="1.2" stroke-linecap="round"/></svg>`
+    },
+    ale: {
+      ring: "#EF4444",
+      label: "Alessandro (Ale)",
+      svg: `<svg viewBox="0 0 24 24" class="w-full h-full"><circle cx="12" cy="12" r="12" fill="#1E293B"/><circle cx="12" cy="12" r="5.8" fill="#FED7AA"/><path d="M6.5 10c1-4 10-4 11 0" fill="#B45309"/><circle cx="9.8" cy="11.5" r="0.9" fill="#0F172A"/><circle cx="14.2" cy="11.5" r="0.9" fill="#0F172A"/><path d="M9.8 14.2c1.1 1 3.3 1 4.4 0" fill="none" stroke="#9A3412" stroke-width="1.2" stroke-linecap="round"/></svg>`
+    },
+    seby: {
+      ring: "#3B82F6",
+      label: "Sebastian (Seby)",
+      svg: `<svg viewBox="0 0 24 24" class="w-full h-full"><circle cx="12" cy="12" r="12" fill="#1E293B"/><circle cx="12" cy="12.2" r="5.5" fill="#FFEDD5"/><path d="M7 10.2c1.5-3.8 8.5-3.8 10 0" fill="#D97706"/><circle cx="10" cy="11.8" r="0.9" fill="#0F172A"/><circle cx="14" cy="11.8" r="0.9" fill="#0F172A"/><path d="M10 14.3c1 1.1 3 1.1 4 0" fill="none" stroke="#9A3412" stroke-width="1.2" stroke-linecap="round"/></svg>`
+    }
+  };
+
+  function renderAvatarAndSource(t) {
+    const p = CARLESSO_AVATARS[t.personKey] || CARLESSO_AVATARS.riccardo;
+    const avatarHtml = `<span class="inline-flex w-5 h-5 rounded-full overflow-hidden shrink-0" style="box-shadow: 0 0 0 1.75px ${p.ring};" title="${p.label}">${p.svg}</span>`;
+    if (!t.isBot) {
+      return `<span class="inline-flex items-center gap-1.5">${avatarHtml}</span>`;
+    }
+    const botIconName = t.sourceType === "ermete" ? "truck" : "terminal";
+    return `<span class="inline-flex items-center gap-1.5" title="${p.label} · Collected by Bot: ${t.sourceType} (${t.sourceHost})">${avatarHtml}<span class="inline-flex items-center gap-0.5 text-[10px] font-mono text-sky-300 px-1 py-0.2 rounded bg-sky-500/15 border border-sky-400/30">${lucide(botIconName, "w-3 h-3")}<span>${t.sourceType}</span></span></span>`;
+  }
+
+  function createPageState(storageKey, defaults) {
+    function read() {
+      let saved = {};
+      try { saved = JSON.parse(localStorage.getItem(storageKey) || '{}'); } catch (_) {}
+      const params = Object.fromEntries(new URLSearchParams(window.location.search));
+      return { ...defaults, ...saved, ...params };
+    }
+    function write(patch) {
+      const next = { ...read(), ...patch };
+      try { localStorage.setItem(storageKey, JSON.stringify(next)); } catch (_) {}
+      const url = new URL(window.location.href);
+      for (const [k, v] of Object.entries(next)) {
+        if (v === undefined || v === null || String(v) === String(defaults[k]) || v === "") url.searchParams.delete(k);
+        else url.searchParams.set(k, String(v));
+      }
+      window.history.replaceState(next, '', url);
+      return next;
+    }
+    return { read, write };
+  }
+
+  const pageState = createPageState('septober_rails8_3col_v26_lucide', {
+    tab: 'cards',
+    source: 'all',
+    banana: '0',
+    high: '0',
+    done: '0',
+    q: '',
+    lang: 'it',
+    theme: 'dark',
+    id: ''
+  });
+
+  function render() {
+    const st = pageState.read();
+    document.documentElement.setAttribute("lang", st.lang);
+    document.documentElement.setAttribute("data-theme", st.theme);
+
+    const activeList = TODOS.filter(t => st.done === "1" || t.active);
+    document.getElementById("tab-count-all").textContent = activeList.length;
+    document.getElementById("tab-count-work").textContent = activeList.filter(t => t.cardType === "work").length;
+    document.getElementById("tab-count-personal").textContent = activeList.filter(t => t.cardType === "personal").length;
+    document.getElementById("tab-count-family").textContent = activeList.filter(t => t.cardType === "family").length;
+    document.getElementById("tab-count-bots").textContent = activeList.filter(t => t.isBot).length;
+
+    document.querySelectorAll("[data-tab]").forEach(b => {
+      b.setAttribute("aria-pressed", String(b.dataset.tab === st.tab));
+    });
+    document.querySelectorAll(".source-filter").forEach(b => {
+      const active = b.dataset.source === st.source;
+      b.setAttribute("aria-checked", String(active));
+      b.setAttribute("aria-pressed", String(active));
+    });
+
+    const bananaOn = st.banana === "1";
+    const highOn = st.high === "1";
+    const doneOn = st.done === "1";
+    const checkSvgSmall = lucide("check", "w-2.5 h-2.5 text-amber-400");
+    document.getElementById("toggle-banana").setAttribute("aria-checked", String(bananaOn));
+    document.getElementById("box-banana").innerHTML = bananaOn ? checkSvgSmall : "";
+    document.getElementById("toggle-high").setAttribute("aria-checked", String(highOn));
+    document.getElementById("box-high").innerHTML = highOn ? checkSvgSmall : "";
+    document.getElementById("toggle-done").setAttribute("aria-checked", String(doneOn));
+    document.getElementById("box-done").innerHTML = doneOn ? checkSvgSmall : "";
+
+    const searchInput = document.getElementById("live-search");
+    if (searchInput && document.activeElement !== searchInput) searchInput.value = st.q || "";
+
+    const q = (st.q || "").toLowerCase().trim();
+    const filtered = TODOS.filter(t => {
+      if (!doneOn && !t.active) return false;
+      if (bananaOn && !t.hasBanana) return false;
+      if (highOn && t.priority < 4) return false;
+      if (st.tab === "work" && t.cardType !== "work") return false;
+      if (st.tab === "personal" && t.cardType !== "personal") return false;
+      if (st.tab === "family" && t.cardType !== "family") return false;
+      if (st.tab === "bots" && !t.isBot) return false;
+      if (st.source !== "all" && t.sourceType !== st.source) return false;
+      if (q && !(t.name.toLowerCase().includes(q) || t.desc.toLowerCase().includes(q) || String(t.id).includes(q))) return false;
+      return true;
+    }).sort((a, b) => (b.priority - a.priority) || (b.id - a.id));
+
+    const isSynoptic = (st.tab === "synoptic");
+    document.getElementById("cards-grid-container").classList.toggle("hidden", isSynoptic);
+    document.getElementById("synoptic-table-container").classList.toggle("hidden", !isSynoptic);
+
+    // 1. Render Compact 3-Column Cards with Background Image & Lucide Topic Micro-Icon
+    const cardsGrid = document.getElementById("cards-grid-container");
+    cardsGrid.innerHTML = filtered.map(t => {
+      const prioClass = `num-chip--p${t.priority}`;
+      const toggleUrl = t.active ? t.doneUrl : t.undoneUrl;
+      const botClass = t.isBot ? "todo-card--bot" : "";
+      const bgLayer = t.hasBanana
+        ? `<div class="todo-card__bg" style="background-image: url('${t.photoUrl}');"></div>`
+        : "";
+
+      return `
+        <div class="todo-card todo-card--${t.cardType} ${botClass} ${t.active ? '' : 'opacity-50'}" onclick="openL3(${t.id})" title="${t.name.replace(/"/g, '&quot;')}">
+          ${bgLayer}
+          <div class="todo-card__tint"></div>
+
+          <div class="todo-card__content">
+            <!-- Top Row: Topic Micro-Icon + Linked #ID + Prio + DoW & Compact Time + Cartoon Avatar / Bot -->
+            <div class="flex items-center justify-between gap-1 text-[11px]">
+              <div class="flex items-center gap-1.5">
+                <span class="topic-icon inline-flex items-center" title="Topic: ${t.topicIcon}">${lucide(t.topicIcon, "w-3.5 h-3.5")}</span>
+                <a href="${t.showUrl}" onclick="event.stopPropagation();" class="font-mono font-bold text-amber-300 hover:underline">#${t.id}</a>
+                <span class="num-chip ${prioClass}" style="min-width: 28px; padding: 0 5px; font-size: 10px;">P${t.priority}</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="text-[11px] font-mono">
+                  <span class="${t.weekend ? 'text-sky-300' : 'text-slate-300'} font-semibold">${t.dow}</span>
+                  <span class="text-slate-400">· ${t.compactTime}</span>
+                </span>
+                ${renderAvatarAndSource(t)}
+              </div>
+            </div>
+
+            <!-- Middle: Title capped at 40ch + Description capped -->
+            <div class="my-0.5">
+              <div class="todo-title-40ch ${t.active ? '' : 'line-through'}">${t.shortName}</div>
+              <div class="todo-desc-cap">${t.shortDesc}</div>
+            </div>
+
+            <!-- Bottom Row: Size indicator + Pulsantiera with Lucide currentColor SVGs (Vedi, Fatto, Snooze) -->
+            <div class="flex items-center justify-between gap-1 pt-0.5">
+              <span class="inline-flex items-center gap-1 text-[9.5px] font-mono text-slate-400">
+                ${t.hasBanana ? lucide("image", "w-3 h-3 text-slate-400") : ""}
+                <span>${t.noteBytes}B</span>
+              </span>
+              <div class="inline-flex items-center gap-1" onclick="event.stopPropagation();">
+                <button type="button" onclick="openL3(${t.id})" class="card-btn" title="Vedi dettagli">
+                  ${lucide("eye", "w-3 h-3")} <span>Vedi</span>
+                </button>
+                <a href="${toggleUrl}" class="card-btn card-btn--done" title="Segna come Fatto">
+                  ${lucide("check", "w-3 h-3")} <span>Fatto</span>
+                </a>
+                <a href="${t.snoozeUrl}" class="card-btn card-btn--snooze" title="Snooze +5 giorni">
+                  ${lucide("clock", "w-3 h-3")} <span>Snooze</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join("");
+
+    // 2. Render L1 Synoptic Table with 28px Icon Column (§5.1) & Cartoon Avatars (§5.2)
+    const synSorted = [...filtered].sort((a, b) => a.cardType.localeCompare(b.cardType) || (b.priority - a.priority));
+    const groupCounts = {};
+    synSorted.forEach(t => { groupCounts[t.cardType] = (groupCounts[t.cardType] || 0) + 1; });
+    const seenGroups = new Set();
+
+    const tbody = document.getElementById("synoptic-tbody");
+    tbody.innerHTML = synSorted.map((t, idx) => {
+      const parityClass = idx % 2 === 0 ? "row-odd" : "row-even";
+      let spineCell = "";
+      if (!seenGroups.has(t.cardType)) {
+        seenGroups.add(t.cardType);
+        const span = groupCounts[t.cardType];
+        spineCell = `<td rowspan="${span}" class="macro-spine" onclick="openL3(${t.id})">${t.cardType.toUpperCase()} (${span})</td>`;
+      }
+      const prioClass = `num-chip--p${t.priority}`;
+      const toggleUrl = t.active ? t.doneUrl : t.undoneUrl;
+      return `
+        <tr class="${parityClass} cursor-pointer" onclick="openL3(${t.id})">
+          ${spineCell}
+          <td style="text-align: center;" class="text-slate-400" title="${t.topicIcon}">${lucide(t.topicIcon, "w-4 h-4 inline")}</td>
+          <td><a href="${t.showUrl}" onclick="event.stopPropagation();" class="font-mono font-bold text-amber-400 hover:underline">#${t.id}</a></td>
+          <td><span class="num-chip ${prioClass}" style="min-width:32px;">P${t.priority}</span></td>
+          <td class="font-mono text-xs"><span class="${t.weekend ? 'text-sky-400' : 'text-slate-400'}">${t.dow}</span> · ${t.compactTime}</td>
+          <td class="font-medium ${t.active ? '' : 'line-through opacity-50'}">${t.shortName}</td>
+          <td>${renderAvatarAndSource(t)}</td>
+          <td style="text-align: right;" onclick="event.stopPropagation();">
+            <div class="inline-flex items-center gap-1">
+              <button type="button" onclick="openL3(${t.id})" class="card-btn" title="Vedi">${lucide("eye", "w-3 h-3")}</button>
+              <a href="${toggleUrl}" class="card-btn card-btn--done" title="Fatto">${lucide("check", "w-3 h-3")} <span>Fatto</span></a>
+              <a href="${t.snoozeUrl}" class="card-btn card-btn--snooze" title="Snooze">${lucide("clock", "w-3 h-3")}</a>
+            </div>
+          </td>
+        </tr>
+      `;
+    }).join("");
+
+    if (st.id) {
+      const found = TODOS.find(x => String(x.id) === String(st.id));
+      if (found) renderL3(found);
+    } else {
+      document.getElementById("l3-drawer").classList.add("hidden");
+    }
+  }
+
+  function renderL3(t) {
+    const drawer = document.getElementById("l3-drawer");
+    drawer.classList.remove("hidden");
+    document.getElementById("l3-prio").className = `num-chip num-chip--p${t.priority}`;
+    document.getElementById("l3-prio").textContent = `P${t.priority}`;
+    document.getElementById("l3-id-link").href = t.showUrl;
+    document.getElementById("l3-id-link").textContent = `#${t.id}`;
+    document.getElementById("l3-title").textContent = t.name;
+    document.getElementById("l3-image-box").innerHTML = t.hasBanana
+      ? `<img src="${t.photoUrl}" alt="" class="w-full h-36 object-cover" />`
+      : `<div class="p-3 text-center" style="color: var(--text-muted);">Nota corta (${t.noteBytes}B &le; 150B)<br/>Nessuno sfondo Auto-Banana</div>`;
+    document.getElementById("l3-ground").innerHTML = `
+      <div><span style="color: var(--text-secondary);">ID / Link:</span> <a href="${t.showUrl}" class="text-amber-400 underline">#${t.id}</a> (<a href="${t.editUrl}" class="underline">Modifica</a>)</div>
+      <div><span style="color: var(--text-secondary);">Categoria:</span> <strong>${t.cardType.toUpperCase()}</strong> (${t.project})</div>
+      <div><span style="color: var(--text-secondary);">Autore:</span> <strong>${t.isBot ? 'BOT (' + t.sourceHost + ')' : 'UMANO (Riccardo)'}</strong></div>
+      <div><span style="color: var(--text-secondary);">Tempo:</span> <code>${t.dow} · ${t.compactTime}</code> (${t.due})</div>
+      <div><span style="color: var(--text-secondary);">Dimensione:</span> <code>${t.noteBytes} bytes</code></div>
+    `;
+    document.getElementById("l3-desc").textContent = t.desc;
+    const toggleUrl = t.active ? t.doneUrl : t.undoneUrl;
+    document.getElementById("l3-actions").innerHTML = `
+      <a href="${toggleUrl}" class="card-btn card-btn--done">${lucide("check", "w-3 h-3")} <span>${t.active ? 'Fatto' : 'Riapri'}</span></a>
+      <a href="${t.snoozeUrl}" class="card-btn card-btn--snooze">${lucide("clock", "w-3 h-3")} <span>Snooze +5d</span></a>
+      <a href="${t.editUrl}" class="card-btn">${lucide("pencil", "w-3 h-3")} <span>Modifica</span></a>
+    `;
+  }
+
+  window.openL3 = function(id) {
+    pageState.write({ id: String(id) });
+    render();
+  };
+
+  document.getElementById("l3-close").addEventListener("click", () => {
+    pageState.write({ id: "" });
+    render();
+  });
+
+  document.querySelectorAll("[data-tab]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      pageState.write({ tab: btn.dataset.tab });
+      render();
+    });
+  });
+
+  document.querySelectorAll(".source-filter").forEach(btn => {
+    btn.addEventListener("click", () => {
+      pageState.write({ source: btn.dataset.source });
+      render();
+    });
+  });
+
+  document.getElementById("toggle-banana").addEventListener("click", () => {
+    const cur = pageState.read().banana === "1";
+    pageState.write({ banana: cur ? "0" : "1" });
+    render();
+  });
+
+  document.getElementById("toggle-high").addEventListener("click", () => {
+    const cur = pageState.read().high === "1";
+    pageState.write({ high: cur ? "0" : "1" });
+    render();
+  });
+
+  document.getElementById("toggle-done").addEventListener("click", () => {
+    const cur = pageState.read().done === "1";
+    pageState.write({ done: cur ? "0" : "1" });
+    render();
+  });
+
+  const searchInput = document.getElementById("live-search");
+  if (searchInput) {
+    searchInput.addEventListener("input", e => {
+      pageState.write({ q: e.target.value });
+      render();
+    });
+  }
+
+  window.addEventListener("keydown", e => {
+    if (e.key === "/" && document.activeElement !== searchInput && document.activeElement.tagName !== "INPUT") {
+      e.preventDefault();
+      if (searchInput) searchInput.focus();
+    } else if (e.key === "Escape") {
+      pageState.write({ id: "" });
+      render();
+    }
+  });
+
+  document.querySelectorAll("[data-lang]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      pageState.write({ lang: btn.dataset.lang });
+      render();
+    });
+  });
+
+  const themeBtn = document.getElementById("theme-toggle");
+  if (themeBtn) {
+    themeBtn.addEventListener("click", () => {
+      const cur = pageState.read().theme;
+      pageState.write({ theme: cur === "dark" ? "light" : "dark" });
+      render();
+    });
+  }
+
+  render();
+</script>

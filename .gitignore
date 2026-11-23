@@ -18,3 +18,16 @@ config/database.yml.prod
 01-magic-tejal.sh
 build-out.json
 .sk-septober.appname
+.echodo_history
+.git-privatize
+.gemini/logs.json
+log/
+cache/
+storage/
+__pycache__/
+*.pyc
+septober_v8/vendor/bundle/
+septober_v8/storage/*.sqlite3*
+septober_v8/log/*
+septober_v8/tmp/*
+
