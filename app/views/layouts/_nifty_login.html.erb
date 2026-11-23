@@ -4,7 +4,7 @@
 
 begin
   if logged_in? %>
-	  Welcome <b><%= link_to(current_user.username.capitalize, edit_current_user_path, :title => "RicPlugin: User number ##{current_user.id}", :class => 'user') %></b>.
+	  Welcome <b><%= current_user.agent? ? "#{current_user.respond_to?(:resolved_agent_icon) ? current_user.resolved_agent_icon : (current_user.agent_icon || '🤖')} " : "👤 " %><%= link_to(current_user.username.capitalize, edit_current_user_path, :title => "User ##{current_user.id} (#{current_user.agent? ? 'Agent' : 'Human'})", :class => 'user') %></b>.
 	  <%= link_to "Log out", logout_path %>
 <% else %>
 	  <%= link_to "Sign up", signup_path %> or

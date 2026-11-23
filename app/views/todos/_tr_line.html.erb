@@ -4,7 +4,7 @@
 	css_tr_classes << "overdue_#{todo.due_explaination}" 
 	css_tr_classes << "stillhidden_#{todo.still_hidden?}" unless session['todo_filters'].include?('show_hidden')
 %>
-<tr class="<%= css_tr_classes.join(' ') %>" >
+<tr class="<%= css_tr_classes.join(' ') %>" data-todo-id="<%= todo.id %>">
   <td width='80' >
     <%= render_todo_action_icons(todo) %>
   </td>

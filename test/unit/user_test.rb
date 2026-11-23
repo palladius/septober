@@ -87,4 +87,40 @@ class UserTest < ActiveSupport::TestCase
     new_user(:username => 'foobar', :password => 'secret').save!
     assert_nil User.authenticate('foobar', 'badpassword')
   end
+
+  def test_parent_child_agent_hierarchy
+    parent = new_user(:username => 'parent_user', :email => 'parent@example.com')
+    parent.save!
+    assert parent.human?
+    assert !parent.agent?
+
+    child = new_user(
+      :username => 'child_agent',
+      :email => 'agent@example.com',
+      :parent_id => parent.id,
+      :is_agent => true,
+      :agent_host => 'mini-lobby',
+      :agent_icon => '🚛'
+    )
+    child.save!
+    assert child.agent?
+    assert !child.human?
+    assert_equal parent, child.parent
+    assert_includes parent.agents, child
+    assert_equal [parent.id, child.id].sort, parent.family_user_ids.sort
+    assert_equal [child.id], child.family_user_ids
+  end
+
+  def test_single_level_depth_restriction
+    grandparent = new_user(:username => 'grandpa', :email => 'grandpa@example.com')
+    grandparent.save!
+
+    parent = new_user(:username => 'parent_agent', :email => 'p_agent@example.com', :parent_id => grandparent.id, :is_agent => true)
+    parent.save!
+
+    # Attempting to attach an agent to an agent should fail validation
+    grandchild = new_user(:username => 'grandchild', :email => 'gc@example.com', :parent_id => parent.id, :is_agent => true)
+    assert !grandchild.valid?
+    assert grandchild.errors[:parent_id].present?
+  end
 end

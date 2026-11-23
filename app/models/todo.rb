@@ -21,6 +21,10 @@ class Todo < ActiveRecord::Base
     # Task.find_all_by_priority(1..3)
     scope :relevant, lambda { { :conditions => ['priority in ?', 1..3 ] } }
     scope :owned_by, lambda {|user| { :conditions => ['user_id = ?', user.id] } }
+    scope :for_family, lambda {|user|
+      ids = user.respond_to?(:family_user_ids) ? user.family_user_ids : [user.id]
+      { :conditions => ['todos.user_id IN (?)', ids] }
+    }
     
     validates_uniqueness_of :name, :scope => :user_id, :message => "for this user is already created! (Cant have duplicate Todos)"
     validates_associated :project, :user
@@ -177,9 +181,8 @@ class Todo < ActiveRecord::Base
         # PROJECT: This should be done in the regex magic!!!
         # TODO if the first word matches an existing project, do it!
         unless attribute_present?('project_id')
-          personal = Project.find_by_name_and_user_id('personal',self.user_id)
-          log << "PersProject: #{personal.inspect}"
-          self.project_id = personal.id #Project.find_by_name_and_user_id('personal',self.user_id).id
+          proj = Project.find_by_name_and_user_id('personal', self.user_id) || Project.find_by_user_id(self.user_id)
+          self.project_id = proj.id if proj
         end
         #self.url  = 'test url3' # this works
         @where = 'Inferred from Current IP TODO :)'
@@ -246,8 +249,9 @@ class Todo < ActiveRecord::Base
     end
     
     def self.find_securely(user,whatever,opts={})
+      ids = user.respond_to?(:family_user_ids) ? user.family_user_ids : [user.id]
       Todo.with_scope(
-        :find =>   { :conditions => "user_id = #{user.id}"},
+        :find =>   { :conditions => ["user_id IN (?)", ids]},
         :create => { :user_id => user.id }
       ) do
         find(whatever,opts)

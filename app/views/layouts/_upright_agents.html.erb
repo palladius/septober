@@ -1,0 +1,18 @@
+<% if logged_in? && current_user.human? %>
+<div class='agents_synoptic' align='right' style='font-size:x-small; margin-top: 4px; margin-bottom: 6px;'>
+  <span title="Autonomous AI Copilots">🤖 <b>Agents:</b></span>
+  <%= link_to("all", todos_url, :style => (params[:agent_id].blank? ? "font-weight:bold;" : "")) %>
+  <% current_user.agents.each do |ag| %>
+    <% short_name = ag.username.split('.').last.capitalize %>
+    <% active_link = (params[:agent_id].to_s == ag.id.to_s) %>
+    <%= link_to(
+          "#{ag.respond_to?(:resolved_agent_icon) ? ag.resolved_agent_icon : (ag.agent_icon || '🤖')} #{short_name}",
+          todos_path(:agent_id => ag.id),
+          :title => "Filter by agent #{ag.username} on #{ag.agent_host}",
+          :style => (active_link ? "font-weight:bold; text-decoration:underline; padding:1px 4px;" : "padding:1px 4px;")
+        )
+    %>
+  <% end %>
+  <%= link_to("+ New Agent", edit_current_user_path, :title => "Provision or manage sub-agents", :style => "font-weight: bold; margin-left: 6px;") %>
+</div>
+<% end %>

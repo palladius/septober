@@ -3,14 +3,43 @@
 # - app/helpers/application_helper
 2.6.0: # minor 2026-11-23
   - UI Overhaul ("Risciacquo in Arno", GHI #14) with Google A2UI + /webapp-that-riccardo-likes design system in septober_v8.
-  - Added 3-tier progressive disclosure (L1 Synoptic table with dynamic rowspan Macro-Group Spine, L2 Hover quick-peek, L3 Ground Truth vs Improvise split drawer).
-  - Replaced polychrome OS emojis with monochrome currentColor Lucide SVGs; separated Human owner (Riccardo with #FACC15 Gold ring avatar) from AI Sub-Agents (Ermete, Lobby).
+  - Added 3-column compact minimalist cards with Auto-Banana (>150B) background covers, 40ch title cap, compact DoW + relative time, and Vedi/Fatto/Snooze action bar.
+  - Replaced polychrome OS emojis with monochrome currentColor Lucide SVGs and Carlesso family cartoon avatars (Riccardo #FACC15, Ale #EF4444, Seby #3B82F6).
   - Fixed header alpha-channel transparency issue (opacity:0.6) in app/views/layouts/_header.html.erb that blended with localhost background (#fca).
-  - Added `just dev` recipe and synced live production todos into local SQLite database for localhost testing.
+  - Added `just dev` and `just auto-banana` recipes and synced live production todos into local SQLite database for localhost testing.
+2.5.05: # 2026-11-04
+  - Added A2UI Swipe-Right-to-Done with 10-second Undo countdown banner and auto-vanish.
+  - Added Swipe-Left-to-Procrastinate (+7 days) gesture for desktop mouse drag and mobile touch.
 2.5.2: # patch 2026-10-23
   - Added septober-classify-move skill (skills/septober-classify-move/SKILL.md) and CLI dispatcher (bin/septober-classify-move).
   - Added justfile recipes for daily GTD travaso (classify, close-safe, drain-work, drain-personal, drain-all, install-skill, test).
   - Preserved Septober Genesis Google Doc link in README.md.
+2.5.04: # 2026-09-06
+  - Added Rails 8 + Native PWA modernization strategy in doc/STRATEGY_RAILS8_PWA.md.
+  - Added docs -> doc symlink.
+2.5.03: # 2026-09-06
+  - Converted in-place description editing to auto-wrapping responsive textarea.
+  - Modernized on-the-spot form container, buttons, and focus glow.
+  - Polished action icons with smooth micro-animations and hover effects.
+2.5.02: # 2026-09-06
+  - Autonomous Agent UI badges: first-row icon and second-row author pill.
+  - Upright header navigation with quick agent filter and provisioning shortcut.
+  - In-app sub-agent management and self-service provisioning on /user/edit.
+  - Standardized agent usernames to palladius.<name> with Pux on pupurabbux.
+  - Full dark-theme compatibility across new subagent views.
+2.5.01: # 2026-09-05
+  - Fixed header navigation pill selector scoping to prevent clipping of title text.
+  - Centered 2026 developer desk banner vertically with cover sizing.
+  - Updated conductor tracks and semantic dependency blueprints.
+2.5.00: # 2026-09-05 Major UI Modernization
+  - Modern Web Guidance overhaul projecting Septober into 2026.
+  - Native Dark First architecture with instant light/dark toggle and persistence.
+  - Reimagined ultra-wide 5:1 header banner with Nano Banana.
+  - Bold, flashy gradient titles and typography enhancements.
+  - Glassmorphic floating "Powered by Palladius" badge.
+  - Improved contrast and pill badges for overdue tasks and project colors.
+2.4.04: # 2026-01-17
+  - Maintenance release: version bump and blueprint update.
 2.5.1: # patch 2025-12-01
   - Enhanced UI with inline editing and project filters.
   - Restored rich todo list visuals (icons, colors, due dates).

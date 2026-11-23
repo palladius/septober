@@ -1,15 +1,281 @@
+/* Septober 2026 Modern Stylesheet
+ * Guided by modern-web-guidance:
+ * - dark-mode: CSS custom properties, light-dark(), color-scheme
+ * - improve-text-layout-and-legibility: text-wrap balance and pretty
+ * - Accessible focus rings, modern surface tokens, and responsive layout
+ */
+
+:root {
+  --font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+  /* Theme Tokens - Light */
+  --bg-light: #f8fafc;
+  --surface-light: #ffffff;
+  --surface-subtle-light: #f1f5f9;
+  --surface-hover-light: #e2e8f0;
+  --border-light: #cbd5e1;
+  --border-subtle-light: #e2e8f0;
+  --text-main-light: #0f172a;
+  --text-muted-light: #64748b;
+  --primary-light: #4f46e5;
+  --primary-hover-light: #4338ca;
+  --primary-subtle-light: #eef2ff;
+  --danger-light: #dc2626;
+  --danger-bg-light: #fef2f2;
+  --warning-light: #d97706;
+  --warning-bg-light: #fffbeb;
+  --success-light: #16a34a;
+  --success-bg-light: #f0fdf4;
+  --shadow-light: 0 4px 20px -2px rgba(15, 23, 42, 0.08), 0 2px 6px -1px rgba(15, 23, 42, 0.04);
+
+  /* Theme Tokens - Dark */
+  --bg-dark: #0b0f19;
+  --surface-dark: #121826;
+  --surface-subtle-dark: #1e2638;
+  --surface-hover-dark: #2a354d;
+  --border-dark: #273349;
+  --border-subtle-dark: #1d2638;
+  --text-main-dark: #f8fafc;
+  --text-muted-dark: #94a3b8;
+  --primary-dark: #6366f1;
+  --primary-hover-dark: #818cf8;
+  --primary-subtle-dark: #1e1b4b;
+  --danger-dark: #f87171;
+  --danger-bg-dark: #450a0a;
+  --warning-dark: #fbbf24;
+  --warning-bg-dark: #451a03;
+  --success-dark: #4ade80;
+  --success-bg-dark: #052e16;
+  --shadow-dark: 0 4px 24px -2px rgba(0, 0, 0, 0.5), 0 2px 8px -1px rgba(0, 0, 0, 0.3);
+
+  /* Active Theme Defaults: DARK FIRST */
+  --bg: var(--bg-dark);
+  --surface: var(--surface-dark);
+  --surface-subtle: var(--surface-subtle-dark);
+  --surface-hover: var(--surface-hover-dark);
+  --border: var(--border-dark);
+  --border-subtle: var(--border-subtle-dark);
+  --text-main: var(--text-main-dark);
+  --text-muted: var(--text-muted-dark);
+  --primary: var(--primary-dark);
+  --primary-hover: var(--primary-hover-dark);
+  --primary-subtle: var(--primary-subtle-dark);
+  --danger: var(--danger-dark);
+  --danger-bg: var(--danger-bg-dark);
+  --warning: var(--warning-dark);
+  --warning-bg: var(--warning-bg-dark);
+  --success: var(--success-dark);
+  --success-bg: var(--success-bg-dark);
+  --shadow: var(--shadow-dark);
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+
+  accent-color: var(--primary);
+  color-scheme: dark light;
+  scrollbar-color: var(--border) transparent;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg: var(--bg-light);
+    --surface: var(--surface-light);
+    --surface-subtle: var(--surface-subtle-light);
+    --surface-hover: var(--surface-hover-light);
+    --border: var(--border-light);
+    --border-subtle: var(--border-subtle-light);
+    --text-main: var(--text-main-light);
+    --text-muted: var(--text-muted-light);
+    --primary: var(--primary-light);
+    --primary-hover: var(--primary-hover-light);
+    --primary-subtle: var(--primary-subtle-light);
+    --danger: var(--danger-light);
+    --danger-bg: var(--danger-bg-light);
+    --warning: var(--warning-light);
+    --warning-bg: var(--warning-bg-light);
+    --success: var(--success-light);
+    --success-bg: var(--success-bg-light);
+    --shadow: var(--shadow-light);
+  }
+}
+
+@supports (color: light-dark(white, black)) {
+  :root {
+    --bg: light-dark(var(--bg-light), var(--bg-dark));
+    --surface: light-dark(var(--surface-light), var(--surface-dark));
+    --surface-subtle: light-dark(var(--surface-subtle-light), var(--surface-subtle-dark));
+    --surface-hover: light-dark(var(--surface-hover-light), var(--surface-hover-dark));
+    --border: light-dark(var(--border-light), var(--border-dark));
+    --border-subtle: light-dark(var(--border-subtle-light), var(--border-subtle-dark));
+    --text-main: light-dark(var(--text-main-light), var(--text-main-dark));
+    --text-muted: light-dark(var(--text-muted-light), var(--text-muted-dark));
+    --primary: light-dark(var(--primary-light), var(--primary-dark));
+    --primary-hover: light-dark(var(--primary-hover-light), var(--primary-hover-dark));
+    --primary-subtle: light-dark(var(--primary-subtle-light), var(--primary-subtle-dark));
+    --danger: light-dark(var(--danger-light), var(--danger-dark));
+    --danger-bg: light-dark(var(--danger-bg-light), var(--danger-bg-dark));
+    --warning: light-dark(var(--warning-light), var(--warning-dark));
+    --warning-bg: light-dark(var(--warning-bg-light), var(--warning-bg-dark));
+    --success: light-dark(var(--success-light), var(--success-dark));
+    --success-bg: light-dark(var(--success-bg-light), var(--success-bg-dark));
+    --shadow: light-dark(var(--shadow-light), var(--shadow-dark));
+  }
+}
+
+html[data-theme='light'],
+body[data-theme='light'] {
+  --bg: var(--bg-light);
+  --surface: var(--surface-light);
+  --surface-subtle: var(--surface-subtle-light);
+  --surface-hover: var(--surface-hover-light);
+  --border: var(--border-light);
+  --border-subtle: var(--border-subtle-light);
+  --text-main: var(--text-main-light);
+  --text-muted: var(--text-muted-light);
+  --primary: var(--primary-light);
+  --primary-hover: var(--primary-hover-light);
+  --primary-subtle: var(--primary-subtle-light);
+  --danger: var(--danger-light);
+  --danger-bg: var(--danger-bg-light);
+  --warning: var(--warning-light);
+  --warning-bg: var(--warning-bg-light);
+  --success: var(--success-light);
+  --success-bg: var(--success-bg-light);
+  --shadow: var(--shadow-light);
+  color-scheme: light;
+}
+
+html[data-theme='dark'],
+body[data-theme='dark'] {
+  --bg: var(--bg-dark);
+  --surface: var(--surface-dark);
+  --surface-subtle: var(--surface-subtle-dark);
+  --surface-hover: var(--surface-hover-dark);
+  --border: var(--border-dark);
+  --border-subtle: var(--border-subtle-dark);
+  --text-main: var(--text-main-dark);
+  --text-muted: var(--text-muted-dark);
+  --primary: var(--primary-dark);
+  --primary-hover: var(--primary-hover-dark);
+  --primary-subtle: var(--primary-subtle-dark);
+  --danger: var(--danger-dark);
+  --danger-bg: var(--danger-bg-dark);
+  --warning: var(--warning-dark);
+  --warning-bg: var(--warning-bg-dark);
+  --success: var(--success-dark);
+  --success-bg: var(--success-bg-dark);
+  --shadow: var(--shadow-dark);
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
 body {
-  background-color: #fff ; /* #4B7399; */
-  font-family: Verdana, Helvetica, Arial;
-  font-size: 14px;
+  background-color: var(--bg);
+  color: var(--text-main);
+  font-family: var(--font-family);
+  font-size: 15px;
+  line-height: 1.55;
+  margin: 0;
+  padding: 0 1rem 3rem;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 {
+  font-size: 2.25rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+  margin: 0.5rem 0 1rem;
+  text-wrap: balance;
+}
+
+/* Flashy page title */
+#container > h1 {
+  background: linear-gradient(135deg, var(--text-main) 30%, var(--primary) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+  filter: drop-shadow(0 2px 8px rgba(99, 102, 241, 0.25));
+  font-size: 2.5rem;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  margin-bottom: 1.25rem;
+}
+
+h2 {
+  color: var(--text-main);
+  font-size: 1.65rem;
+  font-weight: 750;
+  letter-spacing: -0.02em;
+  margin: 0.5rem 0 0.75rem;
+  text-wrap: balance;
+}
+
+h3, h4, h5, h6 {
+  color: var(--text-main);
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  margin: 0.5rem 0 0.75rem;
+  text-wrap: balance;
+}
+
+/* Theme Toggle Button */
+.theme-toggle {
+  align-items: center;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 9999px;
+  bottom: 1.25rem;
+  box-shadow: var(--shadow);
+  color: var(--text-main);
+  cursor: pointer;
+  display: inline-flex;
+  font-family: var(--font-family);
+  font-size: 0.85rem;
+  font-weight: 700;
+  gap: 0.45rem;
+  left: 1.25rem;
+  padding: 0.45rem 0.95rem;
+  position: fixed;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 9999;
+}
+
+.theme-toggle:hover {
+  border-color: var(--primary);
+  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.3);
+  transform: translateY(-2px);
+}
+
+.theme-toggle .theme-icon {
+  font-size: 1rem;
+}
+
+p, blockquote, li {
+  text-wrap: pretty;
+}
+
+a {
+  color: var(--primary);
+  text-decoration: none;
+  transition: color 0.15s ease-in-out;
+}
+
+a:hover {
+  color: var(--primary-hover);
+  text-decoration: underline;
 }
 
 a img {
   border: none;
-}
-
-a {
-  color: #0000FF;
 }
 
 .clear {
@@ -19,32 +285,103 @@ a {
 }
 
 #container {
-  width: 75%;
-  margin: 0 auto;
-  background-color: #FFF;
-  padding: 20px 40px;
-  border: solid 1px black;
-  margin-top: 20px;
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  margin: 1.5rem auto 3rem;
+  max-width: 1100px;
+  padding: 2rem 2.5rem;
+  width: 92%;
 }
 
-#flash_notice, #flash_error, #flash_alert, #flash_riccardo {
-  padding: 5px 8px;
-  margin: 10px 0;
+@media (max-width: 768px) {
+  #container {
+    border-radius: var(--radius-md);
+    margin: 1rem auto;
+    padding: 1.25rem 1rem;
+    width: 98%;
+  }
+}
+
+input[type='text'],
+input[type='password'],
+input[type='email'],
+select,
+textarea {
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-main);
+  font-family: inherit;
+  font-size: 0.95rem;
+  padding: 0.45rem 0.65rem;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+input[type='text']:focus,
+input[type='password']:focus,
+input[type='email']:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--primary);
+  outline: 2px solid var(--primary);
+  outline-offset: 1px;
+}
+
+input[type='submit'],
+button {
+  background-color: var(--primary);
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  color: #ffffff;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 500;
+  padding: 0.45rem 0.9rem;
+  transition: background-color 0.15s ease, transform 0.05s ease;
+}
+
+input[type='submit']:hover,
+button:hover {
+  background-color: var(--primary-hover);
+}
+
+input[type='submit']:active,
+button:active {
+  transform: translateY(1px);
+}
+
+#flash_notice,
+#flash_error,
+#flash_alert,
+#flash_riccardo {
+  border-radius: var(--radius-md);
+  border-style: solid;
+  border-width: 1px;
+  font-weight: 500;
+  margin: 1rem 0;
+  padding: 0.75rem 1.25rem;
 }
 
 #flash_notice {
-  background-color: #CFC;
-  border: solid 1px #6C6;
+  background-color: var(--success-bg);
+  border-color: var(--success);
+  color: var(--success);
 }
 
-#flash_error, #flash_alert {
-  background-color: #FCC;
-  border: solid 1px #C66;
+#flash_error,
+#flash_alert {
+  background-color: var(--danger-bg);
+  border-color: var(--danger);
+  color: var(--danger);
 }
 
 #flash_riccardo {
-  background-color: rgb(255, 255, 180);;
-  border: solid 1px rgb(255, 238, 0);
+  background-color: var(--warning-bg);
+  border-color: var(--warning);
+  color: var(--warning);
 }
 
 .fieldWithErrors {
@@ -52,29 +389,31 @@ a {
 }
 
 .error_messages {
-  width: 400px;
-  border: 2px solid #CF0000;
-  padding: 0px;
-  padding-bottom: 12px;
-  margin-bottom: 20px;
-  background-color: #f0f0f0;
-  font-size: 12px;
+  background-color: var(--danger-bg);
+  border: 1px solid var(--danger);
+  border-radius: var(--radius-md);
+  color: var(--danger);
+  font-size: 0.9rem;
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  width: 100%;
 }
 
 .error_messages h2 {
+  background-color: transparent;
+  color: var(--danger);
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem;
+  padding: 0;
   text-align: left;
-  font-weight: bold;
-  padding: 5px 10px;
-  font-size: 12px;
-  margin: 0;
-  background-color: #c00;
-  color: #fff;
 }
 
 .error_messages p {
-  margin: 8px 10px;
+  margin: 0.5rem 0;
 }
 
 .error_messages ul {
-  margin: 0;
+  margin: 0.5rem 0 0.5rem 1.5rem;
+  padding: 0;
 }

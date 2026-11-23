@@ -1,0 +1,79 @@
+# Septober Next — Modern Agentic Todo System
+# Use `just` to see available commands
+
+set dotenv-load := true
+
+# List available commands
+list:
+    @just -l
+
+# Run the development server
+dev:
+    uv run uvicorn septober.main:app --reload --host 0.0.0.0 --port 8000
+
+# Run tests
+test:
+    uv run pytest -v
+
+# Run tests with coverage
+test-cov:
+    uv run pytest -v --cov=septober --cov-report=term-missing
+
+# Lint code
+lint:
+    uv run ruff check src/ tests/
+
+# Format code
+fmt:
+    uv run ruff format src/ tests/
+
+# Install dependencies
+install:
+    uv sync --all-extras
+
+# Create/update database
+db-init:
+    uv run python -c "from septober.db import create_db_and_tables; create_db_and_tables()"
+
+# Open API docs in browser
+docs:
+    open http://localhost:8000/docs
+
+# Quick smoke test with curl
+smoke:
+    @echo "🏥 Health check..."
+    curl -s http://localhost:8000/healthz | python -m json.tool
+    @echo "\n📊 Status..."
+    curl -s http://localhost:8000/statusz | python -m json.tool
+    @echo "\n📋 Todos..."
+    curl -s http://localhost:8000/api/todos | python -m json.tool
+
+# Create a sample todo via API
+sample-todo:
+    curl -s -X POST http://localhost:8000/api/todos \
+        -H 'Content-Type: application/json' \
+        -d '{"title": "+Buy milk tomorrow @shopping", "category": "personale"}' | python -m json.tool
+
+# Show version
+version:
+    @echo "Septober Next v3.0.0"
+
+# === Obsidian Sync ===
+
+# Preview what obsidian items would be synced (dry run, no API calls)
+obsidian-scan:
+    uv run python scripts/obsidian_scan.py
+
+# Sync obsidian todos into Septober (idempotent, LLM-powered)
+obsidian-sync:
+    uv run python scripts/obsidian_scan.py --ingest
+
+# Full vault sweep (includes old items + wishes)
+obsidian-sync-all:
+    uv run python scripts/obsidian_scan.py --ingest --all --include-wishes
+
+# Dry run without LLM (regex only, for debugging)
+obsidian-scan-nollm:
+    uv run python scripts/obsidian_scan.py --no-llm
+
+

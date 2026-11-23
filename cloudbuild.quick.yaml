@@ -1,0 +1,5 @@
+steps:
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-f', 'Dockerfile.quick', '-t', 'gcr.io/ric-cccwiki/septober-mysql:2026-patch', '.']
+images:
+- 'gcr.io/ric-cccwiki/septober-mysql:2026-patch'

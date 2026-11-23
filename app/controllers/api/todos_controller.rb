@@ -3,7 +3,18 @@ class Api::TodosController < ApplicationController
   #helper :riccardo
   
   def index
-    filter_conditions = { :user_id => current_api_user.id  } 
+    allowed_ids = current_api_user.respond_to?(:family_user_ids) ? current_api_user.family_user_ids : [current_api_user.id]
+    if params[:agent_id].present?
+      target_id = params[:agent_id].to_i
+      query_ids = allowed_ids.include?(target_id) ? [target_id] : []
+    elsif params[:user_id].present?
+      target_id = params[:user_id].to_i
+      query_ids = allowed_ids.include?(target_id) ? [target_id] : []
+    else
+      query_ids = allowed_ids
+    end
+
+    filter_conditions = { :user_id => query_ids } 
     #  Project: , :home_visible => true
     filter_conditions[:project_id] = Project.find_by_name_and_user_id(params[:add_project], current_api_user.id).id if params[:add_project]
     filter_conditions[:projects] = { :home_visible => true } unless params[:add_project] # in which case i show everything
@@ -11,7 +22,7 @@ class Api::TodosController < ApplicationController
       :joins => :project,
       :conditions => filter_conditions, 
       :order => 'active DESC, priority DESC, updated_at DESC',
-      :limit => 20
+      :limit => (params[:limit] || 50).to_i
     respond_to do |format|
       format.html 
       format.xml  { render_todos_xml_or_json :xml,  @todos } # :due_explaination
@@ -40,12 +51,12 @@ class Api::TodosController < ApplicationController
 
   def create
     #pgreen "DEBUG API::TodoController.create()"
-    # 20190512 For some reasons, params comes virgin, wihtout [:todo] so I need to push one level.
-    params[:todo] = params
-    pgray "[RiccDEBUG] API::TodoController.create() - param[:todo]=#{params[:todo]}"
+    # Support both flat JSON params and nested {:todo => {...}}
+    todo_params = params[:todo] || params
+    todo_params = todo_params.except("action", "controller", "format")
+    todo_params[:user_id] = current_api_user.id
 
-    params[:todo][:user_id] = current_api_user.id
-    @todo = Todo.new(params[:todo]) # both HTML and XML :)
+    @todo = Todo.new(todo_params)
     @todo.user_id = current_api_user.id
     @todo.apply_todo_regex_magic() rescue pred("Couldnt apply regex for TODO: #{ @todo }. Error: ''#{ $! }''")
     ret = @todo.save
@@ -193,7 +204,8 @@ private
     def render_todos_xml_or_json(protocol, object_s) # object(s)
       render protocol => object_s,
         :include => {
-          :project=> {:only => [:name, :color ] }
+          :project => {:only => [:name, :color ] },
+          :user    => {:only => [:id, :username, :is_agent, :agent_icon, :agent_host] }
         },
         :methods => [:due_explaination, :tag_list] ,
         :except => [:sys_notes]

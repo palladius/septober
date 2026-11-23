@@ -1,3 +1,24 @@
+# 🚀 SEPTOBER 2026 ROADMAP & TOP PRIORITIES
+
+## 🌟 [P0/URGENT] User Model Parent-Child Agent Hierarchy (Genialata di Riccardo)
+* **Status:** Designed & Specified in `doc/spec_user_agents_subaccounts.md`.
+* **Concept:** Evolve `User` into a **single-level parent-child hierarchy** (`parent_id`) allowing Riccardo (`palladius`) to spawn $N$ autonomous agent copilots (`ermete`, `lobby`, `gamberone`, `antigravity-casa`, `antigravity-laptop`).
+* **Key Specs:**
+  1. **Strict 1-Level Depth:** Master Human -> Child Agents (no grandparents, no infinite loops).
+  2. **Independent Credentials:** Each agent has its own `id`, `username` (`rcarlesso.ermete`), `email` (`palladiusbonton+ermete@gmail.com`), and isolated `password_hash`/`salt`.
+  3. **Blast Radius Control:** If an agent bot goes crazy or leaks credentials, revoke/rotate only that agent's password; Riccardo's master login is unaffected.
+  4. **Login-Level Attribution:** Agents authenticate natively via HTTP Basic Auth. Every todo created is stamped with that agent's `user_id`.
+  5. **UI Badges:** Visual attribution badges in the web UI table (`[🚛 Ermete]`, `[🦞 Lobby]`, `[💻 Antigravity]`).
+  6. **Unified Workspace:** Parent user automatically queries family workspace (`Todo.where(user_id: family_user_ids)`).
+* **Reference Spec:** See `doc/spec_user_agents_subaccounts.md` for complete Rails migration, model validations, and UI blueprints.
+
+## 🧠 [P1] Semantic File Dependencies (`semantic-deps.yml` + `GEMINI.md`)
+* **Idea:** Link an explicit declarative dependency graph (e.g. `etc/semantic-deps.yml` referenced by `GEMINI.md` / `CLAUDE.md`) instructing LLM agents that edits to File A (e.g. `schema.rb`, API route, model) strictly require co-updating File B (e.g. serializers, migrations, docs, frontend types).
+* **Objective:** Prevent silent out-of-sync agent edits (co-change propagation for AI coding agents).
+* **Online State of the Art:** Investigated existing patterns (Cursor rules glob targeting, Aider RepoMap/PageRank, Claude Code CLAUDE.md file-specific rules, CodeQL semantic graphs, and Git co-change mining).
+
+---
+
 Docker
 ======
 

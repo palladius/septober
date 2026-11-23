@@ -12,3 +12,16 @@
 <% @user.projects.publics.each do |project| %>
 	- <%= render_project(project) %> (<b><%= project.todos.active.count %></b>/<%= project.todos.count %> todos) <br/>
 <%end%>
+
+<% if @user.agents.any? %>
+<hr/>
+<h2>🤖 Autonomous Copilots & Agents</h2>
+<ul>
+  <% @user.agents.each do |agent| %>
+    <li>
+      <span style="font-size: 1.3em;"><%= agent.agent_icon || '🤖' %></span>
+      <b><%= agent.username %></b> (Host: <code><%= agent.agent_host %></code>, <%= agent.todos.active.count %> active tasks)
+    </li>
+  <% end %>
+</ul>
+<% end %>
