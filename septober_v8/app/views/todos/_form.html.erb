@@ -1,0 +1,40 @@
+<%= form_with model: todo, local: true do |f| %>
+  <% if todo.errors.any? %>
+    <div class="alert alert-danger">
+      <ul>
+        <% todo.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="form-group">
+    <%= f.label :name %>
+    <%= f.text_field :name %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :project_id %>
+    <%= f.collection_select :project_id, Project.all, :id, :name, { prompt: "Select Project" }, { class: "form-control" } %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :due %>
+    <%= f.date_field :due %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :priority %>
+    <%= f.number_field :priority, in: 1..5 %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :description %>
+    <%= f.text_area :description %>
+  </div>
+
+  <div class="form-group">
+    <%= f.submit class: "btn btn-primary" %>
+  </div>
+<% end %>

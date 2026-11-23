@@ -30,4 +30,7 @@ septober_v8/vendor/bundle/
 septober_v8/storage/*.sqlite3*
 septober_v8/log/*
 septober_v8/tmp/*
+**/master.key
+**/.kamal/secrets
+
 

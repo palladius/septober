@@ -1,0 +1,28 @@
+<%= turbo_frame_tag todo do %>
+  <div class="todo-item <%= 'done' if todo.done? %>" style="border-bottom: 1px solid #e5e7eb; padding: 0.5rem 0; display: flex; justify-content: space-between; align-items: flex-start;">
+    <div style="flex-grow: 1;">
+      <div>
+        <%= render_todo_icons(todo) %>
+        <strong>
+          <%# Link to edit page, but Turbo will intercept if we configure the edit view correctly %>
+          <%= link_to todo.name, edit_todo_path(todo), data: { turbo_frame: dom_id(todo) } %>
+        </strong>
+        <span style="font-size: 0.8rem; color: <%= todo.project&.color.presence || '#6b7280' %>; font-weight: bold;">
+          <%= todo.project.name if todo.project %>
+        </span>
+         | <%= render_duetime(todo) %>
+      </div>
+      <div style="font-size: 0.8rem; color: #6b7280; margin-top: 2px;">
+        <%= render_todo_second_row(todo) %>
+      </div>
+    </div>
+    <div style="white-space: nowrap; margin-left: 10px;">
+      <% unless todo.done? %>
+        <%= link_to "Done", done_todo_path(todo), class: "btn btn-secondary", style: "font-size: 0.8rem;" %>
+      <% else %>
+        <%= link_to "Undone", undone_todo_path(todo), class: "btn btn-secondary", style: "font-size: 0.8rem; background-color: #9ca3af;" %>
+      <% end %>
+      <%= link_to "Edit", edit_todo_path(todo), class: "btn", style: "font-size: 0.8rem; background-color: #e5e7eb;", data: { turbo: false } %>
+    </div>
+  </div>
+<% end %>
