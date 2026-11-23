@@ -1,6 +1,11 @@
 # PS TODO make this DRY, now you've to remember to update as well the following files:
 # - ./VERSION
 # - app/helpers/application_helper
+2.6.1: # patch 2026-11-23
+  - Added autofocus on "Nuovo todo" Quick-Add input and fixed `en.quick_created` I18n translation fallback.
+  - Redesigned `/projects` (index, show, form) with 3-column colored Project Cards and L1 Synoptic Table driven by `project.color` from the Project model, plus interactive color swatch picker.
+  - Added Dev/Test-only "Aggiungi fake/test data" empty-state seed button (shown strictly when `@todos.empty?` and never in production).
+  - Added global dark/light A2UI CSS system for forms, inputs, cards, and buttons across `/users/:id/edit`, `/projects`, and `/todos`.
 2.6.0: # minor 2026-11-23
   - UI Overhaul ("Risciacquo in Arno", GHI #14) with Google A2UI + /webapp-that-riccardo-likes design system in septober_v8.
   - Added 3-column compact minimalist cards with Auto-Banana (>150B) background covers, 40ch title cap, compact DoW + relative time, and Vedi/Fatto/Snooze action bar.

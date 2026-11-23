@@ -4,6 +4,12 @@ class ApplicationController < ActionController::Base
   private
 
   def current_user
+    if Rails.env.development?
+      palladius = User.find_by(username: "palladius")
+      if palladius && (session[:user_id].nil? || User.find_by(id: session[:user_id])&.username == "test_provision")
+        session[:user_id] = palladius.id
+      end
+    end
     if session[:user_id]
       @current_user ||= User.find(session[:user_id])
     elsif Rails.env.development?

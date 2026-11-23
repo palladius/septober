@@ -32,7 +32,7 @@
         --bg-odd: #FAFAFC;
         --bg-even: #F2F4F8;
         --bg-hover: #E2E8F0;
-        --bg-track: #E2E8F0;
+        --bg-track: #F1F5F9;
         --bg-segment-active: #FFFFFF;
         --border-subtle: #E2E8F0;
         --border-strong: #CBD5E1;
@@ -53,6 +53,113 @@
         font-variant-numeric: tabular-nums;
         font-feature-settings: "tnum" 1, "zero" 1;
       }
+
+      /* Global Carlessian A2UI Form, Card, Button & Typography System (for /users/:id/edit, /projects, /todos/:id/edit, /login) */
+      .card {
+        background-color: var(--bg-surface);
+        border: 1px solid var(--border-subtle);
+        border-radius: 14px;
+        padding: 20px 24px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+        margin-bottom: 16px;
+      }
+      .card h1, .card h2, .card h3 {
+        color: var(--text-primary);
+        font-weight: 700;
+        letter-spacing: -0.01em;
+        margin-top: 0;
+        margin-bottom: 12px;
+      }
+      .card h2 { font-size: 16px; }
+      .card h3 { font-size: 14px; color: var(--text-secondary); }
+      .form-group {
+        margin-bottom: 14px;
+      }
+      .form-group label, label {
+        display: block;
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--text-secondary);
+        margin-bottom: 5px;
+      }
+      .form-control,
+      .card input[type="text"],
+      .card input[type="email"],
+      .card input[type="password"],
+      .card input[type="number"],
+      .card input[type="date"],
+      .card input[type="url"],
+      .card select,
+      .card textarea {
+        width: 100%;
+        background-color: var(--bg-track) !important;
+        color: var(--text-primary) !important;
+        border: 1px solid var(--border-strong) !important;
+        border-radius: 9px;
+        padding: 8px 12px;
+        font-size: 13px;
+        outline: none;
+        transition: border-color 0.15s ease, box-shadow 0.15s ease;
+      }
+      .form-control:focus,
+      .card input:focus,
+      .card select:focus,
+      .card textarea:focus {
+        border-color: var(--accent) !important;
+        box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.2);
+      }
+      .card textarea {
+        min-height: 90px;
+        resize: vertical;
+      }
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        padding: 7px 14px;
+        border-radius: 9px;
+        font-size: 12.5px;
+        font-weight: 600;
+        text-decoration: none;
+        cursor: pointer;
+        border: 1px solid var(--border-strong);
+        background-color: var(--bg-track);
+        color: var(--text-primary);
+        transition: all 0.14s ease;
+      }
+      .btn:hover {
+        background-color: var(--bg-hover);
+        border-color: var(--text-secondary);
+      }
+      .btn-primary {
+        background-color: #F59E0B !important;
+        border-color: #F59E0B !important;
+        color: #0F172A !important;
+      }
+      .btn-primary:hover {
+        background-color: #FBBF24 !important;
+      }
+      .btn-secondary {
+        background-color: rgba(16, 185, 129, 0.18) !important;
+        border-color: rgba(16, 185, 129, 0.45) !important;
+        color: #34D399 !important;
+      }
+      .btn-secondary:hover {
+        background-color: #10B981 !important;
+        color: #052E16 !important;
+      }
+      .alert-danger {
+        background: rgba(244, 63, 94, 0.14);
+        border: 1px solid rgba(244, 63, 94, 0.4);
+        color: #FDA4AF;
+        padding: 10px 14px;
+        border-radius: 10px;
+        margin-bottom: 14px;
+        font-size: 12px;
+      }
+
+      /* Synoptic Table Styles */
       .synoptic-table {
         width: 100%;
         border-collapse: collapse;
@@ -107,19 +214,6 @@
       .num-chip--p3 { background: rgba(234, 179,  8, 0.08); border: 1px solid rgba(234, 179,  8, 0.28); color: #eab308; }
       .num-chip--p2 { background: transparent; border: 1px solid transparent; color: #34d399; }
       .num-chip--p1 { background: transparent; border: 1px solid transparent; color: #64748B; }
-
-      /* Engineering Date Sub-Grid: DoW + YYYY-MM-DD + Delta */
-      .date-grid {
-        display: inline-grid;
-        grid-template-columns: 3.4ch 10.5ch 4.5ch;
-        align-items: baseline;
-        gap: 4px;
-        font-size: 12px;
-      }
-      .date-dow { color: var(--text-secondary); font-weight: 400; }
-      .date-dow.weekend { color: #38BDF8; }
-      .date-iso { font-weight: 600; color: var(--text-primary); }
-      .date-slot { text-align: right; color: var(--text-muted); font-size: 11px; }
 
       .seg-group {
         display: inline-flex;
@@ -190,7 +284,7 @@
       <!-- Right Controls: Human User Avatar (Canonical Carlesso Gold Ring #FACC15) + IT/EN + Theme -->
       <div class="flex items-center gap-2.5">
         <% if logged_in? %>
-          <a href="<%= edit_user_path(current_user) %>" class="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full border text-decoration-none" style="border-color: var(--border-subtle); background: var(--bg-track);" title="Human User: <%= current_user.username %>">
+          <a href="<%= edit_user_path(current_user) %>" class="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full border text-decoration-none hover:border-amber-400 transition" style="border-color: var(--border-subtle); background: var(--bg-track);" title="Edit Profile: <%= current_user.username %>">
             <span class="w-5 h-5 rounded-full overflow-hidden inline-flex shrink-0" style="box-shadow: 0 0 0 2px #FACC15;">
               <svg viewBox="0 0 24 24" class="w-full h-full"><circle cx="12" cy="12" r="12" fill="#1E293B"/><circle cx="12" cy="11" r="6" fill="#FDBA74"/><path d="M6 9c1-3 11-3 12 0" fill="#78350F"/><rect x="7.5" y="9.5" width="3.5" height="2.2" rx="0.6" fill="none" stroke="#0F172A" stroke-width="1.1"/><rect x="13" y="9.5" width="3.5" height="2.2" rx="0.6" fill="none" stroke="#0F172A" stroke-width="1.1"/><line x1="11" y1="10.5" x2="13" y2="10.5" stroke="#0F172A" stroke-width="1.1"/><path d="M9.5 14c1.2 1.2 3.8 1.2 5 0" fill="none" stroke="#7C2D12" stroke-width="1.2" stroke-linecap="round"/></svg>
             </span>
@@ -216,8 +310,8 @@
 
     <main class="flex-1 max-w-6xl w-full mx-auto px-4 py-4 space-y-3">
       <% flash.each do |key, value| %>
-        <div class="px-3.5 py-2 rounded-xl text-xs border" style="background: var(--bg-surface); border-color: var(--border-strong); color: var(--text-primary);">
-          <%= value %>
+        <div class="px-3.5 py-2 rounded-xl text-xs border flex items-center justify-between" style="background: var(--bg-surface); border-color: var(--accent); color: var(--text-primary);">
+          <span><%= value %></span>
         </div>
       <% end %>
 
@@ -231,6 +325,12 @@
         <strong style="color: var(--text-primary);">Septober</strong>
         <a href="https://github.com/palladius/septober/blob/master/CHANGELOG.yml" target="_blank" rel="noopener" class="font-mono hover:underline" data-version="<%= app_ver %>">v<%= app_ver %></a>
         <span class="font-mono text-[11px] px-2 py-0.5 rounded border" style="background: var(--bg-track); border-color: var(--border-strong); color: #34d399;" data-env="<%= Rails.env %>">ENV: <%= Rails.env %> (localhost)</span>
+        <% if (Rails.env.development? || Rails.env.test?) && defined?(Todo) && Todo.where(user_id: current_user&.id).exists? %>
+          <%= button_to "Reset 0 Todos (Test Empty State)", clear_all_dev_todos_path, method: :post,
+                class: "text-[10px] font-mono px-2 py-0.5 rounded border cursor-pointer hover:border-rose-500 hover:text-rose-400 transition",
+                style: "background: var(--bg-track); border-color: var(--border-subtle); color: var(--text-muted);",
+                form: { style: "display:inline;" } %>
+        <% end %>
       </div>
       <div class="flex items-center gap-3">
         <a href="https://github.com/palladius/septober" target="_blank" rel="noopener" class="hover:underline">GH Repo</a>

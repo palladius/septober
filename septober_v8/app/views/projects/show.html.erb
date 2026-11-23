@@ -1,14 +1,42 @@
-<div class="card">
-  <h2><%= @project.name %></h2>
-  <p><%= @project.description %></p>
-  
-  <h3>Todos in this project</h3>
-  <ul>
-    <% @project.todos.each do |todo| %>
-      <li><%= link_to todo.name, todo %></li>
-    <% end %>
-  </ul>
+<%
+  color_palette = {
+    "green" => "#10B981", "yellow" => "#FACC15", "orange" => "#F97316",
+    "pink" => "#EC4899", "magenta" => "#EC4899", "cyan" => "#06B6D4",
+    "blue" => "#3B82F6", "purple" => "#A855F7", "red" => "#F43F5E", "gray" => "#94A3B8"
+  }
+  raw_color = @project.color.to_s.strip.presence || "amber"
+  css_color = color_palette[raw_color.downcase] || (raw_color.start_with?("#") ? raw_color : "#F59E0B")
+%>
 
-  <%= link_to "Edit", edit_project_path(@project), class: "btn btn-secondary" %>
-  <%= link_to "Back", projects_path, class: "btn" %>
+<div class="card" style="border-left: 4px solid <%= css_color %>;">
+  <div class="flex items-center justify-between mb-3">
+    <div class="flex items-center gap-2.5">
+      <span class="w-5 h-5 rounded-md inline-block border border-white/30" style="background-color: <%= css_color %>;"></span>
+      <h2 class="m-0" style="color: <%= css_color %>;"><%= @project.name %></h2>
+      <span class="text-xs font-mono px-2 py-0.5 rounded border" style="background: <%= css_color %>22; border-color: <%= css_color %>66; color: <%= css_color %>;">
+        color: <%= raw_color %>
+      </span>
+    </div>
+    <div class="flex items-center gap-2">
+      <%= link_to "Edit Project", edit_project_path(@project), class: "btn btn-primary" %>
+      <%= link_to "All Projects", projects_path, class: "btn" %>
+    </div>
+  </div>
+
+  <p class="text-xs mb-4" style="color: var(--text-secondary);"><%= @project.description %></p>
+
+  <h3>Todos in <%= @project.name %> (<%= @project.todos.count %>)</h3>
+  <div class="space-y-1.5">
+    <% @project.todos.order(active: :desc, priority: :desc).each do |todo| %>
+      <div class="p-2.5 rounded-lg border flex items-center justify-between text-xs" style="background: var(--bg-track); border-color: var(--border-subtle);">
+        <div class="flex items-center gap-2">
+          <span class="num-chip num-chip--p<%= (todo.priority || 3).clamp(1,5) %>" style="min-width: 30px;">P<%= todo.priority || 3 %></span>
+          <a href="<%= todo_path(todo) %>" class="font-semibold hover:underline <%= todo.active ? '' : 'line-through opacity-50' %>" style="color: var(--text-primary);">
+            #<%= todo.id %> — <%= todo.name %>
+          </a>
+        </div>
+        <span class="font-mono text-[11px]" style="color: var(--text-muted);"><%= todo.due %></span>
+      </div>
+    <% end %>
+  </div>
 </div>

@@ -1,35 +1,70 @@
-<%= form_with model: project, local: true do |f| %>
-  <% if project.errors.any? %>
-    <div class="alert alert-danger">
-      <ul>
-        <% project.errors.full_messages.each do |msg| %>
-          <li><%= msg %></li>
+<%
+  swatches = [
+    ["green",   "#10B981"],
+    ["yellow",  "#FACC15"],
+    ["pink",    "#EC4899"],
+    ["cyan",    "#06B6D4"],
+    ["orange",  "#F97316"],
+    ["purple",  "#A855F7"],
+    ["blue",    "#3B82F6"],
+    ["red",     "#F43F5E"],
+    ["gray",    "#94A3B8"]
+  ]
+%>
+<div class="card" style="max-width: 520px; margin: 0 auto;">
+  <%= form_with model: project, local: true do |f| %>
+    <% if project.errors.any? %>
+      <div class="alert-danger">
+        <ul class="m-0 pl-4">
+          <% project.errors.full_messages.each do |msg| %>
+            <li><%= msg %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <div class="form-group">
+      <%= f.label :name, "Project Name (lowercase, digits, _)" %>
+      <%= f.text_field :name, class: "form-control", autofocus: true %>
+    </div>
+
+    <div class="form-group">
+      <%= f.label :color, "Project Color (Model field: project.color)" %>
+      <div class="flex items-center gap-2 mb-2">
+        <%= f.text_field :color, id: "project-color-input", class: "form-control", placeholder: "e.g. green, yellow, pink, #10B981" %>
+      </div>
+      <div class="flex flex-wrap items-center gap-1.5">
+        <% swatches.each do |name, hex| %>
+          <button type="button"
+                  onclick="document.getElementById('project-color-input').value = '<%= name %>';"
+                  class="px-2.5 py-1 rounded-lg text-xs font-mono font-semibold border cursor-pointer inline-flex items-center gap-1.5"
+                  style="background: <%= hex %>22; border-color: <%= hex %>88; color: <%= hex %>;">
+            <span class="w-3 h-3 rounded-sm inline-block" style="background: <%= hex %>;"></span>
+            <span><%= name %></span>
+          </button>
         <% end %>
-      </ul>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <%= f.label :description %>
+      <%= f.text_area :description, class: "form-control" %>
+    </div>
+
+    <div class="flex items-center gap-6 my-3">
+      <label class="inline-flex items-center gap-2 cursor-pointer m-0">
+        <%= f.check_box :active %>
+        <span>Active</span>
+      </label>
+      <label class="inline-flex items-center gap-2 cursor-pointer m-0">
+        <%= f.check_box :home_visible %>
+        <span>Home Visible</span>
+      </label>
+    </div>
+
+    <div class="flex items-center gap-2 pt-2">
+      <%= f.submit class: "btn btn-primary" %>
+      <a href="<%= projects_path %>" class="btn">Annulla</a>
     </div>
   <% end %>
-
-  <div class="form-group">
-    <%= f.label :name %>
-    <%= f.text_field :name %>
-  </div>
-
-  <div class="form-group">
-    <%= f.label :description %>
-    <%= f.text_area :description %>
-  </div>
-
-  <div class="form-group">
-    <%= f.label :color %>
-    <%= f.text_field :color %>
-  </div>
-
-  <div class="form-group">
-    <%= f.label :active %>
-    <%= f.check_box :active %>
-  </div>
-
-  <div class="form-group">
-    <%= f.submit class: "btn btn-primary" %>
-  </div>
-<% end %>
+</div>
