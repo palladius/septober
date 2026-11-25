@@ -67,13 +67,52 @@ class TodosController < ApplicationController
   end
 
   def update
-    @todo = Todo.find(params[:id])
-    if @todo.update_attributes(params[:todo])
-      flash[:notice] = "Successfully updated todo ##{@todo.id}"
-      #redirect_to todo_url
-      redirect_to todos_url
+    @todo = Todo.find_securely(current_user, params[:id])
+    todo_attrs = params[:todo] || {}
+    saved = @todo.update_attributes(todo_attrs)
+
+    # Fallback for vintage todos whose legacy name/project might fail unrelated validations
+    # when only inline-updating progress_status or priority within valid bounds.
+    if !saved && todo_attrs.any? && (todo_attrs.keys.map(&:to_s) - ['progress_status', 'priority']).empty?
+      direct_updates = {}
+      bounds_ok = true
+      if todo_attrs.key?(:progress_status) || todo_attrs.key?('progress_status')
+        pv = (todo_attrs[:progress_status] || todo_attrs['progress_status']).to_i
+        bounds_ok = false unless (0..100).include?(pv)
+        direct_updates[:progress_status] = pv
+      end
+      if todo_attrs.key?(:priority) || todo_attrs.key?('priority')
+        prv = (todo_attrs[:priority] || todo_attrs['priority']).to_i
+        bounds_ok = false unless (1..5).include?(prv)
+        direct_updates[:priority] = prv
+      end
+      if bounds_ok && direct_updates.any?
+        direct_updates[:updated_at] = Time.now
+        Todo.update_all(direct_updates, { :id => @todo.id })
+        @todo.reload
+        saved = true
+      end
+    end
+
+    if saved
+      if request.xhr? || request.format.json?
+        render :json => {
+          :ok => true,
+          :id => @todo.id,
+          :priority => @todo.priority,
+          :google_priority => (5 - @todo.priority.to_i),
+          :progress_status => @todo.progress_status
+        }
+      else
+        flash[:notice] = "Successfully updated todo ##{@todo.id}"
+        redirect_to todos_url
+      end
     else
-      render :action => 'edit'
+      if request.xhr? || request.format.json?
+        render :json => { :ok => false, :errors => @todo.errors.full_messages }, :status => 422
+      else
+        render :action => 'edit'
+      end
     end
   end
   
@@ -134,10 +173,18 @@ private
   def _update_field(field_name,new_val)
     @todo = Todo.find_securely(current_user,params[:id])
     if @todo.update_attributes( field_name.to_sym => new_val )
-      flash[:notice] = "Successfully set '#{field_name}'='#{new_val}' for Todo ##{params[:id]}"
-      redirect_to todos_url
+      if request.xhr? || request.format.json?
+        render :json => { :ok => true, :id => @todo.id, field_name.to_sym => @todo.send(field_name) }
+      else
+        flash[:notice] = "Successfully set '#{field_name}'='#{new_val}' for Todo ##{params[:id]}"
+        redirect_to todos_url
+      end
     else
-      render :action => 'edit'
+      if request.xhr? || request.format.json?
+        render :json => { :ok => false, :errors => @todo.errors.full_messages }, :status => 422
+      else
+        render :action => 'edit'
+      end
     end
   end
   

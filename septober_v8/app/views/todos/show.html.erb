@@ -65,11 +65,11 @@
       <% end %>
     </div>
 
-    <!-- Clickable URL Banner -->
+    <!-- Compact Clickable URL Pill (emoji only) -->
     <% if safe_url %>
-      <div class="p-3.5 rounded-xl border border-indigo-500/35 bg-indigo-500/10 flex flex-wrap items-center justify-between gap-2 min-w-0">
-        <span class="text-xs font-bold uppercase tracking-wider text-indigo-300">🔗 URL</span>
-        <a href="<%= safe_url %>" target="_blank" rel="noopener noreferrer" class="text-sm font-mono font-semibold text-indigo-400 hover:underline break-all min-w-0 flex-1" style="overflow-wrap: anywhere;">
+      <div class="inline-flex flex-wrap items-center gap-2 px-3 py-1.5 rounded-lg border border-indigo-500/35 bg-indigo-500/10 max-w-full min-w-0" title="Link di riferimento">
+        <span aria-hidden="true">🔗</span>
+        <a href="<%= safe_url %>" target="_blank" rel="noopener noreferrer" class="text-xs sm:text-sm font-mono font-semibold text-indigo-400 hover:underline break-all min-w-0" style="overflow-wrap: anywhere;">
           <%= raw_url %> ↗
         </a>
       </div>
@@ -91,7 +91,21 @@
     </div>
 
     <!-- Metadata Grid -->
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+    <%
+      gp_map = {
+        5 => { p: 0, code: "P0", label: "Critical", color: "#ef4444" },
+        4 => { p: 1, code: "P1", label: "High",     color: "#f97316" },
+        3 => { p: 2, code: "P2", label: "Normal",   color: "#eab308" },
+        2 => { p: 3, code: "P3", label: "Low",      color: "#0ea5e9" },
+        1 => { p: 4, code: "P4", label: "Backlog",  color: "#94a3b8" }
+      }
+      db_prio = [[@todo.priority.to_i, 1].max, 5].min
+      pm = gp_map[db_prio]
+      where_str = @todo.where.to_s.strip
+      aerial_embed = where_str.present? ? "https://www.google.com/maps/embed?origin=mfe&pb=!1m4!2m1!1s#{CGI.escape(where_str).gsub('!', '%21')}!5e1!6i16" : nil
+      ext_maps = where_str.present? ? "https://www.google.com/maps/search/?api=1&query=#{CGI.escape(where_str)}" : nil
+    %>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3" id="v8-meta-grid">
       <!-- Due Date (Red if past!) -->
       <div class="p-3.5 rounded-xl border min-w-0 <%= is_overdue ? 'bg-red-500/10 border-red-500/50' : '' %>" style="<%= 'background: var(--bg-odd); border-color: var(--border-subtle);' unless is_overdue %>">
         <div class="text-xs font-bold uppercase tracking-wider <%= is_overdue ? 'text-red-400' : '' %>" style="<%= 'color: var(--text-muted);' unless is_overdue %>">Scadenza (Due)</div>
@@ -108,23 +122,109 @@
         </div>
       </div>
 
-      <!-- Priority -->
-      <div class="p-3.5 rounded-xl border min-w-0" style="background: var(--bg-odd); border-color: var(--border-subtle);">
-        <div class="text-xs font-bold uppercase tracking-wider" style="color: var(--text-muted);">Priorità</div>
-        <div class="mt-1 font-bold text-sm">P<%= @todo.priority %> / 5</div>
-      </div>
-
-      <!-- Progress -->
-      <div class="p-3.5 rounded-xl border min-w-0" style="background: var(--bg-odd); border-color: var(--border-subtle);">
-        <div class="text-xs font-bold uppercase tracking-wider" style="color: var(--text-muted);">Avanzamento</div>
-        <div class="mt-1.5 flex items-center gap-2">
-          <div class="flex-1 h-2 rounded-full overflow-hidden" style="background: var(--bg-track);">
-            <div class="h-full bg-indigo-500 rounded-full" style="width: <%= progress_pct %>%;"></div>
-          </div>
-          <span class="text-xs font-mono font-bold"><%= progress_pct %>%</span>
+      <!-- Priority (Google P0..P4 Rotary Stops) -->
+      <div class="p-3.5 rounded-xl border min-w-0 space-y-2" id="v8-prio-card" data-todo-id="<%= @todo.id %>" style="background: var(--bg-odd); border-color: var(--border-subtle); border-left: 3px solid <%= pm[:color] %>;">
+        <div class="flex items-center justify-between gap-2">
+          <span class="text-xs font-bold uppercase tracking-wider" style="color: var(--text-muted);">Priorità (P0–P4)</span>
+          <span id="v8-prio-status" class="text-[11px] font-mono font-bold text-emerald-400"></span>
+        </div>
+        <div class="font-extrabold text-sm" id="v8-prio-label" style="color: <%= pm[:color] %>;"><%= pm[:code] %> · <%= pm[:label] %> <span class="text-xs font-mono opacity-60">(DB <%= db_prio %>/5)</span></div>
+        <div class="flex flex-wrap gap-1">
+          <% [0, 1, 2, 3, 4].each do |gp| %>
+            <% d = 5 - gp; m = gp_map[d] %>
+            <button type="button" data-v8-gp="<%= gp %>" data-v8-db="<%= d %>" data-v8-color="<%= m[:color] %>" data-v8-code="<%= m[:code] %>" data-v8-label="<%= m[:label] %>" class="px-2 py-0.5 rounded text-xs font-mono font-bold border transition" style="border-color: <%= gp == pm[:p] ? m[:color] : 'var(--border-subtle)' %>; color: <%= gp == pm[:p] ? m[:color] : 'var(--text-secondary)' %>;"><%= m[:code] %></button>
+          <% end %>
         </div>
       </div>
+
+      <!-- Editable Progress Slider -->
+      <div class="p-3.5 rounded-xl border min-w-0 space-y-2" id="v8-prog-card" data-todo-id="<%= @todo.id %>" style="background: var(--bg-odd); border-color: var(--border-subtle);">
+        <div class="flex items-center justify-between gap-2">
+          <span class="text-xs font-bold uppercase tracking-wider" style="color: var(--text-muted);">Avanzamento</span>
+          <span id="v8-prog-status" class="text-[11px] font-mono font-bold text-emerald-400"></span>
+        </div>
+        <div class="flex items-center gap-2">
+          <input id="v8-prog-slider" type="range" min="0" max="100" step="5" value="<%= progress_pct %>" class="flex-1 cursor-pointer accent-indigo-500" />
+          <span id="v8-prog-val" class="text-xs font-mono font-bold"><%= progress_pct %>%</span>
+        </div>
+      </div>
+
+      <!-- Mini Aerial Google Maps (Expandable) -->
+      <% if aerial_embed %>
+        <div class="p-3.5 rounded-xl border min-w-0 space-y-2" id="v8-where-card" style="background: var(--bg-odd); border-color: var(--border-subtle);">
+          <div class="flex items-center justify-between gap-2">
+            <span class="text-xs font-bold uppercase tracking-wider" style="color: var(--text-muted);">Luogo (Where)</span>
+            <button type="button" id="v8-map-toggle" class="px-2 py-0.5 rounded text-xs font-bold border hover:border-indigo-500" style="border-color: var(--border-subtle);">🔍 Espandi</button>
+          </div>
+          <div class="flex items-center justify-between gap-2 text-xs font-semibold">
+            <span class="truncate">📍 <%= where_str %></span>
+            <a href="<%= ext_maps %>" target="_blank" rel="noopener noreferrer" class="text-indigo-400 hover:underline shrink-0">Maps ↗</a>
+          </div>
+          <div id="v8-map-box" class="relative rounded-lg overflow-hidden border h-28 transition-all" style="border-color: var(--border-subtle);">
+            <iframe src="<%= aerial_embed %>" class="w-full h-full border-0 pointer-events-none" id="v8-map-iframe" loading="lazy" title="Vista aerea <%= where_str %>"></iframe>
+            <button type="button" id="v8-map-overlay" class="absolute inset-0 w-full h-full flex items-end justify-start p-1.5 bg-gradient-to-b from-transparent to-slate-950/70 text-[11px] font-bold text-white">🛰️ Clicca per espandere</button>
+          </div>
+        </div>
+      <% end %>
     </div>
+
+    <script>
+      (function() {
+        var csrf = (document.querySelector('meta[name="csrf-token"]') || {}).content || '';
+        function patchTodo(id, fields, statusEl) {
+          if (statusEl) statusEl.textContent = 'Salvo…';
+          fetch('/todos/' + id + '.json', {
+            method: 'PATCH',
+            credentials: 'same-origin',
+            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSRF-Token': csrf },
+            body: JSON.stringify({ todo: fields })
+          }).then(function(r) {
+            if (!r.ok) throw new Error();
+            if (statusEl) { statusEl.textContent = '✓ Salvato'; setTimeout(function() { statusEl.textContent = ''; }, 1600); }
+          }).catch(function() {
+            if (statusEl) statusEl.textContent = '⚠ Errore';
+          });
+        }
+        var slider = document.getElementById('v8-prog-slider');
+        var valEl  = document.getElementById('v8-prog-val');
+        var progCard = document.getElementById('v8-prog-card');
+        if (slider && progCard) {
+          slider.addEventListener('input', function() { valEl.textContent = slider.value + '%'; });
+          slider.addEventListener('change', function() { patchTodo(progCard.dataset.todoId, { progress_status: parseInt(slider.value, 10) }, document.getElementById('v8-prog-status')); });
+        }
+        var prioCard = document.getElementById('v8-prio-card');
+        if (prioCard) {
+          prioCard.querySelectorAll('[data-v8-gp]').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+              var db = parseInt(btn.dataset.v8Db, 10);
+              var col = btn.dataset.v8Color;
+              prioCard.style.borderLeftColor = col;
+              var lbl = document.getElementById('v8-prio-label');
+              if (lbl) { lbl.style.color = col; lbl.innerHTML = btn.dataset.v8Code + ' · ' + btn.dataset.v8Label + ' <span class="text-xs font-mono opacity-60">(DB ' + db + '/5)</span>'; }
+              patchTodo(prioCard.dataset.todoId, { priority: db }, document.getElementById('v8-prio-status'));
+            });
+          });
+        }
+        var whereCard = document.getElementById('v8-where-card');
+        var mapBtn = document.getElementById('v8-map-toggle');
+        var mapOverlay = document.getElementById('v8-map-overlay');
+        var mapBox = document.getElementById('v8-map-box');
+        var mapIframe = document.getElementById('v8-map-iframe');
+        function toggleV8Map(forceOpen) {
+          if (!whereCard) return;
+          var exp = typeof forceOpen === 'boolean' ? forceOpen : !whereCard.classList.contains('lg:col-span-4');
+          whereCard.classList.toggle('sm:col-span-2', exp);
+          whereCard.classList.toggle('lg:col-span-4', exp);
+          mapBox.classList.toggle('h-28', !exp);
+          mapBox.classList.toggle('h-80', exp);
+          mapIframe.classList.toggle('pointer-events-none', !exp);
+          if (mapOverlay) mapOverlay.style.display = exp ? 'none' : '';
+          if (mapBtn) mapBtn.textContent = exp ? '✕ Riduci' : '🔍 Espandi';
+        }
+        if (mapBtn) mapBtn.addEventListener('click', function() { toggleV8Map(); });
+        if (mapOverlay) mapOverlay.addEventListener('click', function() { toggleV8Map(true); });
+      })();
+    </script>
 
     <!-- Dependencies -->
     <div class="p-4 rounded-xl border min-w-0 space-y-2" style="background: var(--bg-odd); border-color: var(--border-subtle);">

@@ -130,8 +130,44 @@ class TestTodosShowHelper < Minitest::Test
     assert_includes html, 'Subtask long title without overflow'
   end
 
+  def test_google_priority_p0_to_p4_mapping
+    assert_equal 0, @view.google_priority_level(5)
+    assert_equal 1, @view.google_priority_level(4)
+    assert_equal 2, @view.google_priority_level(3)
+    assert_equal 3, @view.google_priority_level(2)
+    assert_equal 4, @view.google_priority_level(1)
+
+    m0 = @view.google_priority_meta(5)
+    assert_equal 'P0', m0[:code]
+    assert_equal '#ef4444', m0[:color]
+    assert_equal 5, m0[:db]
+
+    m4 = @view.google_priority_meta(1)
+    assert_equal 'P4', m4[:code]
+    assert_equal 1, m4[:db]
+  end
+
+  def test_aerial_google_maps_embed_url_without_xframe_redirect
+    aerial = @view.todo_google_maps_embed_url('HSLU / Uni!', true, 16)
+    assert_includes aerial, 'https://www.google.com/maps/embed?origin=mfe&pb=!1m4!2m1!1s'
+    assert_includes aerial, 'HSLU+%2F+Uni%21'
+    assert_includes aerial, '!5e1!6i16'
+
+    road = @view.todo_google_maps_embed_url('Tödistrasse 27, Zürich', false, 15)
+    assert_includes road, '!5e0!6i15'
+    assert_nil @view.todo_google_maps_embed_url('   ')
+  end
+
+  def test_show_template_has_compact_url_and_interactive_widgets
+    erb_src = File.read(File.expand_path('../app/views/todos/_show.html.erb', __dir__))
+    refute_includes erb_src, 'Link / Riferimento', 'URL banner should use compact emoji only without long text title'
+    assert_includes erb_src, 'data-todo-prio-widget'
+    assert_includes erb_src, 'data-todo-progress-slider'
+    assert_includes erb_src, 'data-todo-where-widget'
+  end
+
   def test_ruby19_compatibility_of_rails3_files
-    ['app/helpers/todos_helper.rb', 'app/views/todos/_show.html.erb'].each do |rel|
+    ['app/controllers/todos_controller.rb', 'app/helpers/todos_helper.rb', 'app/views/todos/_show.html.erb'].each do |rel|
       full = File.expand_path("../#{rel}", __dir__)
       refute_includes File.read(full), '&.', "#{rel} must not use &. for Ruby 1.9.3 compatibility"
     end

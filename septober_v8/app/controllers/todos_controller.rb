@@ -60,17 +60,37 @@ class TodosController < ApplicationController
   def update
     @todo = Todo.find(params[:id])
     if @todo.update(todo_params)
-      if turbo_frame_request?
-        render partial: "todo", locals: { todo: @todo }
-      else
-        flash[:notice] = "Successfully updated todo ##{@todo.id}"
-        redirect_to todos_url
+      respond_to do |format|
+        format.json do
+          render json: {
+            ok: true,
+            id: @todo.id,
+            priority: @todo.priority,
+            google_priority: (5 - @todo.priority.to_i),
+            progress_status: @todo.progress_status
+          }
+        end
+        format.html do
+          if turbo_frame_request?
+            render partial: "todo", locals: { todo: @todo }
+          elsif request.xhr?
+            render json: { ok: true, id: @todo.id, priority: @todo.priority, progress_status: @todo.progress_status }
+          else
+            flash[:notice] = "Successfully updated todo ##{@todo.id}"
+            redirect_to todos_url
+          end
+        end
       end
     else
-      if turbo_frame_request?
-        render partial: "inline_form", locals: { todo: @todo }, status: :unprocessable_entity
-      else
-        render :edit, status: :unprocessable_entity
+      respond_to do |format|
+        format.json { render json: { ok: false, errors: @todo.errors.full_messages }, status: :unprocessable_entity }
+        format.html do
+          if turbo_frame_request?
+            render partial: "inline_form", locals: { todo: @todo }, status: :unprocessable_entity
+          else
+            render :edit, status: :unprocessable_entity
+          end
+        end
       end
     end
   end

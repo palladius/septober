@@ -90,10 +90,10 @@
     <% end %>
   </header>
 
-  <!-- Clickable External URL Callout -->
+  <!-- Compact Clickable External URL Pill (emoji only, zero bloat) -->
   <% if url_link_html %>
-    <div class="todo-url-banner">
-      <span class="todo-url-label">🔗 Link / Riferimento</span>
+    <div class="todo-url-banner" title="Link / riferimento esterno">
+      <span class="todo-url-icon" aria-hidden="true">🔗</span>
       <div class="todo-url-value">
         <%= url_link_html %>
       </div>
@@ -132,6 +132,12 @@
   </section>
 
   <!-- Structured Metadata Grid -->
+  <%
+    prio_meta = google_priority_meta(@todo.priority)
+    maps_aerial_url = @todo.where? ? todo_google_maps_embed_url(@todo.where, true, 16) : nil
+    maps_road_url   = @todo.where? ? todo_google_maps_embed_url(@todo.where, false, 15) : nil
+    maps_ext_url    = @todo.where? ? todo_google_maps_external_url(@todo.where) : nil
+  %>
   <section class="todo-meta-grid">
     <!-- Due Date (Red highlight when overdue!) -->
     <div class="todo-meta-card <%= is_overdue ? 'is-overdue-card' : '' %>">
@@ -141,40 +147,155 @@
       </div>
     </div>
 
-    <!-- Priority + Quick Up/Down -->
-    <div class="todo-meta-card">
-      <div class="todo-meta-label">Priorità</div>
-      <div class="todo-meta-value todo-priority-row">
-        <span class="todo-priority-badge prio-<%= @todo.priority %>">
-          <%= render_priority_icon(@todo.priority) %>
-          <%= priority_name(@todo.priority).to_s.humanize %> (<%= @todo.priority %>/5)
-        </span>
-        <span class="todo-priority-controls" title="Alza o abbassa priorità">
-          <%= eventual_link_priority(@todo, true) %>
-          <%= eventual_link_priority(@todo, false) %>
-        </span>
+    <!-- Priority: Google P0..P4 Color-Changing Rotary Wheel (mapped from DB 5..1) -->
+    <div
+      class="todo-meta-card todo-prio-card gp-<%= prio_meta[:p] %>"
+      data-todo-prio-widget
+      data-todo-id="<%= @todo.id %>"
+      data-google-p="<%= prio_meta[:p] %>"
+      data-db-priority="<%= prio_meta[:db] %>"
+      style="--gp-index: <%= prio_meta[:p] %>; --gp-color: <%= prio_meta[:color] %>;"
+    >
+      <div class="todo-meta-label-row">
+        <span class="todo-meta-label">Priorità (P0–P4)</span>
+        <span class="todo-inline-save-status" data-prio-status aria-live="polite"></span>
       </div>
-    </div>
+      <div class="todo-prio-wheel-wrap">
+        <button
+          type="button"
+          class="todo-prio-dial"
+          data-prio-dial
+          aria-label="Ruota o clicca per cambiare priorità da P0 a P4"
+          title="Rotella priorità Google P0–P4: clicca, trascina o usa la rotellina del mouse"
+        >
+          <span class="todo-prio-dial-ticks" aria-hidden="true">
+            <i class="tick t0"></i>
+            <i class="tick t1"></i>
+            <i class="tick t2"></i>
+            <i class="tick t3"></i>
+            <i class="tick t4"></i>
+          </span>
+          <span class="todo-prio-dial-knob">
+            <span class="todo-prio-dial-needle"></span>
+          </span>
+          <span class="todo-prio-dial-code" data-prio-dial-code><%= prio_meta[:code] %></span>
+        </button>
 
-    <!-- Progress Status -->
-    <div class="todo-meta-card">
-      <div class="todo-meta-label">Avanzamento</div>
-      <div class="todo-meta-value">
-        <div class="todo-progress-wrap">
-          <div class="todo-progress-track">
-            <div class="todo-progress-fill" style="width: <%= progress_pct %>%"></div>
+        <div class="todo-prio-right">
+          <div class="todo-prio-readout">
+            <span class="todo-prio-pill" data-prio-pill><%= prio_meta[:code] %> · <%= prio_meta[:label] %></span>
+            <span class="todo-prio-db-hint" data-prio-db-hint title="Septober DB priority (5=P0 .. 1=P4)">DB <%= prio_meta[:db] %>/5</span>
           </div>
-          <span class="todo-progress-text"><%= progress_pct %>%</span>
+          <div class="todo-prio-stops" role="radiogroup" aria-label="Seleziona priorità P0-P4">
+            <% [0, 1, 2, 3, 4].each do |gp| %>
+              <% db_val = 5 - gp %>
+              <% m = google_priority_meta(db_val) %>
+              <button
+                type="button"
+                class="todo-prio-stop gp-stop-<%= gp %> <%= prio_meta[:p] == gp ? 'is-selected' : '' %>"
+                data-prio-stop="<%= gp %>"
+                data-db-val="<%= db_val %>"
+                role="radio"
+                aria-checked="<%= prio_meta[:p] == gp ? 'true' : 'false' %>"
+                title="<%= m[:code] %> · <%= m[:label] %> (DB <%= db_val %>/5)"
+              ><%= m[:code] %></button>
+            <% end %>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- Where / Location -->
-    <% if @todo.where? %>
-      <div class="todo-meta-card">
-        <div class="todo-meta-label">Luogo (Where)</div>
-        <div class="todo-meta-value">
-          <%= link_to "📍 #{@todo.where} ↗", "https://maps.google.com/?q=#{CGI.escape(@todo.where.to_s)}", :target => '_blank', :rel => 'noopener noreferrer', :class => 'todo-where-link' %>
+    <!-- Progress Status: Editable Drag-and-Save Slider (0%..100%) -->
+    <div
+      class="todo-meta-card todo-progress-card"
+      data-todo-progress-widget
+      data-todo-id="<%= @todo.id %>"
+    >
+      <div class="todo-meta-label-row">
+        <span class="todo-meta-label">Avanzamento</span>
+        <span class="todo-inline-save-status" data-progress-status aria-live="polite"></span>
+      </div>
+      <div class="todo-meta-value">
+        <div class="todo-progress-editor">
+          <input
+            type="range"
+            class="todo-progress-slider"
+            data-todo-progress-slider
+            min="0"
+            max="100"
+            step="<%= (progress_pct % 5 == 0) ? 5 : 1 %>"
+            value="<%= progress_pct %>"
+            style="--progress-pct: <%= progress_pct %>%;"
+            aria-label="Avanzamento percentuale (trascina per salvare)"
+            title="Trascina la barra per impostare e salvare l'avanzamento (Shift per step di 1%)"
+          />
+          <span class="todo-progress-text" data-todo-progress-text><%= progress_pct %>%</span>
+        </div>
+        <div class="todo-progress-quick-ticks">
+          <% [0, 25, 50, 75, 100].each do |tick| %>
+            <button
+              type="button"
+              class="todo-progress-tick <%= progress_pct == tick ? 'is-active' : '' %>"
+              data-progress-tick="<%= tick %>"
+            ><%= tick %>%</button>
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+    <!-- Where / Location: Mini Aerial Google Maps + Expandable Toggle -->
+    <% if @todo.where? && maps_aerial_url %>
+      <div
+        class="todo-meta-card todo-where-card"
+        data-todo-where-widget
+        data-aerial-src="<%= maps_aerial_url %>"
+        data-road-src="<%= maps_road_url %>"
+      >
+        <div class="todo-meta-label-row">
+          <span class="todo-meta-label">Luogo (Where)</span>
+          <div class="todo-where-actions">
+            <button
+              type="button"
+              class="todo-map-mode-btn"
+              data-map-mode-toggle
+              hidden
+              title="Cambia tra vista aerea satellitare e mappa stradale"
+            >🗺️ Mappa</button>
+            <button
+              type="button"
+              class="todo-map-toggle-btn"
+              data-map-expand-toggle
+              aria-expanded="false"
+              title="Espandi o riduci la mappa aerea"
+            >🔍 Espandi</button>
+          </div>
+        </div>
+
+        <div class="todo-where-header-line">
+          <button type="button" class="todo-where-place-btn" data-map-expand-trigger title="Clicca per espandere/ridurre la mappa">
+            📍 <span><%= @todo.where %></span>
+          </button>
+          <%= link_to 'Google Maps ↗', maps_ext_url, :target => '_blank', :rel => 'noopener noreferrer', :class => 'todo-where-ext-link', :title => 'Apri in Google Maps' %>
+        </div>
+
+        <div class="todo-where-map-frame" data-map-frame>
+          <iframe
+            class="todo-where-iframe"
+            data-map-iframe
+            src="<%= maps_aerial_url %>"
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            title="Vista aerea Google Maps: <%= @todo.where %>"
+            allowfullscreen
+          ></iframe>
+          <button
+            type="button"
+            class="todo-where-mini-overlay"
+            data-map-overlay
+            aria-label="Espandi mini mappa aerea di <%= @todo.where %>"
+          >
+            <span class="todo-where-mini-badge">🛰️ Vista aerea · Clicca per espandere</span>
+          </button>
         </div>
       </div>
     <% end %>

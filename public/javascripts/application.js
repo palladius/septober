@@ -223,9 +223,284 @@
     }
   }
 
+  // --- Todo #show Interactive Widgets (v2.6.3): Progress Slider, P0..P4 Dial, Aerial Map ---
+  var GP_META = [
+    { p: 0, code: 'P0', label: 'Critical', color: '#ef4444', db: 5 },
+    { p: 1, code: 'P1', label: 'High',     color: '#f97316', db: 4 },
+    { p: 2, code: 'P2', label: 'Normal',   color: '#eab308', db: 3 },
+    { p: 3, code: 'P3', label: 'Low',      color: '#0ea5e9', db: 2 },
+    { p: 4, code: 'P4', label: 'Backlog',  color: '#94a3b8', db: 1 }
+  ];
+
+  function getCsrfToken() {
+    var meta = document.querySelector('meta[name="csrf-token"]');
+    return meta ? meta.getAttribute('content') : '';
+  }
+
+  function showSaveStatus(el, state, text) {
+    if (!el) return;
+    if (el._hideTimer) clearTimeout(el._hideTimer);
+    el.className = 'todo-inline-save-status is-visible is-' + state;
+    el.textContent = text;
+    if (state === 'saved') {
+      el._hideTimer = setTimeout(function() {
+        el.classList.remove('is-visible');
+      }, 1800);
+    }
+  }
+
+  function saveTodoInline(todoId, todoFields, statusEl) {
+    if (!todoId) return;
+    showSaveStatus(statusEl, 'saving', 'Salvo…');
+    var headers = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'X-Requested-With': 'XMLHttpRequest'
+    };
+    var csrf = getCsrfToken();
+    if (csrf) headers['X-CSRF-Token'] = csrf;
+
+    fetch('/todos/' + encodeURIComponent(todoId) + '.json', {
+      method: 'POST',
+      credentials: 'same-origin',
+      headers: headers,
+      body: JSON.stringify({ _method: 'put', todo: todoFields })
+    })
+      .then(function(res) {
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        return res.json();
+      })
+      .then(function() {
+        showSaveStatus(statusEl, 'saved', '✓ Salvato');
+      })
+      .catch(function() {
+        showSaveStatus(statusEl, 'error', '⚠ Errore');
+      });
+  }
+
+  function initProgressWidget(card) {
+    if (!card || card.getAttribute('data-bound')) return;
+    card.setAttribute('data-bound', 'true');
+    var todoId = card.getAttribute('data-todo-id');
+    var slider = card.querySelector('[data-todo-progress-slider]');
+    var label  = card.querySelector('[data-todo-progress-text]');
+    var status = card.querySelector('[data-progress-status]');
+    var ticks  = card.querySelectorAll('[data-progress-tick]');
+    if (!slider) return;
+
+    function syncVisual(val) {
+      var pct = Math.max(0, Math.min(100, parseInt(val, 10) || 0));
+      slider.value = pct;
+      slider.style.setProperty('--progress-pct', pct + '%');
+      if (label) label.textContent = pct + '%';
+      for (var i = 0; i < ticks.length; i++) {
+        var tv = parseInt(ticks[i].getAttribute('data-progress-tick'), 10);
+        ticks[i].classList.toggle('is-active', tv === pct);
+      }
+      return pct;
+    }
+
+    slider.addEventListener('mousedown', function(e) {
+      slider.step = e.shiftKey ? '1' : '5';
+    });
+    slider.addEventListener('touchstart', function() {
+      slider.step = '5';
+    }, { passive: true });
+    slider.addEventListener('keydown', function(e) {
+      slider.step = e.shiftKey ? '1' : '5';
+    });
+
+    slider.addEventListener('input', function() {
+      syncVisual(slider.value);
+    });
+
+    slider.addEventListener('change', function() {
+      var pct = syncVisual(slider.value);
+      saveTodoInline(todoId, { progress_status: pct }, status);
+    });
+
+    for (var i = 0; i < ticks.length; i++) {
+      (function(btn) {
+        btn.addEventListener('click', function() {
+          var pct = syncVisual(btn.getAttribute('data-progress-tick'));
+          saveTodoInline(todoId, { progress_status: pct }, status);
+        });
+      })(ticks[i]);
+    }
+  }
+
+  function initPriorityWheelWidget(card) {
+    if (!card || card.getAttribute('data-bound')) return;
+    card.setAttribute('data-bound', 'true');
+    var todoId   = card.getAttribute('data-todo-id');
+    var dial     = card.querySelector('[data-prio-dial]');
+    var dialCode = card.querySelector('[data-prio-dial-code]');
+    var pill     = card.querySelector('[data-prio-pill]');
+    var dbHint   = card.querySelector('[data-prio-db-hint]');
+    var status   = card.querySelector('[data-prio-status]');
+    var stops    = card.querySelectorAll('[data-prio-stop]');
+    var currentP = Math.max(0, Math.min(4, parseInt(card.getAttribute('data-google-p'), 10) || 2));
+    var saveDebounce = null;
+
+    function applyGoogleP(gp, shouldSave) {
+      var clamped = Math.max(0, Math.min(4, gp));
+      var meta = GP_META[clamped];
+      currentP = clamped;
+      card.setAttribute('data-google-p', String(clamped));
+      card.setAttribute('data-db-priority', String(meta.db));
+      card.style.setProperty('--gp-index', String(clamped));
+      card.style.setProperty('--gp-color', meta.color);
+      for (var c = 0; c <= 4; c++) {
+        card.classList.toggle('gp-' + c, c === clamped);
+      }
+      if (dialCode) dialCode.textContent = meta.code;
+      if (pill) pill.textContent = meta.code + ' · ' + meta.label;
+      if (dbHint) dbHint.textContent = 'DB ' + meta.db + '/5';
+      for (var i = 0; i < stops.length; i++) {
+        var sp = parseInt(stops[i].getAttribute('data-prio-stop'), 10);
+        var sel = sp === clamped;
+        stops[i].classList.toggle('is-selected', sel);
+        stops[i].setAttribute('aria-checked', sel ? 'true' : 'false');
+      }
+      if (shouldSave) {
+        if (saveDebounce) clearTimeout(saveDebounce);
+        saveDebounce = setTimeout(function() {
+          saveTodoInline(todoId, { priority: meta.db }, status);
+        }, 160);
+      }
+    }
+
+    for (var i = 0; i < stops.length; i++) {
+      (function(btn) {
+        btn.addEventListener('click', function() {
+          var gp = parseInt(btn.getAttribute('data-prio-stop'), 10);
+          applyGoogleP(gp, true);
+        });
+      })(stops[i]);
+    }
+
+    if (dial) {
+      // Mouse wheel over rotary dial: scroll up -> more urgent (towards P0), scroll down -> towards P4
+      dial.addEventListener('wheel', function(e) {
+        e.preventDefault();
+        var delta = e.deltaY > 0 ? 1 : -1;
+        var next = Math.max(0, Math.min(4, currentP + delta));
+        if (next !== currentP) applyGoogleP(next, true);
+      }, { passive: false });
+
+      // Dragging horizontally or vertically on the knob spins the wheel smoothly
+      var draggingDial = false;
+      var dragMoved = false;
+      var startX = 0;
+      var startY = 0;
+      var startP = currentP;
+
+      dial.addEventListener('mousedown', function(e) {
+        if (e.button !== 0) return;
+        draggingDial = true;
+        dragMoved = false;
+        startX = e.clientX;
+        startY = e.clientY;
+        startP = currentP;
+      });
+      window.addEventListener('mousemove', function(e) {
+        if (!draggingDial) return;
+        var dx = e.clientX - startX;
+        var dy = e.clientY - startY;
+        if (Math.abs(dx) > 6 || Math.abs(dy) > 6) {
+          dragMoved = true;
+          var steps = Math.round((dx + dy) / 18);
+          var targetP = Math.max(0, Math.min(4, startP + steps));
+          if (targetP !== currentP) applyGoogleP(targetP, true);
+        }
+      });
+      window.addEventListener('mouseup', function() {
+        draggingDial = false;
+      });
+
+      dial.addEventListener('click', function(e) {
+        if (dragMoved) {
+          dragMoved = false;
+          e.preventDefault();
+          return;
+        }
+        applyGoogleP((currentP + 1) % 5, true);
+      });
+
+      dial.addEventListener('keydown', function(e) {
+        if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+          e.preventDefault();
+          applyGoogleP(Math.max(0, currentP - 1), true);
+        } else if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+          e.preventDefault();
+          applyGoogleP(Math.min(4, currentP + 1), true);
+        }
+      });
+    }
+  }
+
+  function initWhereMapWidget(card) {
+    if (!card || card.getAttribute('data-bound')) return;
+    card.setAttribute('data-bound', 'true');
+    var toggleBtn  = card.querySelector('[data-map-expand-toggle]');
+    var placeBtn   = card.querySelector('[data-map-expand-trigger]');
+    var overlayBtn = card.querySelector('[data-map-overlay]');
+    var modeBtn    = card.querySelector('[data-map-mode-toggle]');
+    var iframe     = card.querySelector('[data-map-iframe]');
+    var aerialSrc  = card.getAttribute('data-aerial-src');
+    var roadSrc    = card.getAttribute('data-road-src');
+    var isAerial   = true;
+
+    function setExpanded(expanded) {
+      card.classList.toggle('is-expanded', expanded);
+      if (toggleBtn) {
+        toggleBtn.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+        toggleBtn.textContent = expanded ? '✕ Riduci' : '🔍 Espandi';
+      }
+      if (modeBtn) {
+        modeBtn.hidden = !expanded;
+      }
+    }
+
+    if (toggleBtn) {
+      toggleBtn.addEventListener('click', function() {
+        setExpanded(!card.classList.contains('is-expanded'));
+      });
+    }
+    if (placeBtn) {
+      placeBtn.addEventListener('click', function() {
+        setExpanded(!card.classList.contains('is-expanded'));
+      });
+    }
+    if (overlayBtn) {
+      overlayBtn.addEventListener('click', function() {
+        setExpanded(true);
+      });
+    }
+    if (modeBtn && iframe && aerialSrc && roadSrc) {
+      modeBtn.addEventListener('click', function() {
+        isAerial = !isAerial;
+        iframe.src = isAerial ? aerialSrc : roadSrc;
+        modeBtn.textContent = isAerial ? '🗺️ Mappa' : '🛰️ Aerea';
+      });
+    }
+  }
+
+  function initTodoShowWidgets() {
+    var progCards = document.querySelectorAll('[data-todo-progress-widget]');
+    for (var i = 0; i < progCards.length; i++) initProgressWidget(progCards[i]);
+
+    var prioCards = document.querySelectorAll('[data-todo-prio-widget]');
+    for (var j = 0; j < prioCards.length; j++) initPriorityWheelWidget(prioCards[j]);
+
+    var whereCards = document.querySelectorAll('[data-todo-where-widget]');
+    for (var k = 0; k < whereCards.length; k++) initWhereMapWidget(whereCards[k]);
+  }
+
   function boot() {
     initToggle();
     initSwipeTodos();
+    initTodoShowWidgets();
   }
 
   if (document.readyState === 'loading') {

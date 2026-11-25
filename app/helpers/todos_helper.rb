@@ -173,6 +173,39 @@ module TodosHelper
     u
   end
 
+  GOOGLE_PRIORITY_META = {
+    5 => { :p => 0, :code => 'P0', :label => 'Critical', :color => '#ef4444', :db => 5 },
+    4 => { :p => 1, :code => 'P1', :label => 'High',     :color => '#f97316', :db => 4 },
+    3 => { :p => 2, :code => 'P2', :label => 'Normal',   :color => '#eab308', :db => 3 },
+    2 => { :p => 3, :code => 'P3', :label => 'Low',      :color => '#0ea5e9', :db => 2 },
+    1 => { :p => 4, :code => 'P4', :label => 'Backlog',  :color => '#94a3b8', :db => 1 }
+  }
+
+  def google_priority_level(db_priority)
+    clamped = [[db_priority.to_i, 1].max, 5].min
+    5 - clamped
+  end
+
+  def google_priority_meta(db_priority)
+    clamped = [[db_priority.to_i, 1].max, 5].min
+    GOOGLE_PRIORITY_META[clamped]
+  end
+
+  def todo_google_maps_embed_url(raw_where, aerial = true, zoom = 16)
+    w = raw_where.to_s.strip
+    return nil if w.empty?
+    encoded = CGI.escape(w).gsub('!', '%21')
+    map_mode = aerial ? 1 : 0
+    z = [[zoom.to_i, 3].max, 20].min
+    "https://www.google.com/maps/embed?origin=mfe&pb=!1m4!2m1!1s#{encoded}!5e#{map_mode}!6i#{z}"
+  end
+
+  def todo_google_maps_external_url(raw_where)
+    w = raw_where.to_s.strip
+    return nil if w.empty?
+    "https://www.google.com/maps/search/?api=1&query=#{CGI.escape(w)}"
+  end
+
   def render_todo_clickable_url(todo)
     href = safe_todo_external_url(todo.try(:url))
     return nil unless href
