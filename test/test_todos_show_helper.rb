@@ -164,12 +164,53 @@ class TestTodosShowHelper < Minitest::Test
     assert_includes erb_src, 'data-todo-prio-widget'
     assert_includes erb_src, 'data-todo-progress-slider'
     assert_includes erb_src, 'data-todo-where-widget'
+    assert_includes erb_src, 'data-todo-fav-toggle'
+    assert_includes erb_src, 'data-todo-project-widget'
+    assert_includes erb_src, 'data-todo-title-widget'
+    assert_includes erb_src, 'data-todo-tags-widget'
+    assert_includes erb_src, 'data-todo-url-widget'
+    assert_includes erb_src, 'data-todo-desc-widget'
+    assert_includes erb_src, 'data-todo-due-widget'
+  end
+
+  def test_modern_bento_form_replaces_year_2000_controls
+    form_src = File.read(File.expand_path('../app/views/todos/_form.html.erb', __dir__))
+    assert_includes form_src, 'data-todo-modern-form'
+    assert_includes form_src, 'name="todo[tag_list]"'
+    refute_includes form_src, 'text_field :tags', 'Must use tag_list instead of broken legacy :tags association field'
+    refute_includes form_src, 'date_select :due', 'Must use native HTML5 date input instead of 3-select date_select'
+    refute_includes form_src, 'datetime_select :hide_until', 'Must use datetime-local instead of 5-select datetime_select'
+    assert_includes form_src, 'data-form-prio-widget'
+    assert_includes form_src, 'data-form-progress-widget'
+    assert_includes form_src, 'data-form-where-widget'
+  end
+
+  def test_project_option_label_distinguishes_subagent_projects
+    viewer = Struct.new(:id).new(1)
+    agent  = Struct.new(:id, :username).new(42, 'palladius.ermete')
+    own_proj = Struct.new(:name, :active, :user_id, :user).new('personal', true, 1, viewer)
+    agt_proj = Struct.new(:name, :active, :user_id, :user).new('personal', true, 42, agent)
+    inactive = Struct.new(:name, :active, :user_id, :user).new('oldproj', false, 1, viewer)
+
+    assert_equal 'personal', @view.project_option_label(own_proj, viewer)
+    assert_equal 'personal · palladius.ermete', @view.project_option_label(agt_proj, viewer)
+    assert_equal 'oldproj (inattivo)', @view.project_option_label(inactive, viewer)
   end
 
   def test_ruby19_compatibility_of_rails3_files
-    ['app/controllers/todos_controller.rb', 'app/helpers/todos_helper.rb', 'app/views/todos/_show.html.erb'].each do |rel|
+    rails3_files = [
+      'app/models/todo.rb',
+      'app/controllers/todos_controller.rb',
+      'app/helpers/todos_helper.rb',
+      'app/views/todos/_show.html.erb',
+      'app/views/todos/_form.html.erb',
+      'app/views/todos/edit.html.erb',
+      'app/views/todos/new.html.erb'
+    ]
+    rails3_files.each do |rel|
       full = File.expand_path("../#{rel}", __dir__)
-      refute_includes File.read(full), '&.', "#{rel} must not use &. for Ruby 1.9.3 compatibility"
+      src = File.read(full)
+      refute_includes src, '&.', "#{rel} must not use &. for Ruby 1.9.3 compatibility"
     end
   end
 end

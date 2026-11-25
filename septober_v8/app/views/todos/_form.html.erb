@@ -1,7 +1,41 @@
-<%= form_with model: todo, local: true do |f| %>
+<%
+  is_new = todo.new_record?
+  gp_map = {
+    5 => { p: 0, code: "P0", label: "Critical", color: "#ef4444" },
+    4 => { p: 1, code: "P1", label: "High",     color: "#f97316" },
+    3 => { p: 2, code: "P2", label: "Normal",   color: "#eab308" },
+    2 => { p: 3, code: "P3", label: "Low",      color: "#0ea5e9" },
+    1 => { p: 4, code: "P4", label: "Backlog",  color: "#94a3b8" }
+  }
+  prio_db  = (1..5).include?(todo.priority.to_i) ? todo.priority.to_i : 3
+  pm       = gp_map[prio_db]
+  prog_pct = [[todo.progress_status.to_i, 0].max, 100].min
+  where_s  = todo.where.to_s.strip
+  aerial   = where_s.present? ? "https://www.google.com/maps/embed?origin=mfe&pb=!1m4!2m1!1s#{CGI.escape(where_s).gsub('!', '%21')}!5e1!6i16" : nil
+%>
+
+<%= form_with model: todo, local: true, class: "space-y-4" do |f| %>
+  <!-- Toolbar -->
+  <div class="flex flex-wrap items-center justify-between gap-3 pb-4 border-b" style="border-color: var(--border-subtle);">
+    <div class="flex flex-wrap items-center gap-2">
+      <% if is_new %>
+        <%= link_to "← Tutti i Todo", todos_path, class: "btn text-xs" %>
+        <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-500/15 text-emerald-400">✨ Nuovo Todo</span>
+      <% else %>
+        <%= link_to "← Torna a ##{todo.id}", todo_path(todo), class: "btn text-xs" %>
+        <span class="px-2.5 py-0.5 rounded-full text-xs font-mono font-bold" style="background: var(--bg-even); border: 1px solid var(--border-subtle);">#<%= todo.id %></span>
+      <% end %>
+    </div>
+    <div class="flex items-center gap-2">
+      <%= link_to "Annulla", is_new ? todos_path : todo_path(todo), class: "btn text-xs" %>
+      <%= f.submit(is_new ? "✨ Crea Todo" : "💾 Salva modifiche", class: "btn btn-primary text-xs font-bold cursor-pointer") %>
+    </div>
+  </div>
+
   <% if todo.errors.any? %>
-    <div class="alert alert-danger">
-      <ul>
+    <div class="p-3 rounded-xl border border-red-500/50 bg-red-500/10 text-red-400 text-xs space-y-1">
+      <div class="font-bold">⚠️ Correggi gli errori seguenti:</div>
+      <ul class="list-disc pl-5">
         <% todo.errors.full_messages.each do |msg| %>
           <li><%= msg %></li>
         <% end %>
@@ -9,32 +43,108 @@
     </div>
   <% end %>
 
-  <div class="form-group">
-    <%= f.label :name %>
-    <%= f.text_field :name %>
+  <!-- Hero Title, Toggles, Project & Tags -->
+  <div class="p-4 rounded-xl border space-y-3" style="background: var(--bg-odd); border-color: var(--border-subtle);">
+    <div>
+      <%= f.label :name, "Titolo del Todo", class: "block text-xs font-bold uppercase tracking-wider mb-1", style: "color: var(--text-muted);" %>
+      <%= f.text_field :name, required: true, placeholder: "Titolo chiaro e azionabile…", class: "w-full px-3 py-2 rounded-lg border text-lg font-extrabold", style: "background: var(--bg-surface); border-color: var(--border-subtle);" %>
+    </div>
+
+    <div class="flex flex-wrap items-center gap-3">
+      <label class="inline-flex items-center gap-2 px-3 py-1 rounded-full border text-xs font-bold cursor-pointer" style="background: var(--bg-surface); border-color: var(--border-subtle);">
+        <%= f.check_box :active %> <span>✓ Attivo</span>
+      </label>
+      <label class="inline-flex items-center gap-2 px-3 py-1 rounded-full border text-xs font-bold cursor-pointer" style="background: var(--bg-surface); border-color: var(--border-subtle);">
+        <%= f.check_box :favorite %> <span>★ Preferito</span>
+      </label>
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border text-xs font-bold" style="background: var(--bg-surface); border-color: var(--border-subtle);">
+        <span>📁 Progetto:</span>
+        <%= f.collection_select :project_id, Project.all, :id, :name, {}, { class: "bg-transparent font-bold outline-none" } %>
+      </div>
+    </div>
+
+    <div>
+      <%= f.label :tag_list, "🏷️ Tag (separati da virgola)", class: "block text-xs font-bold uppercase tracking-wider mb-1", style: "color: var(--text-muted);" %>
+      <%= f.text_field :tag_list, value: todo.tag_list.to_s, placeholder: "ai, slides, hslu…", class: "w-full px-3 py-1.5 rounded-lg border text-sm", style: "background: var(--bg-surface); border-color: var(--border-subtle);" %>
+    </div>
   </div>
 
-  <div class="form-group">
-    <%= f.label :project_id %>
-    <%= f.collection_select :project_id, Project.all, :id, :name, { prompt: "Select Project" }, { class: "form-control" } %>
+  <!-- 2-Col Bento Grid -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+    <div class="lg:col-span-2 space-y-4">
+      <div class="p-4 rounded-xl border space-y-2" style="background: var(--bg-odd); border-color: var(--border-subtle);">
+        <%= f.label :description, "📝 Contesto & Descrizione", class: "block text-xs font-bold uppercase tracking-wider", style: "color: var(--text-muted);" %>
+        <%= f.text_area :description, rows: 7, class: "w-full p-3 rounded-lg border text-sm leading-relaxed", style: "background: var(--bg-surface); border-color: var(--border-subtle);" %>
+      </div>
+
+      <div class="p-4 rounded-xl border grid grid-cols-1 sm:grid-cols-2 gap-3" style="background: var(--bg-odd); border-color: var(--border-subtle);">
+        <div>
+          <%= f.label :url, "🔗 URL esterno", class: "block text-xs font-bold uppercase tracking-wider mb-1", style: "color: var(--text-muted);" %>
+          <%= f.text_field :url, placeholder: "https://...", class: "w-full px-3 py-1.5 rounded-lg border text-xs font-mono", style: "background: var(--bg-surface); border-color: var(--border-subtle);" %>
+        </div>
+        <div>
+          <%= f.label :photo_url, "🖼️ Immagine / Cover URL", class: "block text-xs font-bold uppercase tracking-wider mb-1", style: "color: var(--text-muted);" %>
+          <%= f.text_field :photo_url, placeholder: "/auto_banana/todo_28.png", class: "w-full px-3 py-1.5 rounded-lg border text-xs font-mono", style: "background: var(--bg-surface); border-color: var(--border-subtle);" %>
+        </div>
+      </div>
+    </div>
+
+    <div class="space-y-4">
+      <div class="p-4 rounded-xl border space-y-2" style="background: var(--bg-odd); border-color: var(--border-subtle);">
+        <%= f.label :due, "📅 Scadenza (Due)", class: "block text-xs font-bold uppercase tracking-wider", style: "color: var(--text-muted);" %>
+        <%= f.date_field :due, class: "w-full px-3 py-1.5 rounded-lg border text-sm", style: "background: var(--bg-surface); border-color: var(--border-subtle);" %>
+      </div>
+
+      <div class="p-4 rounded-xl border space-y-2" id="v8-form-prio" style="background: var(--bg-odd); border-color: var(--border-subtle); border-left: 3px solid <%= pm[:color] %>;">
+        <div class="text-xs font-bold uppercase tracking-wider" style="color: var(--text-muted);">🎯 Priorità (Google P0–P4)</div>
+        <%= f.hidden_field :priority, value: prio_db, id: "v8_form_prio_input" %>
+        <div id="v8_form_prio_lbl" class="text-sm font-extrabold" style="color: <%= pm[:color] %>;"><%= pm[:code] %> · <%= pm[:label] %> (DB <%= prio_db %>/5)</div>
+        <div class="flex flex-wrap gap-1">
+          <% [0, 1, 2, 3, 4].each do |gp| %>
+            <% d = 5 - gp; m = gp_map[d] %>
+            <button type="button" data-v8f-db="<%= d %>" data-v8f-col="<%= m[:color] %>" data-v8f-txt="<%= m[:code] %> · <%= m[:label] %> (DB <%= d %>/5)" class="px-2 py-1 rounded text-xs font-mono font-bold border" style="border-color: <%= d == prio_db ? m[:color] : 'var(--border-subtle)' %>; color: <%= m[:color] %>;"><%= m[:code] %></button>
+          <% end %>
+        </div>
+      </div>
+
+      <div class="p-4 rounded-xl border space-y-2" style="background: var(--bg-odd); border-color: var(--border-subtle);">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold uppercase tracking-wider" style="color: var(--text-muted);">📊 Avanzamento</span>
+          <span id="v8_form_prog_lbl" class="text-xs font-mono font-bold"><%= prog_pct %>%</span>
+        </div>
+        <%= f.range_field :progress_status, min: 0, max: 100, step: 5, value: prog_pct, id: "v8_form_prog_rng", class: "w-full cursor-pointer accent-indigo-500" %>
+      </div>
+
+      <div class="p-4 rounded-xl border space-y-2" style="background: var(--bg-odd); border-color: var(--border-subtle);">
+        <%= f.label :where, "📍 Luogo (Where)", class: "block text-xs font-bold uppercase tracking-wider", style: "color: var(--text-muted);" %>
+        <%= f.text_field :where, placeholder: "HSLU / Uni, Zürich…", id: "v8_form_where", class: "w-full px-3 py-1.5 rounded-lg border text-sm", style: "background: var(--bg-surface); border-color: var(--border-subtle);" %>
+        <% if aerial %>
+          <div class="rounded-lg overflow-hidden border h-28" style="border-color: var(--border-subtle);">
+            <iframe src="<%= aerial %>" class="w-full h-full border-0" loading="lazy" title="Anteprima aerea"></iframe>
+          </div>
+        <% end %>
+      </div>
+    </div>
   </div>
 
-  <div class="form-group">
-    <%= f.label :due %>
-    <%= f.date_field :due %>
-  </div>
-
-  <div class="form-group">
-    <%= f.label :priority %>
-    <%= f.number_field :priority, in: 1..5 %>
-  </div>
-
-  <div class="form-group">
-    <%= f.label :description %>
-    <%= f.text_area :description %>
-  </div>
-
-  <div class="form-group">
-    <%= f.submit class: "btn btn-primary" %>
-  </div>
+  <script>
+    (function() {
+      var rng = document.getElementById('v8_form_prog_rng');
+      var lbl = document.getElementById('v8_form_prog_lbl');
+      if (rng && lbl) rng.addEventListener('input', function() { lbl.textContent = rng.value + '%'; });
+      var box = document.getElementById('v8-form-prio');
+      var inp = document.getElementById('v8_form_prio_input');
+      var plb = document.getElementById('v8_form_prio_lbl');
+      if (box && inp && plb) {
+        box.querySelectorAll('[data-v8f-db]').forEach(function(b) {
+          b.addEventListener('click', function() {
+            inp.value = b.dataset.v8fDb;
+            box.style.borderLeftColor = b.dataset.v8fCol;
+            plb.style.color = b.dataset.v8fCol;
+            plb.textContent = b.dataset.v8fTxt;
+          });
+        });
+      }
+    })();
+  </script>
 <% end %>

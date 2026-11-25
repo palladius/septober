@@ -1,6 +1,10 @@
 # PS TODO make this DRY, now you've to remember to update as well the following files:
 # - ./VERSION
 # - app/helpers/application_helper
+2.6.4: # patch 2026-11-25
+  - Added full *in-loco* editing directly on `/todos/:id` (`_show.html.erb`) for Title, Description (auto-growing textarea with `⌘/Ctrl+Enter`), External URL pill (`🔗` add/edit/clear), Tag chips (`+ tag` / `×`), Project switcher, Favorite toggle (`★`), Due Date (`<input type="date">` + quick presets), and `Luogo (Where)` with live aerial Google Maps iframe refresh.
+  - Overhauled `/todos/:id/edit` and `/todos/new` (`_form.html.erb`) from the legacy year-2000 stacked `<p><br>` form into a 2026 Dark/Light 2-column Bento layout with interactive tag chips (`tag_list`), Google `P0–P4` rotary priority selector, draggable `Avanzamento` slider, native HTML5 date/snooze pickers, and live aerial Google Maps preview.
+  - Fixed legacy `:tag_list` mass-assignment in `Todo` (`attr_accessible`) and 5-dropdown `hide_until` accidental snoozing bug; redirected HTML form saves smoothly back to `/todos/:id`.
 2.6.3: # patch 2026-11-25
   - Compacted `/todos/:id` external reference link into a slim `🔗` pill without the wide `Link / Riferimento` text label.
   - Made `Avanzamento` an interactive draggable range slider (`0%`–`100%` + quick presets) with instant visual feedback and automatic JSON/XHR persistence to MySQL.

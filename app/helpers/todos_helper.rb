@@ -310,4 +310,43 @@ module TodosHelper
     link_to(inner.html_safe, todo_path(dep_todo), :class => classes.join(' '))
   end
 
+  def family_projects_for_todo(user, todo = nil)
+    ids = []
+    if user
+      ids.concat(user.respond_to?(:family_user_ids) ? user.family_user_ids : [user.id])
+    end
+    ids << todo.user_id if todo && todo.respond_to?(:user_id) && todo.user_id
+    ids = ids.compact.uniq
+    return [] if ids.empty?
+    Project.find(:all, :conditions => ['user_id IN (?)', ids], :order => 'active DESC, id ASC') rescue []
+  end
+
+  def project_option_label(proj, viewer_user = nil)
+    return '' unless proj
+    base = proj.respond_to?(:active) && !proj.active ? "#{proj.name} (inattivo)" : proj.name.to_s
+    if viewer_user && proj.respond_to?(:user_id) && proj.user_id && proj.user_id != viewer_user.id
+      owner_name = (proj.user.username rescue "user##{proj.user_id}")
+      "#{base} · #{owner_name}"
+    else
+      base
+    end
+  end
+
+  def candidate_parent_todos_for(user, todo = nil)
+    ids = []
+    if user
+      ids.concat(user.respond_to?(:family_user_ids) ? user.family_user_ids : [user.id])
+    end
+    ids << todo.user_id if todo && todo.respond_to?(:user_id) && todo.user_id
+    ids = ids.compact.uniq
+    return [] if ids.empty?
+    cond_sql = 'user_id IN (?) AND (active = ? OR id = ?)'
+    current_dep_id = (todo && todo.respond_to?(:depends_on_id) && todo.depends_on_id) ? todo.depends_on_id.to_i : -1
+    list = Todo.find(:all, :conditions => [cond_sql, ids, true, current_dep_id], :order => 'priority DESC, id DESC', :limit => 150) rescue []
+    if todo && todo.respond_to?(:id) && todo.id
+      list = list.reject { |t| t.id == todo.id }
+    end
+    list
+  end
+
 end

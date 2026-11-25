@@ -3,8 +3,10 @@
   is_overdue   = (!is_done && @todo.overdue?)
   desc_html, provenance_line = format_todo_description_parts(@todo)
   url_link_html = render_todo_clickable_url(@todo)
+  raw_desc_editable = (@todo.description.to_s =~ /\ATranslation missing:\s*en\.quick_created\z/i) ? '' : @todo.description.to_s
 
   family_ids = (current_user && current_user.respond_to?(:family_user_ids)) ? current_user.family_user_ids : [current_user.try(:id)].compact
+  family_projects = family_projects_for_todo(current_user, @todo)
   parent_todo = (@todo.todo rescue nil)
   children_todos = if family_ids.any?
     Todo.find(:all, :conditions => ["user_id IN (?) AND depends_on_id = ?", family_ids, @todo.id], :order => 'active DESC, priority DESC, id ASC') rescue []
@@ -17,22 +19,28 @@
   end
 %>
 
-<article class="todo-show-shell <%= is_done ? 'is-done' : 'is-active' %> <%= is_overdue ? 'is-overdue-shell' : '' %>">
+<article class="todo-show-shell <%= is_done ? 'is-done' : 'is-active' %> <%= is_overdue ? 'is-overdue-shell' : '' %>" data-todo-show-root data-todo-id="<%= @todo.id %>">
   <!-- Top Navigation & Action Toolbar -->
   <div class="todo-show-toolbar">
     <div class="todo-show-toolbar-left">
       <%= link_to '← Tutti i Todo', todos_path, :class => 'todo-btn todo-btn-ghost' %>
       <span class="todo-id-chip">#<%= @todo.id %></span>
       <% if is_done %>
-        <span class="todo-status-pill is-done">✓ Completato</span>
+        <span class="todo-status-pill is-done" data-todo-status-pill>✓ Completato</span>
       <% elsif is_overdue %>
-        <span class="todo-status-pill is-overdue">● Attivo · Scaduto</span>
+        <span class="todo-status-pill is-overdue" data-todo-status-pill>● Attivo · Scaduto</span>
       <% else %>
-        <span class="todo-status-pill is-active">● Attivo</span>
+        <span class="todo-status-pill is-active" data-todo-status-pill>● Attivo</span>
       <% end %>
-      <% if @todo.favorite %>
-        <span class="todo-fav-pill" title="Preferito">★ Preferito</span>
-      <% end %>
+
+      <button
+        type="button"
+        class="todo-fav-toggle <%= @todo.favorite ? 'is-fav' : '' %>"
+        data-todo-fav-toggle
+        data-todo-id="<%= @todo.id %>"
+        data-favorite="<%= @todo.favorite ? 'true' : 'false' %>"
+        title="Clicca per aggiungere o rimuovere dai Preferiti"
+      ><%= @todo.favorite ? '★ Preferito' : '☆ Preferito' %></button>
     </div>
 
     <div class="todo-show-toolbar-actions">
@@ -43,12 +51,12 @@
       <% else %>
         <%= link_to '↩ Riapri', "/todos/#{@todo.id}/undone", :class => 'todo-btn todo-btn-subtle', :title => 'Segna di nuovo come attivo' %>
       <% end %>
-      <%= link_to '✏️ Modifica', edit_todo_path(@todo), :class => 'todo-btn todo-btn-primary' %>
+      <%= link_to '🎛️ Form completa', edit_todo_path(@todo), :class => 'todo-btn todo-btn-primary', :title => 'Apri la scheda di modifica completa' %>
       <%= link_to '🗑 Elimina', @todo, :confirm => 'Are you sure you want to permanently delete this todo?', :method => :delete, :class => 'todo-btn todo-btn-danger' %>
     </div>
   </div>
 
-  <!-- Hero Header -->
+  <!-- Hero Header (In-Loco Project, Title & Tags) -->
   <header class="todo-show-header">
     <div class="todo-show-eyebrow">
       <% if @todo.user %>
@@ -68,57 +76,167 @@
         <% end %>
       <% end %>
 
-      <% if @todo.project %>
-        <span class="todo-project-chip">
-          📁 <%= link_to render_project(@todo.project), @todo.project %>
-          <%= link_to '✏️', edit_project_path(@todo.project), :class => 'todo-project-edit', :title => 'Modifica progetto' %>
+      <% if @todo.project || family_projects.any? %>
+        <span class="todo-project-chip" data-todo-project-widget data-todo-id="<%= @todo.id %>">
+          <span>📁</span>
+          <% if @todo.project %>
+            <a href="<%= project_path(@todo.project) %>" class="todo-project-link" data-project-link style="<%= @todo.project.color.present? ? "color: #{@todo.project.color};" : '' %>"><%= @todo.project.name %></a>
+          <% else %>
+            <span class="todo-project-link" data-project-link>Senza progetto</span>
+          <% end %>
+          <% if family_projects.any? %>
+            <button type="button" class="todo-inline-icon-btn" data-project-edit-btn title="Cambia progetto in loco">▾</button>
+            <select class="todo-inline-select" data-project-select hidden aria-label="Seleziona progetto">
+              <% family_projects.each do |proj| %>
+                <option value="<%= proj.id %>" <%= (@todo.project_id == proj.id) ? 'selected="selected"' : '' %>><%= project_option_label(proj, current_user) %></option>
+              <% end %>
+            </select>
+            <span class="todo-inline-save-status" data-project-status aria-live="polite"></span>
+          <% end %>
         </span>
       <% end %>
     </div>
 
-    <h1 class="todo-show-title <%= is_done ? 'is-done' : '' %>">
-      <% if @todo.user && @todo.user.agent? %>
-        <span class="todo-title-agent-icon" title="Autonomous Agent: <%= @todo.user.username %>">🤖 <%= agent_icon %></span>
-      <% end %>
-      <span class="todo-title-text"><%= on_the_spot_edit(@todo, :name, :tooltip => 'Clicca sul titolo per modificarlo al volo') %></span>
-    </h1>
+    <!-- In-Loco Editable Title -->
+    <div class="todo-title-block" data-todo-title-widget data-todo-id="<%= @todo.id %>">
+      <h1 class="todo-show-title <%= is_done ? 'is-done' : '' %>" data-title-heading>
+        <% if @todo.user && @todo.user.agent? %>
+          <span class="todo-title-agent-icon" title="Autonomous Agent: <%= @todo.user.username %>">🤖 <%= agent_icon %></span>
+        <% end %>
+        <span
+          class="todo-title-text todo-inloco-editable"
+          data-title-display
+          tabindex="0"
+          role="button"
+          title="Clicca per modificare il titolo in loco"
+        ><%= @todo.name %></span>
+        <button type="button" class="todo-title-edit-cue" data-title-edit-btn title="Modifica titolo in loco">✏️</button>
+        <span class="todo-inline-save-status" data-title-status aria-live="polite"></span>
+      </h1>
 
-    <% if @todo.tags.any? %>
-      <div class="todo-show-tags">
-        <%= render_tags(@todo) %>
-      </div>
-    <% end %>
-  </header>
-
-  <!-- Compact Clickable External URL Pill (emoji only, zero bloat) -->
-  <% if url_link_html %>
-    <div class="todo-url-banner" title="Link / riferimento esterno">
-      <span class="todo-url-icon" aria-hidden="true">🔗</span>
-      <div class="todo-url-value">
-        <%= url_link_html %>
+      <div class="todo-inline-title-editor" data-title-editor hidden>
+        <input
+          type="text"
+          class="todo-inline-title-input"
+          data-title-input
+          value="<%= @todo.name %>"
+          placeholder="Titolo del Todo…"
+          aria-label="Titolo del Todo"
+        />
+        <div class="todo-inline-editor-btns">
+          <button type="button" class="todo-btn todo-btn-primary todo-btn-xs" data-title-save>✓ Salva</button>
+          <button type="button" class="todo-btn todo-btn-ghost todo-btn-xs" data-title-cancel>Annulla</button>
+        </div>
       </div>
     </div>
-  <% end %>
 
-  <!-- Description & Optional Cover Photo -->
+    <!-- In-Loco Tag Chips Editor -->
+    <div
+      class="todo-show-tags"
+      data-todo-tags-widget
+      data-todo-id="<%= @todo.id %>"
+      data-tag-list="<%= (@todo.tags.map { |t| t.name }.join(', ') rescue '') %>"
+    >
+      <div class="todo-tags-list" data-tags-list>
+        <% @todo.tags.each do |tag| %>
+          <span class="todo-tag-chip" data-tag-name="<%= tag.name %>">
+            <a href="/tags/<%= tag.id %>" class="todo-tag-chip-link">🏷️ <%= tag.name %></a>
+            <button type="button" class="todo-tag-remove" data-tag-remove="<%= tag.name %>" title="Rimuovi tag <%= tag.name %>">×</button>
+          </span>
+        <% end %>
+      </div>
+      <button type="button" class="todo-tag-add-btn" data-tag-add-btn title="Aggiungi un tag in loco">+ tag</button>
+      <span class="todo-tag-inline-form" data-tag-form hidden>
+        <input type="text" class="todo-tag-input" data-tag-input placeholder="nuovo tag…" aria-label="Nuovo tag" />
+        <button type="button" class="todo-btn todo-btn-primary todo-btn-xs" data-tag-save>+</button>
+        <button type="button" class="todo-btn todo-btn-ghost todo-btn-xs" data-tag-cancel>✕</button>
+      </span>
+      <span class="todo-inline-save-status" data-tags-status aria-live="polite"></span>
+    </div>
+  </header>
+
+  <!-- Compact Clickable External URL Pill + In-Loco Editor (emoji only, zero bloat) -->
+  <div
+    class="todo-url-widget"
+    data-todo-url-widget
+    data-todo-id="<%= @todo.id %>"
+    data-raw-url="<%= @todo.url.to_s.strip %>"
+  >
+    <div class="todo-url-banner" data-url-banner <%= url_link_html ? '' : 'hidden' %> title="Link esterno">
+      <span class="todo-url-icon" aria-hidden="true">🔗</span>
+      <div class="todo-url-value" data-url-value>
+        <%= url_link_html %>
+      </div>
+      <button type="button" class="todo-inline-icon-btn" data-url-edit-btn title="Modifica link in loco">✏️</button>
+      <span class="todo-inline-save-status" data-url-status aria-live="polite"></span>
+    </div>
+
+    <button type="button" class="todo-add-chip-btn" data-url-add-btn <%= url_link_html ? 'hidden' : '' %>>
+      🔗 + Aggiungi link
+    </button>
+
+    <div class="todo-inline-row-editor" data-url-editor hidden>
+      <span aria-hidden="true">🔗</span>
+      <input
+        type="text"
+        class="todo-inline-input"
+        data-url-input
+        value="<%= @todo.url.to_s.strip %>"
+        placeholder="https://esempio.com o GitHub Issue/PR…"
+        aria-label="URL esterno"
+      />
+      <button type="button" class="todo-btn todo-btn-primary todo-btn-xs" data-url-save>Salva</button>
+      <button type="button" class="todo-btn todo-btn-danger todo-btn-xs" data-url-clear title="Rimuovi URL">Rimuovi</button>
+      <button type="button" class="todo-btn todo-btn-ghost todo-btn-xs" data-url-cancel>Annulla</button>
+    </div>
+  </div>
+
+  <!-- Description (In-Loco Editable) & Optional Cover Photo -->
   <section class="todo-content-section <%= @todo.photo_url? ? 'has-photo' : '' %>">
-    <div class="todo-description-card">
+    <div class="todo-description-card" data-todo-desc-widget data-todo-id="<%= @todo.id %>">
       <div class="todo-section-heading">
         <span>📝 Contesto &amp; Descrizione</span>
-        <%= link_to 'Modifica testo →', edit_todo_path(@todo), :class => 'todo-section-action' %>
+        <div class="todo-card-head-right">
+          <span class="todo-inline-save-status" data-desc-status aria-live="polite"></span>
+          <button type="button" class="todo-inline-action-btn" data-desc-edit-btn>✏️ Modifica in loco</button>
+        </div>
       </div>
 
-      <% if desc_html %>
-        <div class="todo-description-prose"><%= desc_html %></div>
-      <% else %>
-        <p class="todo-description-empty">Nessuna descrizione dettagliata inserita.</p>
-      <% end %>
+      <div data-desc-display>
+        <div
+          class="todo-description-prose todo-inloco-prose"
+          data-desc-prose
+          <%= desc_html ? '' : 'hidden' %>
+          title="Doppio clic per modificare la descrizione in loco"
+        ><%= desc_html %></div>
 
-      <% if provenance_line %>
-        <div class="todo-provenance-bar">
-          <span>📡 <%= provenance_line %></span>
+        <button
+          type="button"
+          class="todo-description-empty-btn"
+          data-desc-empty
+          <%= desc_html ? 'hidden' : '' %>
+        >Nessuna descrizione dettagliata inserita — clicca per scrivere in loco ✏️</button>
+
+        <div class="todo-provenance-bar" data-desc-provenance <%= provenance_line ? '' : 'hidden' %>>
+          <span>📡 <span data-desc-provenance-text><%= provenance_line %></span></span>
         </div>
-      <% end %>
+      </div>
+
+      <div class="todo-inline-desc-editor" data-desc-editor hidden>
+        <textarea
+          class="todo-inline-textarea"
+          data-desc-textarea
+          rows="5"
+          placeholder="Scrivi note, contesto, link http(s) o riferimenti GHI #N…"
+        ><%= raw_desc_editable %></textarea>
+        <div class="todo-inline-editor-bar">
+          <span class="todo-inline-hint">⌘/Ctrl + Invio per salvare · Esc per annullare</span>
+          <div class="todo-inline-editor-btns">
+            <button type="button" class="todo-btn todo-btn-ghost todo-btn-xs" data-desc-cancel>Annulla</button>
+            <button type="button" class="todo-btn todo-btn-primary todo-btn-xs" data-desc-save>💾 Salva testo</button>
+          </div>
+        </div>
+      </div>
     </div>
 
     <% if @todo.photo_url? %>
@@ -131,7 +249,7 @@
     <% end %>
   </section>
 
-  <!-- Structured Metadata Grid -->
+  <!-- Structured Metadata Grid (All Editable In-Loco!) -->
   <%
     prio_meta = google_priority_meta(@todo.priority)
     maps_aerial_url = @todo.where? ? todo_google_maps_embed_url(@todo.where, true, 16) : nil
@@ -139,11 +257,37 @@
     maps_ext_url    = @todo.where? ? todo_google_maps_external_url(@todo.where) : nil
   %>
   <section class="todo-meta-grid">
-    <!-- Due Date (Red highlight when overdue!) -->
-    <div class="todo-meta-card <%= is_overdue ? 'is-overdue-card' : '' %>">
-      <div class="todo-meta-label">Scadenza (Due)</div>
-      <div class="todo-meta-value">
+    <!-- Due Date (In-Loco Date Picker + Quick Presets, Red highlight when overdue!) -->
+    <div
+      class="todo-meta-card todo-due-card <%= is_overdue ? 'is-overdue-card' : '' %>"
+      data-todo-due-widget
+      data-todo-id="<%= @todo.id %>"
+      data-due-iso="<%= @todo.due ? @todo.due.strftime('%Y-%m-%d') : '' %>"
+    >
+      <div class="todo-meta-label-row">
+        <span class="todo-meta-label">Scadenza (Due)</span>
+        <div class="todo-card-head-right">
+          <span class="todo-inline-save-status" data-due-status aria-live="polite"></span>
+          <button type="button" class="todo-inline-icon-btn" data-due-edit-btn title="Modifica scadenza in loco">✏️</button>
+        </div>
+      </div>
+      <div class="todo-meta-value todo-due-clickable" data-due-display title="Clicca per cambiare la scadenza in loco">
         <%= render_todo_show_due(@todo) %>
+      </div>
+      <div class="todo-due-editor" data-due-editor hidden>
+        <input
+          type="date"
+          class="todo-inline-date-input"
+          data-due-input
+          value="<%= @todo.due ? @todo.due.strftime('%Y-%m-%d') : '' %>"
+          aria-label="Data di scadenza"
+        />
+        <div class="todo-due-quick-row">
+          <button type="button" class="todo-mini-preset" data-due-offset="0">Oggi</button>
+          <button type="button" class="todo-mini-preset" data-due-offset="1">Domani</button>
+          <button type="button" class="todo-mini-preset" data-due-offset="7">+7g</button>
+          <button type="button" class="todo-mini-preset is-clear" data-due-clear title="Rimuovi scadenza">✕</button>
+        </div>
       </div>
     </div>
 
@@ -243,46 +387,78 @@
       </div>
     </div>
 
-    <!-- Where / Location: Mini Aerial Google Maps + Expandable Toggle -->
-    <% if @todo.where? && maps_aerial_url %>
-      <div
-        class="todo-meta-card todo-where-card"
-        data-todo-where-widget
-        data-aerial-src="<%= maps_aerial_url %>"
-        data-road-src="<%= maps_road_url %>"
-      >
-        <div class="todo-meta-label-row">
-          <span class="todo-meta-label">Luogo (Where)</span>
-          <div class="todo-where-actions">
-            <button
-              type="button"
-              class="todo-map-mode-btn"
-              data-map-mode-toggle
-              hidden
-              title="Cambia tra vista aerea satellitare e mappa stradale"
-            >🗺️ Mappa</button>
-            <button
-              type="button"
-              class="todo-map-toggle-btn"
-              data-map-expand-toggle
-              aria-expanded="false"
-              title="Espandi o riduci la mappa aerea"
-            >🔍 Espandi</button>
-          </div>
+    <!-- Where / Location: In-Loco Editable + Mini Aerial Google Maps + Expandable Toggle -->
+    <div
+      class="todo-meta-card todo-where-card <%= (@todo.where? && maps_aerial_url) ? 'has-where' : 'is-empty-where' %>"
+      data-todo-where-widget
+      data-todo-id="<%= @todo.id %>"
+      data-where-value="<%= @todo.where.to_s.strip %>"
+      data-aerial-src="<%= maps_aerial_url %>"
+      data-road-src="<%= maps_road_url %>"
+    >
+      <div class="todo-meta-label-row">
+        <span class="todo-meta-label">Luogo (Where)</span>
+        <div class="todo-where-actions">
+          <span class="todo-inline-save-status" data-where-status aria-live="polite"></span>
+          <button
+            type="button"
+            class="todo-inline-icon-btn"
+            data-where-edit-btn
+            title="Modifica luogo in loco"
+          >✏️</button>
+          <button
+            type="button"
+            class="todo-map-mode-btn"
+            data-map-mode-toggle
+            hidden
+            title="Cambia tra vista aerea satellitare e mappa stradale"
+          >🗺️ Mappa</button>
+          <button
+            type="button"
+            class="todo-map-toggle-btn"
+            data-map-expand-toggle
+            aria-expanded="false"
+            <%= (@todo.where? && maps_aerial_url) ? '' : 'hidden' %>
+            title="Espandi o riduci la mappa aerea"
+          >🔍 Espandi</button>
         </div>
+      </div>
 
+      <div class="todo-where-editor" data-where-editor hidden>
+        <input
+          type="text"
+          class="todo-inline-input"
+          data-where-input
+          value="<%= @todo.where.to_s.strip %>"
+          placeholder="Es. HSLU / Uni, Tödistrasse 27 Zürich…"
+          aria-label="Luogo del Todo"
+        />
+        <div class="todo-inline-editor-btns">
+          <button type="button" class="todo-btn todo-btn-primary todo-btn-xs" data-where-save>Salva</button>
+          <button type="button" class="todo-btn todo-btn-ghost todo-btn-xs" data-where-cancel>✕</button>
+        </div>
+      </div>
+
+      <div class="todo-where-populated" data-where-populated <%= (@todo.where? && maps_aerial_url) ? '' : 'hidden' %>>
         <div class="todo-where-header-line">
           <button type="button" class="todo-where-place-btn" data-map-expand-trigger title="Clicca per espandere/ridurre la mappa">
-            📍 <span><%= @todo.where %></span>
+            📍 <span data-where-text><%= @todo.where %></span>
           </button>
-          <%= link_to 'Google Maps ↗', maps_ext_url, :target => '_blank', :rel => 'noopener noreferrer', :class => 'todo-where-ext-link', :title => 'Apri in Google Maps' %>
+          <a
+            href="<%= maps_ext_url || '#' %>"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="todo-where-ext-link"
+            data-where-ext-link
+            title="Apri in Google Maps"
+          >Google Maps ↗</a>
         </div>
 
         <div class="todo-where-map-frame" data-map-frame>
           <iframe
             class="todo-where-iframe"
             data-map-iframe
-            src="<%= maps_aerial_url %>"
+            src="<%= maps_aerial_url || 'about:blank' %>"
             loading="lazy"
             referrerpolicy="no-referrer-when-downgrade"
             title="Vista aerea Google Maps: <%= @todo.where %>"
@@ -292,13 +468,20 @@
             type="button"
             class="todo-where-mini-overlay"
             data-map-overlay
-            aria-label="Espandi mini mappa aerea di <%= @todo.where %>"
+            aria-label="Espandi mini mappa aerea"
           >
             <span class="todo-where-mini-badge">🛰️ Vista aerea · Clicca per espandere</span>
           </button>
         </div>
       </div>
-    <% end %>
+
+      <button
+        type="button"
+        class="todo-where-empty-btn"
+        data-where-empty-btn
+        <%= (@todo.where? && maps_aerial_url) ? 'hidden' : '' %>
+      >📍 + Aggiungi luogo (mini vista aerea)</button>
+    </div>
 
     <!-- Hide Until (Snoozed) -->
     <% if @todo.hide_until.present? %>

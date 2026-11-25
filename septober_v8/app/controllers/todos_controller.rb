@@ -76,8 +76,8 @@ class TodosController < ApplicationController
           elsif request.xhr?
             render json: { ok: true, id: @todo.id, priority: @todo.priority, progress_status: @todo.progress_status }
           else
-            flash[:notice] = "Successfully updated todo ##{@todo.id}"
-            redirect_to todos_url
+            flash[:notice] = "Todo ##{@todo.id} aggiornato con successo"
+            redirect_to todo_path(@todo)
           end
         end
       end
@@ -223,6 +223,6 @@ class TodosController < ApplicationController
   end
 
   def todo_params
-    params.require(:todo).permit(:name, :description, :active, :due, :priority, :project_id, :url, :progress_status, :favorite, :hide_until, :depends_on_id, :source, :photo_url, :tag_list)
+    params.require(:todo).permit(:name, :description, :active, :due, :where, :priority, :project_id, :url, :progress_status, :favorite, :hide_until, :depends_on_id, :source, :photo_url, :tag_list)
   end
 end

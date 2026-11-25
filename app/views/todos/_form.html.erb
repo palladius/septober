@@ -1,67 +1,398 @@
-<%= form_for @todo do |f| %>
-  <%= f.error_messages %>
-    (by <b class='user' ><%= @todo.user rescue '?!?' %></b>)
-  <p>
-    <%= f.label :name %><br />
-    <%= f.text_field :name %>
-  </p>
-  <p>
-    <%= f.label :where %><br />
-    <%= f.text_field :where %>
-  </p>
-  <p>
-    <%= f.label :url %><br />
-    <%= f.text_field :url %>
-  </p>
-  <p>
-    <%= f.label :photo_url %><br />
-    <%= f.text_field :photo_url %>
-  </p>
-  <p>
-    <%= f.label      :tags %><br />
-    <%= f.text_field :tags %>
-  </p>
-  <p>
-    <%= f.label :active %><br />
-    <%= f.check_box :active %>
-  </p>
-  <p>
-    <%= f.label :favorite %><br />
-    <%= f.check_box :favorite %>
-  </p>
-  <p>
-    <%= f.label :priority %><br />
-    <% [1,2,3,4,5].each do |prio| %>
-      <%= render_priority_icon(prio) %>
-      <%= f.radio_button("priority", prio ) %>
-        <%= priority_name(prio) %> <br/>
-    <% end %>
-    <%#= f.range_field :priority %>
-  </p>
-  <p>
-    <%= f.label :due %><br />
-    <%= f.date_select :due %>
-  </p>
-  <p>	
-	<input type="range" min="0" max="100" id="todo_progress_status" name="todo[progress_status]" value="<%=@todo.progress_status %>"  >
-	<%= f.label( :progress_status ) %> (percentage. Works on Safari and Chrome!)
-  </p>
-  <p>
-    <%= f.label :hide_until %><br />
-    <%= f.datetime_select :hide_until %>
-  </p>
-  <p>
-    <%= f.label :depends_on %> (father)<br />
-    <%#= f.text_field :depends_on_id %>
-    <%= collection_select("todo", :depends_on_id , Todo.find_all_by_user_id_and_active(current_user.id,true, :order => :name) , :id, :name , :include_blank => true ) %>
-  </p>
-  <p>
-    <%= f.label :project_id %><br />
-    <%= f.collection_select(:project_id , Project.find_all_by_user_id(current_user.id, :order => "id") , :id, :name_and_activity , :include_blank => false ) %>
-  </p>
-  <p>
-    <%= f.label :description %><br />
-    <%= f.text_area :description %>
-  </p>
-  <p><%= f.submit %></p>
+<%
+  is_new = @todo.new_record?
+  owner_user = @todo.user || current_user
+  owner_icon = if owner_user && owner_user.agent?
+    owner_user.respond_to?(:resolved_agent_icon) ? owner_user.resolved_agent_icon : (owner_user.agent_icon.presence || '🤖')
+  end
+
+  family_projects = family_projects_for_todo(current_user, @todo)
+  default_proj_id = @todo.project_id
+  if default_proj_id.nil? && family_projects.any?
+    pers = family_projects.detect { |p| p.name == 'personal' && current_user && p.user_id == current_user.id } || family_projects.first
+    default_proj_id = pers ? pers.id : nil
+  end
+
+  parent_candidates = candidate_parent_todos_for(current_user, @todo)
+
+  prio_db   = (@todo.priority && (1..5).include?(@todo.priority.to_i)) ? @todo.priority.to_i : 3
+  prio_meta = google_priority_meta(prio_db)
+  prog_pct  = [[@todo.progress_status.to_i, 0].max, 100].min
+  active_val = is_new ? (@todo.active.nil? ? true : !!@todo.active) : !!@todo.active
+  fav_val    = !!@todo.favorite
+
+  due_val  = is_new ? (@todo.due || (Date.today + 7)) : @todo.due
+  due_iso  = due_val ? (due_val.strftime('%Y-%m-%d') rescue '') : ''
+  hide_iso = @todo.hide_until ? (@todo.hide_until.strftime('%Y-%m-%dT%H:%M') rescue '') : ''
+
+  existing_tags = (@todo.tag_list.to_a.map { |t| t.to_s.strip }.reject { |t| t.empty? } rescue [])
+  if existing_tags.empty? && !is_new
+    existing_tags = (@todo.tags.map { |t| t.name.to_s.strip }.reject { |t| t.empty? } rescue [])
+  end
+  tag_csv = existing_tags.join(', ')
+
+  clean_desc = (@todo.description.to_s =~ /\ATranslation missing:\s*en\.quick_created\z/i) ? '' : @todo.description.to_s
+  where_str  = @todo.where.to_s.strip
+  maps_aerial_url = (!where_str.empty?) ? todo_google_maps_embed_url(where_str, true, 16) : nil
+  maps_ext_url    = (!where_str.empty?) ? todo_google_maps_external_url(where_str) : nil
+%>
+
+<%= form_for @todo, :html => { :class => 'todo-form-shell', 'data-todo-modern-form' => 'true' } do |f| %>
+  <input type="hidden" name="from_modern_form" value="1" />
+
+  <!-- Top Toolbar -->
+  <div class="todo-show-toolbar todo-form-toolbar">
+    <div class="todo-show-toolbar-left">
+      <% if is_new %>
+        <%= link_to '← Tutti i Todo', todos_path, :class => 'todo-btn todo-btn-ghost' %>
+        <span class="todo-status-pill is-active">✨ Nuovo Todo</span>
+      <% else %>
+        <%= link_to "← Torna al Todo ##{@todo.id}", todo_path(@todo), :class => 'todo-btn todo-btn-ghost' %>
+        <span class="todo-id-chip">#<%= @todo.id %></span>
+        <span class="todo-status-pill is-active">🎛️ Scheda Modifica</span>
+      <% end %>
+
+      <% if owner_user %>
+        <span class="todo-author-chip <%= owner_user.agent? ? 'is-agent' : '' %>">
+          <span><%= owner_user.agent? ? "🤖 #{owner_icon}" : '👤' %></span>
+          <strong><%= owner_user.username %></strong>
+        </span>
+      <% end %>
+    </div>
+
+    <div class="todo-show-toolbar-actions">
+      <% if is_new %>
+        <%= link_to 'Annulla', todos_path, :class => 'todo-btn todo-btn-ghost' %>
+        <button type="submit" class="todo-btn todo-btn-primary">✨ Crea Todo</button>
+      <% else %>
+        <%= link_to 'Annulla', todo_path(@todo), :class => 'todo-btn todo-btn-ghost' %>
+        <button type="submit" class="todo-btn todo-btn-primary" title="Scorciatoia: ⌘+Invio / Ctrl+Invio">💾 Salva modifiche</button>
+      <% end %>
+    </div>
+  </div>
+
+  <% if @todo.errors.any? %>
+    <div class="todo-form-errors" role="alert">
+      <div class="todo-form-errors-title">⚠️ Impossibile salvare il Todo (<%= @todo.errors.count %> <%= @todo.errors.count == 1 ? 'errore' : 'errori' %>):</div>
+      <ul>
+        <% @todo.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <!-- Hero Card: Title + Status Pills + Project + Tags -->
+  <section class="todo-form-hero-card">
+    <div class="todo-form-field">
+      <label class="todo-form-label" for="todo_name">Titolo del Todo</label>
+      <%= f.text_field :name,
+        :class => 'todo-form-title-input',
+        :placeholder => 'Es. Preparare slide per HSLU su Harness Engineering…',
+        :autofocus => is_new,
+        :required => true %>
+    </div>
+
+    <div class="todo-form-pills-row">
+      <!-- Active Toggle Pill -->
+      <label class="todo-check-pill <%= active_val ? 'is-checked-success' : '' %>" data-check-pill>
+        <%= f.check_box :active, :checked => active_val %>
+        <span>✓ Attivo (da fare)</span>
+      </label>
+
+      <!-- Favorite Toggle Pill -->
+      <label class="todo-check-pill <%= fav_val ? 'is-checked-fav' : '' %>" data-check-pill>
+        <%= f.check_box :favorite, :checked => fav_val %>
+        <span>★ Preferito</span>
+      </label>
+
+      <!-- Project Selector -->
+      <div class="todo-form-project-pill">
+        <label class="todo-form-inline-label" for="todo_project_id">📁 Progetto</label>
+        <select id="todo_project_id" name="todo[project_id]" class="todo-form-select todo-form-select-compact">
+          <% family_projects.each do |proj| %>
+            <option value="<%= proj.id %>" <%= (default_proj_id == proj.id) ? 'selected="selected"' : '' %>><%= project_option_label(proj, current_user) %></option>
+          <% end %>
+        </select>
+      </div>
+    </div>
+
+    <!-- Interactive Tag Chips (maps to todo[tag_list]) -->
+    <div class="todo-form-field" data-form-tags-editor>
+      <label class="todo-form-label" for="todo_tag_entry">🏷️ Tag <span class="todo-form-label-sub">(premi Invio o virgola per aggiungere)</span></label>
+      <input type="hidden" name="todo[tag_list]" value="<%= tag_csv %>" data-form-tag-hidden />
+      <div class="todo-form-tags-box">
+        <div class="todo-tags-list" data-form-tags-chips>
+          <% existing_tags.each do |tname| %>
+            <span class="todo-tag-chip" data-chip-val="<%= tname %>">
+              <span class="todo-tag-chip-link">🏷️ <%= tname %></span>
+              <button type="button" class="todo-tag-remove" data-form-tag-remove="<%= tname %>" title="Rimuovi <%= tname %>">×</button>
+            </span>
+          <% end %>
+        </div>
+        <input
+          type="text"
+          id="todo_tag_entry"
+          class="todo-form-tag-entry"
+          data-form-tag-entry
+          placeholder="<%= existing_tags.any? ? 'Aggiungi altro tag…' : 'Es. ai, slides, hslu…' %>"
+          autocomplete="off"
+        />
+      </div>
+    </div>
+  </section>
+
+  <!-- 2-Column Bento Layout -->
+  <div class="todo-form-grid">
+    <!-- Left Column: Description + Links/Media -->
+    <div class="todo-form-col-main">
+      <section class="todo-form-card">
+        <div class="todo-form-card-head">
+          <label class="todo-form-label" for="todo_description">📝 Contesto &amp; Descrizione</label>
+          <span class="todo-form-label-sub">Link http(s) e GHI #N diventano cliccabili automaticamente</span>
+        </div>
+        <textarea
+          id="todo_description"
+          name="todo[description]"
+          class="todo-form-textarea"
+          rows="8"
+          data-auto-grow
+          placeholder="Dettagli operativi, note di contesto, link di approfondimento…"
+        ><%= clean_desc %></textarea>
+      </section>
+
+      <section class="todo-form-card">
+        <div class="todo-form-card-head">
+          <span class="todo-form-label">🔗 Link &amp; Copertina</span>
+        </div>
+
+        <div class="todo-form-subgrid">
+          <div class="todo-form-field">
+            <label class="todo-form-sublabel" for="todo_url">🔗 URL di riferimento</label>
+            <div class="todo-form-input-with-action">
+              <%= f.text_field :url,
+                :class => 'todo-form-input',
+                :placeholder => 'https://youtu.be/... o https://github.com/org/repo/issues/1',
+                'data-form-url-input' => 'true' %>
+              <% safe_href = safe_todo_external_url(@todo.url) %>
+              <a
+                href="<%= safe_href || '#' %>"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="todo-btn todo-btn-subtle todo-btn-xs"
+                data-form-url-preview
+                <%= safe_href ? '' : 'hidden' %>
+              >Apri ↗</a>
+            </div>
+          </div>
+
+          <div class="todo-form-field">
+            <label class="todo-form-sublabel" for="todo_photo_url">🖼️ Immagine / Cover URL <span class="todo-form-label-sub">(opzionale)</span></label>
+            <%= f.text_field :photo_url,
+              :class => 'todo-form-input',
+              :placeholder => 'https://... oppure /auto_banana/todo_42.png',
+              'data-form-photo-input' => 'true' %>
+          </div>
+        </div>
+      </section>
+
+      <!-- Dependencies & Snooze -->
+      <section class="todo-form-card">
+        <div class="todo-form-card-head">
+          <span class="todo-form-label">🧩 Dipendenza &amp; Snooze</span>
+          <span class="todo-form-label-sub">Opzionali</span>
+        </div>
+
+        <div class="todo-form-subgrid">
+          <div class="todo-form-field">
+            <label class="todo-form-sublabel" for="todo_depends_on_id">Dipende da (Parent Todo)</label>
+            <select id="todo_depends_on_id" name="todo[depends_on_id]" class="todo-form-select">
+              <option value="">— Nessun Todo padre —</option>
+              <% parent_candidates.each do |cand| %>
+                <option value="<%= cand.id %>" <%= (@todo.depends_on_id == cand.id) ? 'selected="selected"' : '' %>>#<%= cand.id %> · <%= truncate_words(cand.name.to_s, 65) %></option>
+              <% end %>
+            </select>
+          </div>
+
+          <div class="todo-form-field" data-form-snooze-box>
+            <label class="todo-form-sublabel" for="todo_hide_until">💤 Nascondi fino a (Snooze)</label>
+            <div class="todo-form-snooze-row">
+              <input
+                type="datetime-local"
+                id="todo_hide_until"
+                name="todo[hide_until]"
+                class="todo-form-input"
+                data-form-snooze-input
+                value="<%= hide_iso %>"
+              />
+              <div class="todo-due-quick-row">
+                <button type="button" class="todo-mini-preset" data-snooze-days="1">+1g</button>
+                <button type="button" class="todo-mini-preset" data-snooze-days="5">+5g</button>
+                <button type="button" class="todo-mini-preset is-clear" data-snooze-clear>✕ Visibile subito</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Right Column: Scheduling, Priority Wheel, Progress Slider, Where + Map -->
+    <div class="todo-form-col-side">
+      <!-- Due Date Card -->
+      <section class="todo-form-card" data-form-due-box>
+        <div class="todo-form-card-head">
+          <label class="todo-form-label" for="todo_due">📅 Scadenza (Due)</label>
+        </div>
+        <input
+          type="date"
+          id="todo_due"
+          name="todo[due]"
+          class="todo-form-input todo-form-date-input"
+          data-form-due-input
+          value="<%= due_iso %>"
+        />
+        <div class="todo-due-quick-row">
+          <button type="button" class="todo-mini-preset" data-form-due-offset="0">Oggi</button>
+          <button type="button" class="todo-mini-preset" data-form-due-offset="1">Domani</button>
+          <button type="button" class="todo-mini-preset" data-form-due-offset="7">+7g</button>
+          <button type="button" class="todo-mini-preset" data-form-due-offset="30">+30g</button>
+          <button type="button" class="todo-mini-preset is-clear" data-form-due-clear>Nessuna</button>
+        </div>
+      </section>
+
+      <!-- Google P0..P4 Rotary Priority Selector -->
+      <section
+        class="todo-form-card todo-prio-card gp-<%= prio_meta[:p] %>"
+        data-form-prio-widget
+        data-google-p="<%= prio_meta[:p] %>"
+        style="--gp-index: <%= prio_meta[:p] %>; --gp-color: <%= prio_meta[:color] %>;"
+      >
+        <input type="hidden" name="todo[priority]" value="<%= prio_db %>" data-form-prio-input />
+        <div class="todo-form-card-head">
+          <span class="todo-form-label">🎯 Priorità (Google P0–P4)</span>
+          <span class="todo-prio-db-hint" data-prio-db-hint>DB <%= prio_db %>/5</span>
+        </div>
+
+        <div class="todo-prio-wheel-wrap">
+          <button
+            type="button"
+            class="todo-prio-dial"
+            data-prio-dial
+            aria-label="Ruota o clicca per cambiare priorità da P0 a P4"
+            title="Clicca, trascina o usa la rotellina del mouse"
+          >
+            <span class="todo-prio-dial-ticks" aria-hidden="true">
+              <i class="tick t0"></i>
+              <i class="tick t1"></i>
+              <i class="tick t2"></i>
+              <i class="tick t3"></i>
+              <i class="tick t4"></i>
+            </span>
+            <span class="todo-prio-dial-knob">
+              <span class="todo-prio-dial-needle"></span>
+            </span>
+            <span class="todo-prio-dial-code" data-prio-dial-code><%= prio_meta[:code] %></span>
+          </button>
+
+          <div class="todo-prio-right">
+            <div class="todo-prio-readout">
+              <span class="todo-prio-pill" data-prio-pill><%= prio_meta[:code] %> · <%= prio_meta[:label] %></span>
+            </div>
+            <div class="todo-prio-stops" role="radiogroup" aria-label="Priorità P0-P4">
+              <% [0, 1, 2, 3, 4].each do |gp| %>
+                <% db_v = 5 - gp %>
+                <% m = google_priority_meta(db_v) %>
+                <button
+                  type="button"
+                  class="todo-prio-stop gp-stop-<%= gp %> <%= prio_meta[:p] == gp ? 'is-selected' : '' %>"
+                  data-prio-stop="<%= gp %>"
+                  data-db-val="<%= db_v %>"
+                  title="<%= m[:code] %> · <%= m[:label] %> (DB <%= db_v %>/5)"
+                ><%= m[:code] %></button>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Progress Slider -->
+      <section class="todo-form-card" data-form-progress-widget>
+        <div class="todo-form-card-head">
+          <label class="todo-form-label" for="todo_progress_status">📊 Avanzamento</label>
+          <span class="todo-progress-text" data-todo-progress-text><%= prog_pct %>%</span>
+        </div>
+        <div class="todo-progress-editor">
+          <input
+            type="range"
+            id="todo_progress_status"
+            name="todo[progress_status]"
+            class="todo-progress-slider"
+            data-todo-progress-slider
+            min="0"
+            max="100"
+            step="<%= (prog_pct % 5 == 0) ? 5 : 1 %>"
+            value="<%= prog_pct %>"
+            style="--progress-pct: <%= prog_pct %>%;"
+          />
+        </div>
+        <div class="todo-progress-quick-ticks">
+          <% [0, 25, 50, 75, 100].each do |tick| %>
+            <button
+              type="button"
+              class="todo-progress-tick <%= prog_pct == tick ? 'is-active' : '' %>"
+              data-progress-tick="<%= tick %>"
+            ><%= tick %>%</button>
+          <% end %>
+        </div>
+      </section>
+
+      <!-- Where + Live Aerial Google Maps Preview -->
+      <section class="todo-form-card" data-form-where-widget>
+        <div class="todo-form-card-head">
+          <label class="todo-form-label" for="todo_where">📍 Luogo (Where)</label>
+          <a
+            href="<%= maps_ext_url || '#' %>"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="todo-where-ext-link"
+            data-form-where-ext
+            <%= maps_ext_url ? '' : 'hidden' %>
+          >Maps ↗</a>
+        </div>
+        <%= f.text_field :where,
+          :class => 'todo-form-input',
+          :placeholder => 'Es. HSLU / Uni, Tödistrasse 27 Zürich…',
+          'data-form-where-input' => 'true' %>
+
+        <div class="todo-where-map-frame todo-form-map-preview" data-form-map-frame <%= maps_aerial_url ? '' : 'hidden' %>>
+          <iframe
+            class="todo-where-iframe"
+            data-form-map-iframe
+            src="<%= maps_aerial_url || 'about:blank' %>"
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            title="Anteprima aerea Google Maps"
+          ></iframe>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <!-- Bottom Action Bar -->
+  <div class="todo-form-footer">
+    <div class="todo-form-footer-left">
+      <% unless is_new %>
+        <%= link_to '🗑 Elimina Todo', @todo, :confirm => 'Sei sicuro di voler eliminare definitivamente questo Todo?', :method => :delete, :class => 'todo-btn todo-btn-danger' %>
+      <% end %>
+      <span class="todo-inline-hint">💡 Suggerimento: sulla pagina del Todo puoi anche modificare quasi tutto <strong>in loco</strong> con un clic!</span>
+    </div>
+    <div class="todo-form-footer-right">
+      <% if is_new %>
+        <%= link_to 'Annulla', todos_path, :class => 'todo-btn todo-btn-ghost' %>
+        <button type="submit" class="todo-btn todo-btn-primary">✨ Crea Todo</button>
+      <% else %>
+        <%= link_to "← Torna a ##{@todo.id}", todo_path(@todo), :class => 'todo-btn todo-btn-ghost' %>
+        <button type="submit" class="todo-btn todo-btn-primary">💾 Salva modifiche</button>
+      <% end %>
+    </div>
+  </div>
 <% end %>
