@@ -261,10 +261,10 @@
     if (csrf) headers['X-CSRF-Token'] = csrf;
 
     fetch('/todos/' + encodeURIComponent(todoId) + '.json', {
-      method: 'POST',
+      method: 'PUT',
       credentials: 'same-origin',
       headers: headers,
-      body: JSON.stringify({ _method: 'put', todo: todoFields })
+      body: JSON.stringify({ todo: todoFields })
     })
       .then(function(res) {
         if (!res.ok) throw new Error('HTTP ' + res.status);
