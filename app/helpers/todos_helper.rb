@@ -165,5 +165,116 @@ module TodosHelper
     content_tag( :span, explaination , :class => style_class)
   end
 
+  def safe_todo_external_url(raw_url)
+    u = raw_url.to_s.strip
+    return nil if u.empty?
+    return nil if u =~ /\A\s*(javascript|data|vbscript):/i
+    u = "https://#{u}" unless u =~ /\Ahttps?:\/\//i
+    u
+  end
+
+  def render_todo_clickable_url(todo)
+    href = safe_todo_external_url(todo.try(:url))
+    return nil unless href
+    display_url = ERB::Util.html_escape(todo.url.to_s.strip)
+    badge = ''
+    if href =~ /github\.com\/([^\/]+\/[^\/]+)\/(issues|pull)\/(\d+)/i
+      repo = ERB::Util.html_escape($1)
+      kind = $2.downcase == 'pull' ? 'PR' : 'Issue'
+      num  = ERB::Util.html_escape($3)
+      badge = "<span class='todo-url-chip'>GitHub #{kind} ##{num} · #{repo}</span> "
+    end
+    inner = "#{badge}<span class='todo-url-raw'>#{display_url}</span> <span class='todo-url-arrow'>↗</span>".html_safe
+    link_to(inner, href, :target => '_blank', :rel => 'noopener noreferrer', :class => 'todo-url-link')
+  end
+
+  def render_todo_show_due(todo)
+    return content_tag(:span, 'Nessuna scadenza', :class => 'todo-due-pill is-none') unless todo.due
+    today = Date.today
+    due_date = (todo.due.to_date rescue nil)
+    return content_tag(:span, ERB::Util.html_escape(todo.due.to_s), :class => 'todo-due-pill is-none') unless due_date
+
+    if todo.done?
+      was_overdue = (due_date < today)
+      suffix = was_overdue ? ' · completato (era scaduto)' : ' · completato'
+      return content_tag(:span, "✓ <strong>#{due_date}</strong><span class='todo-due-rel'>#{suffix}</span>".html_safe, :class => 'todo-due-pill is-done')
+    end
+
+    diff = (due_date - today).to_i
+    if diff < 0
+      days_ago = diff.abs
+      rel = days_ago == 1 ? 'ieri' : "#{days_ago} giorni fa"
+      content_tag(:span, "⚠️ <strong>#{due_date}</strong> <span class='todo-due-rel'>· Scaduto (#{rel})</span>".html_safe, :class => 'todo-due-pill is-overdue')
+    elsif diff == 0
+      content_tag(:span, "🔥 <strong>#{due_date}</strong> <span class='todo-due-rel'>· Scade OGGI</span>".html_safe, :class => 'todo-due-pill is-today')
+    elsif diff <= 2
+      rel = diff == 1 ? 'domani' : "tra #{diff} giorni"
+      content_tag(:span, "⏰ <strong>#{due_date}</strong> <span class='todo-due-rel'>· #{rel}</span>".html_safe, :class => 'todo-due-pill is-soon')
+    else
+      content_tag(:span, "📅 <strong>#{due_date}</strong> <span class='todo-due-rel'>· tra #{diff} giorni</span>".html_safe, :class => 'todo-due-pill is-future')
+    end
+  end
+
+  def format_todo_description_parts(todo)
+    raw = todo.try(:description).to_s.strip
+    if raw.empty? || raw =~ /\ATranslation missing:\s*en\.quick_created\z/i
+      return [nil, nil]
+    end
+
+    provenance = nil
+    body = raw.dup
+    if body.sub!(/\n*\s*(Collected via [^\n]+)\z/m, '')
+      provenance = $1.strip
+    elsif body.sub!(/\n*\s*(--\s*\nAutoProvisioned[^\z]*)\z/m, '')
+      provenance = $1.gsub(/\s+/, ' ').sub(/\A--\s*/, '').strip
+    end
+    body.strip!
+
+    escaped = ERB::Util.html_escape(body)
+    # Auto-link http(s) URLs without swallowing trailing punctuation
+    linked = escaped.gsub(/(https?:\/\/[^\s<]+)/) do |match|
+      clean = match.sub(/[.,;:!?\)]+\z/, '')
+      trail = match[clean.length..-1] || ''
+      "<a href=\"#{clean}\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"todo-inline-link\">#{clean} ↗</a>#{trail}"
+    end
+
+    # Link GHI #N if todo.url points to a GitHub repository
+    gh_href = safe_todo_external_url(todo.try(:url))
+    if gh_href && gh_href =~ /\A(https?:\/\/github\.com\/[^\/]+\/[^\/]+)/i
+      repo_base = $1
+      linked = linked.gsub(/\bGHI\s+#(\d+)\b/i) do |m|
+        issue_num = $1
+        "<a href=\"#{repo_base}/issues/#{issue_num}\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"todo-inline-link\">#{m} ↗</a>"
+      end
+    end
+
+    [linked.empty? ? nil : linked.html_safe, provenance]
+  end
+
+  def render_dependency_item(dep_todo, role_label = nil)
+    return ''.html_safe unless dep_todo
+    is_done = dep_todo.done?
+    is_overdue = (!is_done && dep_todo.overdue?)
+    status_icon = is_done ? '✓' : '○'
+    classes = ['todo-dep-item']
+    classes << (is_done ? 'is-done' : 'is-active')
+    classes << 'is-overdue' if is_overdue
+
+    inner = ''
+    inner << "<span class='todo-dep-status'>#{status_icon}</span>"
+    inner << "<span class='todo-dep-role'>#{ERB::Util.html_escape(role_label)}</span>" if role_label
+    inner << "<span class='todo-dep-id'>##{dep_todo.id}</span>"
+    inner << "<span class='todo-dep-name'>#{ERB::Util.html_escape(dep_todo.name.to_s)}</span>"
+    if dep_todo.project
+      inner << "<span class='todo-dep-project'>#{ERB::Util.html_escape(dep_todo.project.name.to_s)}</span>"
+    end
+    if is_overdue && dep_todo.due
+      inner << "<span class='todo-dep-overdue'>⚠️ #{dep_todo.due}</span>"
+    elsif dep_todo.due && !is_done
+      inner << "<span class='todo-dep-due'>📅 #{dep_todo.due}</span>"
+    end
+
+    link_to(inner.html_safe, todo_path(dep_todo), :class => classes.join(' '))
+  end
 
 end

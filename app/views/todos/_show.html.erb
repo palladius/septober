@@ -1,85 +1,250 @@
-	<div class='photo_right' align_removem='right' >
-    <%= link_to( 
-      image_tag("icons/todo/V-grey.png", :mouseover => "icons/todo/V.png", :height => 50) ,
-      "/todos/#{@todo.id}/done", :title => t(:mark_as_done)
-    ) unless @todo.done? %>
-		<table border='0'><tr><td>
-		<%= render_photo_url(@todo, :height => 200 ) if @todo.photo_url? %>
-		</table>
-	</div>
-	<h1><%= render_todo_name(@todo) %></h1>
-	<p>
-	  <%= iconed_link_to "Edit", edit_todo_path(@todo) %> |
-	  <%= iconed_link_to "Destroy", @todo, :confirm => 'Are you sure?', :method => :delete %> |
-	  <%= iconed_link_to "View All", todos_path %>
-	</p>
-	<% if @todo.user %>
-	<p>
-	  <% if @todo.user.agent? %>
-	    <strong>Autonomous Agent:</strong>
-	    <span class='agent_badge_show'>🤖 <%= @todo.user.agent_icon || '🤖' %> <b><%= @todo.user.username %></b> (Host: <i><%= @todo.user.agent_host %></i>, Copilot of <%= @todo.user.parent.try(:username) || 'Master' %>)</span>
-	  <% else %>
-	    <strong>Author:</strong> 👤 <%= @todo.user.username %>
-	  <% end %>
-	</p>
-	<% end %>
-	<p>
-	  <strong>Due:</strong>
-	  <%= @todo.due %>
-	</p>
-	<p>
-	  <strong>Tags:</strong>
-	  <%= render_tags(@todo) %>
-	</p>
-	<p>
-	  <strong>favorite:</strong>
-	  <%= render_icon_favorite( @todo ) %>
-	</p>
-	<p>
-	  <strong>Progress Status:</strong>
-	  <%= @todo.progress_status %>%
-	</p>
-	<p>
-	  <strong>Hide Until:</strong>
-	  <%= render_todo_hide_until(@todo) %>
-	</p>
-	<p>
-	  <strong>Priority:</strong>
-	  <%= render_priority(@todo) %>
-	</p>
-	<p>
-	  <strong>Project:</strong>
-	  <%= link_to( render_project(@todo.project), @todo.project ) %>
-	  (<%= iconed_link_to "Edit", edit_project_path(@project) %>)
-	</p>
-	<p>
-	  <strong>Where:</strong>
-	  <%= (@todo.where) rescue "Err('#{$!}')"%>
-	</p>
-	<p>
-	  <strong>URL:</strong>
-	  <%= @todo.url rescue "ErrURL('#{$!}')"%>
-	</p>
-	<p>
-	  <strong>Depends on (parent):</strong>
-	  <%= link_to( render_todo_name(@todo.todo), @todo.todo ) if @todo.todo %>
-	  <%#= @todo.depends_on_id %>
-	</p>
-	<p>
-	  <strong>Depended upon (children):</strong>
-	  <% Todo.find_all_by_user_id_and_depends_on_id(current_user.id, @todo.id).each do |sub_todo|%>
-	  	<%= link_to( render_todo_name(sub_todo),sub_todo ) %>
-	  <% end %>
-	</p>
-	<hr/>
-	<p>
-		<pre>
-	  		<%= @todo.description %>
-		</pre>
-	</p>
-	<hr/>
-	<p class='todo-system-notes'>
-		<tt>
-	  		<%= @todo.sys_notes %>
-		</tt>
-	</p>
+<%
+  is_done      = @todo.done?
+  is_overdue   = (!is_done && @todo.overdue?)
+  desc_html, provenance_line = format_todo_description_parts(@todo)
+  url_link_html = render_todo_clickable_url(@todo)
+
+  family_ids = (current_user && current_user.respond_to?(:family_user_ids)) ? current_user.family_user_ids : [current_user.try(:id)].compact
+  parent_todo = (@todo.todo rescue nil)
+  children_todos = if family_ids.any?
+    Todo.find(:all, :conditions => ["user_id IN (?) AND depends_on_id = ?", family_ids, @todo.id], :order => 'active DESC, priority DESC, id ASC') rescue []
+  else
+    []
+  end
+  progress_pct = [[@todo.progress_status.to_i, 0].max, 100].min
+  agent_icon = if @todo.user && @todo.user.agent?
+    @todo.user.respond_to?(:resolved_agent_icon) ? @todo.user.resolved_agent_icon : (@todo.user.agent_icon.presence || '🤖')
+  end
+%>
+
+<article class="todo-show-shell <%= is_done ? 'is-done' : 'is-active' %> <%= is_overdue ? 'is-overdue-shell' : '' %>">
+  <!-- Top Navigation & Action Toolbar -->
+  <div class="todo-show-toolbar">
+    <div class="todo-show-toolbar-left">
+      <%= link_to '← Tutti i Todo', todos_path, :class => 'todo-btn todo-btn-ghost' %>
+      <span class="todo-id-chip">#<%= @todo.id %></span>
+      <% if is_done %>
+        <span class="todo-status-pill is-done">✓ Completato</span>
+      <% elsif is_overdue %>
+        <span class="todo-status-pill is-overdue">● Attivo · Scaduto</span>
+      <% else %>
+        <span class="todo-status-pill is-active">● Attivo</span>
+      <% end %>
+      <% if @todo.favorite %>
+        <span class="todo-fav-pill" title="Preferito">★ Preferito</span>
+      <% end %>
+    </div>
+
+    <div class="todo-show-toolbar-actions">
+      <% unless is_done %>
+        <%= link_to '✓ Segna Fatto', "/todos/#{@todo.id}/done", :class => 'todo-btn todo-btn-success', :title => t(:mark_as_done) %>
+        <%= link_to '⏰ +7g', "/todos/#{@todo.id}/procrastinate", :class => 'todo-btn todo-btn-subtle', :title => 'Posticipa scadenza di 7 giorni' %>
+        <%= link_to '💤 5g', "/todos/#{@todo.id}/sleep?hide_until_days=5", :class => 'todo-btn todo-btn-subtle', :title => 'Nascondi per 5 giorni' %>
+      <% else %>
+        <%= link_to '↩ Riapri', "/todos/#{@todo.id}/undone", :class => 'todo-btn todo-btn-subtle', :title => 'Segna di nuovo come attivo' %>
+      <% end %>
+      <%= link_to '✏️ Modifica', edit_todo_path(@todo), :class => 'todo-btn todo-btn-primary' %>
+      <%= link_to '🗑 Elimina', @todo, :confirm => 'Are you sure you want to permanently delete this todo?', :method => :delete, :class => 'todo-btn todo-btn-danger' %>
+    </div>
+  </div>
+
+  <!-- Hero Header -->
+  <header class="todo-show-header">
+    <div class="todo-show-eyebrow">
+      <% if @todo.user %>
+        <% if @todo.user.agent? %>
+          <span class="todo-author-chip is-agent">
+            <span>🤖 <%= agent_icon %></span>
+            <strong><%= @todo.user.username %></strong>
+            <span class="todo-author-sub">
+              <% if @todo.user.agent_host.present? %>host: <code><%= @todo.user.agent_host %></code> · <% end %>copilot of <%= @todo.user.parent.try(:username) || 'Master' %>
+            </span>
+          </span>
+        <% else %>
+          <span class="todo-author-chip">
+            <span>👤</span>
+            <strong><%= @todo.user.username %></strong>
+          </span>
+        <% end %>
+      <% end %>
+
+      <% if @todo.project %>
+        <span class="todo-project-chip">
+          📁 <%= link_to render_project(@todo.project), @todo.project %>
+          <%= link_to '✏️', edit_project_path(@todo.project), :class => 'todo-project-edit', :title => 'Modifica progetto' %>
+        </span>
+      <% end %>
+    </div>
+
+    <h1 class="todo-show-title <%= is_done ? 'is-done' : '' %>">
+      <% if @todo.user && @todo.user.agent? %>
+        <span class="todo-title-agent-icon" title="Autonomous Agent: <%= @todo.user.username %>">🤖 <%= agent_icon %></span>
+      <% end %>
+      <span class="todo-title-text"><%= on_the_spot_edit(@todo, :name, :tooltip => 'Clicca sul titolo per modificarlo al volo') %></span>
+    </h1>
+
+    <% if @todo.tags.any? %>
+      <div class="todo-show-tags">
+        <%= render_tags(@todo) %>
+      </div>
+    <% end %>
+  </header>
+
+  <!-- Clickable External URL Callout -->
+  <% if url_link_html %>
+    <div class="todo-url-banner">
+      <span class="todo-url-label">🔗 Link / Riferimento</span>
+      <div class="todo-url-value">
+        <%= url_link_html %>
+      </div>
+    </div>
+  <% end %>
+
+  <!-- Description & Optional Cover Photo -->
+  <section class="todo-content-section <%= @todo.photo_url? ? 'has-photo' : '' %>">
+    <div class="todo-description-card">
+      <div class="todo-section-heading">
+        <span>📝 Contesto &amp; Descrizione</span>
+        <%= link_to 'Modifica testo →', edit_todo_path(@todo), :class => 'todo-section-action' %>
+      </div>
+
+      <% if desc_html %>
+        <div class="todo-description-prose"><%= desc_html %></div>
+      <% else %>
+        <p class="todo-description-empty">Nessuna descrizione dettagliata inserita.</p>
+      <% end %>
+
+      <% if provenance_line %>
+        <div class="todo-provenance-bar">
+          <span>📡 <%= provenance_line %></span>
+        </div>
+      <% end %>
+    </div>
+
+    <% if @todo.photo_url? %>
+      <% real_img = photo_real_url(@todo) rescue @todo.photo_url %>
+      <div class="todo-photo-card">
+        <a href="<%= real_img %>" target="_blank" rel="noopener noreferrer" title="Apri immagine a dimensione intera">
+          <%= render_photo_url(@todo, :height => 220) %>
+        </a>
+      </div>
+    <% end %>
+  </section>
+
+  <!-- Structured Metadata Grid -->
+  <section class="todo-meta-grid">
+    <!-- Due Date (Red highlight when overdue!) -->
+    <div class="todo-meta-card <%= is_overdue ? 'is-overdue-card' : '' %>">
+      <div class="todo-meta-label">Scadenza (Due)</div>
+      <div class="todo-meta-value">
+        <%= render_todo_show_due(@todo) %>
+      </div>
+    </div>
+
+    <!-- Priority + Quick Up/Down -->
+    <div class="todo-meta-card">
+      <div class="todo-meta-label">Priorità</div>
+      <div class="todo-meta-value todo-priority-row">
+        <span class="todo-priority-badge prio-<%= @todo.priority %>">
+          <%= render_priority_icon(@todo.priority) %>
+          <%= priority_name(@todo.priority).to_s.humanize %> (<%= @todo.priority %>/5)
+        </span>
+        <span class="todo-priority-controls" title="Alza o abbassa priorità">
+          <%= eventual_link_priority(@todo, true) %>
+          <%= eventual_link_priority(@todo, false) %>
+        </span>
+      </div>
+    </div>
+
+    <!-- Progress Status -->
+    <div class="todo-meta-card">
+      <div class="todo-meta-label">Avanzamento</div>
+      <div class="todo-meta-value">
+        <div class="todo-progress-wrap">
+          <div class="todo-progress-track">
+            <div class="todo-progress-fill" style="width: <%= progress_pct %>%"></div>
+          </div>
+          <span class="todo-progress-text"><%= progress_pct %>%</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Where / Location -->
+    <% if @todo.where? %>
+      <div class="todo-meta-card">
+        <div class="todo-meta-label">Luogo (Where)</div>
+        <div class="todo-meta-value">
+          <%= link_to "📍 #{@todo.where} ↗", "https://maps.google.com/?q=#{CGI.escape(@todo.where.to_s)}", :target => '_blank', :rel => 'noopener noreferrer', :class => 'todo-where-link' %>
+        </div>
+      </div>
+    <% end %>
+
+    <!-- Hide Until (Snoozed) -->
+    <% if @todo.hide_until.present? %>
+      <div class="todo-meta-card">
+        <div class="todo-meta-label">Nascosto fino a</div>
+        <div class="todo-meta-value">
+          <span class="todo-snooze-text">💤 <%= render_todo_hide_until(@todo) %></span>
+        </div>
+      </div>
+    <% end %>
+  </section>
+
+  <!-- Dependencies (Parent & Children — clean, readable, zero overflow) -->
+  <section class="todo-deps-card">
+    <div class="todo-section-heading">
+      <span>🧩 Dipendenze (Parent &amp; Children)</span>
+      <% if children_todos.any? %>
+        <span class="todo-deps-count"><%= children_todos.size %> sub-task</span>
+      <% end %>
+    </div>
+
+    <% if parent_todo || children_todos.any? %>
+      <div class="todo-deps-groups">
+        <% if parent_todo %>
+          <div class="todo-deps-group">
+            <div class="todo-deps-sublabel">Dipende da (Parent):</div>
+            <div class="todo-deps-list">
+              <%= render_dependency_item(parent_todo, 'Parent') %>
+            </div>
+          </div>
+        <% end %>
+
+        <% if children_todos.any? %>
+          <div class="todo-deps-group">
+            <div class="todo-deps-sublabel">Richiesto da (Children / Sub-tasks):</div>
+            <div class="todo-deps-list">
+              <% children_todos.each do |sub_todo| %>
+                <%= render_dependency_item(sub_todo, 'Child') %>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <p class="todo-deps-empty">Nessuna dipendenza collegata (né parent né children).</p>
+    <% end %>
+  </section>
+
+  <!-- Footer Timestamps & Collapsible System Notes -->
+  <footer class="todo-show-footer">
+    <div class="todo-timestamps">
+      <% if @todo.created_at %>
+        <span>Creato <%= time_ago_in_words(@todo.created_at) %> ago (<%= @todo.created_at.strftime('%Y-%m-%d %H:%M') %>)</span>
+      <% end %>
+      <% if @todo.updated_at %>
+        <span>· Aggiornato <%= time_ago_in_words(@todo.updated_at) %> ago</span>
+      <% end %>
+      <% if @todo.source.present? %>
+        <span>· Source: <code><%= @todo.source %></code></span>
+      <% end %>
+    </div>
+
+    <% if @todo.sys_notes.to_s.strip != '' %>
+      <details class="todo-sys-notes">
+        <summary>🛠 System &amp; Regex Debug Logs</summary>
+        <pre class="todo-sys-notes-pre"><%= @todo.sys_notes.to_s.strip %></pre>
+      </details>
+    <% end %>
+  </footer>
+</article>

@@ -1,6 +1,12 @@
 # PS TODO make this DRY, now you've to remember to update as well the following files:
 # - ./VERSION
 # - app/helpers/application_helper
+2.6.2: # patch 2026-11-25
+  - Overhauled `/todos/:id` (`show`) UI into a responsive 2026 Dark/Light card layout with action toolbar (Mark Done, Snooze +7d, Hide 5d, Edit, Delete).
+  - Made external `URL` clickable with GitHub Issue/PR badge detection, safe scheme sanitization, and full word-wrap.
+  - Added prominent red overdue styling (`is-overdue`) with relative day count when `Due` is in the past.
+  - Eliminated `<pre>`/`<tt>` horizontal overflow on descriptions, parent/child dependencies, and system regex logs (now wrapped prose + non-overflowing dependency cards + collapsible `<details>` debug accordion).
+  - Fixed agent icon fallback (`resolved_agent_icon`) and nil `@project` edit link on `/todos/:id`.
 2.6.1: # patch 2026-11-23
   - Added autofocus on "Nuovo todo" Quick-Add input and fixed `en.quick_created` I18n translation fallback.
   - Redesigned `/projects` (index, show, form) with 3-column colored Project Cards and L1 Synoptic Table driven by `project.color` from the Project model, plus interactive color swatch picker.

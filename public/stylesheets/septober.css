@@ -665,3 +665,800 @@ tr.todo_line.vanishing {
   transition: width 0.1s linear;
   width: 100%;
 }
+
+/* --- 2026 Todo Show Page Overhaul (/todos/:id) --- */
+.todo-show-shell {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.todo-show-toolbar {
+  align-items: center;
+  border-bottom: 1px solid var(--border-subtle);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: space-between;
+  padding-bottom: 1rem;
+}
+
+.todo-show-toolbar-left,
+.todo-show-toolbar-actions {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.todo-btn {
+  align-items: center;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  display: inline-flex;
+  font-size: 0.84rem;
+  font-weight: 600;
+  gap: 0.35rem;
+  line-height: 1.2;
+  padding: 0.45rem 0.85rem;
+  text-decoration: none !important;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.todo-btn:hover {
+  transform: translateY(-1px);
+}
+
+.todo-btn-ghost {
+  background: transparent;
+  border-color: var(--border);
+  color: var(--text-muted);
+}
+
+.todo-btn-ghost:hover {
+  background: var(--surface-subtle);
+  color: var(--text-main);
+}
+
+.todo-btn-subtle {
+  background: var(--surface-subtle);
+  border-color: var(--border);
+  color: var(--text-main);
+}
+
+.todo-btn-subtle:hover {
+  background: var(--surface-hover);
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.todo-btn-primary {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #ffffff !important;
+}
+
+.todo-btn-primary:hover {
+  background: var(--primary-hover);
+  border-color: var(--primary-hover);
+}
+
+.todo-btn-success {
+  background: var(--success);
+  border-color: var(--success);
+  color: #052e16 !important;
+  font-weight: 700;
+}
+
+[data-theme='light'] .todo-btn-success {
+  color: #ffffff !important;
+}
+
+.todo-btn-success:hover {
+  filter: brightness(1.08);
+}
+
+.todo-btn-danger {
+  background: transparent;
+  border-color: rgba(239, 68, 68, 0.35);
+  color: var(--danger) !important;
+}
+
+.todo-btn-danger:hover {
+  background: var(--danger-bg);
+  border-color: var(--danger);
+}
+
+.todo-id-chip {
+  background: var(--surface-subtle);
+  border: 1px solid var(--border);
+  border-radius: 9999px;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 0.2rem 0.6rem;
+}
+
+.todo-status-pill {
+  border-radius: 9999px;
+  display: inline-flex;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  padding: 0.22rem 0.65rem;
+}
+
+.todo-status-pill.is-active {
+  background: var(--success-bg);
+  border: 1px solid rgba(34, 197, 94, 0.35);
+  color: var(--success);
+}
+
+.todo-status-pill.is-overdue {
+  background: var(--danger-bg);
+  border: 1px solid rgba(239, 68, 68, 0.45);
+  color: var(--danger);
+}
+
+.todo-status-pill.is-done {
+  background: var(--surface-subtle);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+}
+
+.todo-fav-pill {
+  background: var(--warning-bg);
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  border-radius: 9999px;
+  color: var(--warning);
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 0.22rem 0.65rem;
+}
+
+/* Header, Eyebrow & Title */
+.todo-show-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  min-width: 0;
+}
+
+.todo-show-eyebrow {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.todo-author-chip,
+.todo-project-chip {
+  align-items: center;
+  background: var(--surface-subtle);
+  border: 1px solid var(--border);
+  border-radius: 9999px;
+  color: var(--text-main);
+  display: inline-flex;
+  flex-wrap: wrap;
+  font-size: 0.82rem;
+  gap: 0.35rem;
+  padding: 0.28rem 0.75rem;
+}
+
+.todo-author-chip.is-agent {
+  background: var(--primary-subtle);
+  border-color: rgba(99, 102, 241, 0.35);
+}
+
+.todo-author-sub {
+  color: var(--text-muted);
+  font-size: 0.78rem;
+}
+
+.todo-author-sub code {
+  background: rgba(148, 163, 184, 0.16);
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  padding: 0.05rem 0.35rem;
+}
+
+.todo-project-edit {
+  font-size: 0.75rem;
+  margin-left: 0.15rem;
+  opacity: 0.75;
+  text-decoration: none !important;
+}
+
+.todo-project-edit:hover {
+  opacity: 1;
+}
+
+.todo-show-title {
+  color: var(--text-main);
+  font-size: 1.95rem;
+  font-weight: 850;
+  letter-spacing: -0.025em;
+  line-height: 1.25;
+  margin: 0.15rem 0;
+  overflow-wrap: anywhere;
+  text-wrap: balance;
+  word-break: break-word;
+}
+
+.todo-show-title.is-done .todo-title-text {
+  color: var(--text-muted);
+  text-decoration: line-through;
+}
+
+.todo-title-agent-icon {
+  display: inline-block;
+  margin-right: 0.35rem;
+}
+
+.todo-show-tags {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.todo-show-tags .tag {
+  margin: 0;
+}
+
+/* Clickable URL Callout Banner */
+.todo-url-banner {
+  align-items: center;
+  background: var(--primary-subtle);
+  border: 1px solid rgba(99, 102, 241, 0.35);
+  border-left: 4px solid var(--primary);
+  border-radius: var(--radius-md);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  justify-content: space-between;
+  min-width: 0;
+  padding: 0.85rem 1.15rem;
+}
+
+.todo-url-label {
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.todo-url-value {
+  flex: 1 1 300px;
+  min-width: 0;
+}
+
+.todo-url-link {
+  align-items: center;
+  color: var(--primary) !important;
+  display: inline-flex;
+  flex-wrap: wrap;
+  font-size: 0.95rem;
+  font-weight: 600;
+  gap: 0.45rem;
+  max-width: 100%;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  text-decoration: none;
+  word-break: break-word;
+}
+
+.todo-url-link:hover .todo-url-raw {
+  text-decoration: underline;
+}
+
+.todo-url-chip {
+  background: var(--primary);
+  border-radius: 9999px;
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.18rem 0.6rem;
+  white-space: nowrap;
+}
+
+.todo-url-raw {
+  font-family: var(--font-mono);
+  font-size: 0.88rem;
+  overflow-wrap: anywhere;
+  word-break: break-all;
+}
+
+.todo-url-arrow {
+  font-size: 0.9rem;
+  font-weight: 800;
+}
+
+/* Main Content & Description Card */
+.todo-content-section {
+  display: grid;
+  gap: 1.25rem;
+  grid-template-columns: minmax(0, 1fr);
+  min-width: 0;
+}
+
+.todo-content-section.has-photo {
+  grid-template-columns: minmax(0, 1fr) 260px;
+}
+
+@media (max-width: 820px) {
+  .todo-content-section.has-photo {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.todo-description-card,
+.todo-deps-card {
+  background: var(--surface-subtle);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  min-width: 0;
+  padding: 1.15rem 1.35rem;
+}
+
+.todo-section-heading {
+  align-items: center;
+  border-bottom: 1px solid var(--border-subtle);
+  color: var(--text-muted);
+  display: flex;
+  font-size: 0.78rem;
+  font-weight: 700;
+  justify-content: space-between;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.85rem;
+  padding-bottom: 0.55rem;
+  text-transform: uppercase;
+}
+
+.todo-section-action {
+  color: var(--primary);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.todo-description-prose {
+  color: var(--text-main);
+  font-family: var(--font-family);
+  font-size: 1.02rem;
+  line-height: 1.7;
+  max-width: 100%;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.todo-description-empty {
+  color: var(--text-muted);
+  font-style: italic;
+  margin: 0;
+}
+
+.todo-inline-link {
+  color: var(--primary);
+  font-weight: 600;
+  overflow-wrap: anywhere;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  word-break: break-all;
+}
+
+.todo-provenance-bar {
+  border-top: 1px dashed var(--border);
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  margin-top: 1rem;
+  overflow-wrap: anywhere;
+  padding-top: 0.65rem;
+  word-break: break-word;
+}
+
+.todo-photo-card {
+  align-items: center;
+  background: var(--surface-subtle);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
+  padding: 0.5rem;
+}
+
+.todo-photo-card img {
+  border-radius: var(--radius-sm);
+  display: block;
+  height: auto;
+  max-height: 240px;
+  max-width: 100%;
+  object-fit: cover;
+}
+
+/* Metadata Bento Grid */
+.todo-meta-grid {
+  display: grid;
+  gap: 0.9rem;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  min-width: 0;
+}
+
+.todo-meta-card {
+  background: var(--surface-subtle);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  min-width: 0;
+  padding: 0.9rem 1.05rem;
+}
+
+.todo-meta-card.is-overdue-card {
+  background: var(--danger-bg);
+  border-color: var(--danger);
+  border-left-width: 4px;
+}
+
+.todo-meta-label {
+  color: var(--text-muted);
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.todo-meta-card.is-overdue-card .todo-meta-label {
+  color: var(--danger);
+}
+
+.todo-meta-value {
+  align-items: center;
+  color: var(--text-main);
+  display: flex;
+  flex-wrap: wrap;
+  font-size: 0.95rem;
+  font-weight: 600;
+  gap: 0.4rem;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+/* Due Date Pills (Red when Overdue!) */
+.todo-due-pill {
+  align-items: center;
+  border-radius: var(--radius-sm);
+  display: inline-flex;
+  flex-wrap: wrap;
+  font-size: 0.92rem;
+  gap: 0.3rem;
+  line-height: 1.35;
+}
+
+.todo-due-pill.is-overdue {
+  color: var(--danger) !important;
+  font-weight: 800;
+}
+
+.todo-due-pill.is-today {
+  background: var(--warning-bg);
+  border: 1px solid rgba(245, 158, 11, 0.45);
+  color: var(--warning);
+  font-weight: 700;
+  padding: 0.2rem 0.55rem;
+}
+
+.todo-due-pill.is-soon {
+  background: var(--warning-bg);
+  color: var(--warning);
+  font-weight: 700;
+  padding: 0.2rem 0.55rem;
+}
+
+.todo-due-pill.is-future {
+  color: var(--text-main);
+}
+
+.todo-due-pill.is-done,
+.todo-due-pill.is-none {
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.todo-due-rel {
+  font-size: 0.84rem;
+  font-weight: 600;
+}
+
+/* Priority & Progress */
+.todo-priority-row {
+  justify-content: space-between;
+  width: 100%;
+}
+
+.todo-priority-badge {
+  align-items: center;
+  border-radius: 9999px;
+  display: inline-flex;
+  font-size: 0.86rem;
+  font-weight: 700;
+  gap: 0.35rem;
+  padding: 0.2rem 0.65rem;
+}
+
+.todo-priority-badge.prio-5 {
+  background: var(--danger-bg);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  color: var(--danger);
+}
+
+.todo-priority-badge.prio-4 {
+  background: var(--warning-bg);
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  color: var(--warning);
+}
+
+.todo-priority-badge.prio-3 {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text-main);
+}
+
+.todo-priority-badge.prio-2 {
+  background: var(--success-bg);
+  border: 1px solid rgba(34, 197, 94, 0.35);
+  color: var(--success);
+}
+
+.todo-priority-badge.prio-1 {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+}
+
+.todo-priority-controls {
+  align-items: center;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  display: inline-flex;
+  gap: 0.35rem;
+  padding: 0.2rem 0.45rem;
+}
+
+.todo-progress-wrap {
+  align-items: center;
+  display: flex;
+  gap: 0.65rem;
+  width: 100%;
+}
+
+.todo-progress-track {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 9999px;
+  flex: 1;
+  height: 9px;
+  overflow: hidden;
+}
+
+.todo-progress-fill {
+  background: linear-gradient(90deg, var(--primary), var(--success));
+  border-radius: 9999px;
+  height: 100%;
+  transition: width 0.3s ease;
+}
+
+.todo-progress-text {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.todo-where-link {
+  color: var(--primary);
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+/* Dependencies Section — Non-Overflowing & Readable */
+.todo-deps-count {
+  background: var(--primary-subtle);
+  border-radius: 9999px;
+  color: var(--primary);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  padding: 0.12rem 0.55rem;
+  text-transform: none;
+}
+
+.todo-deps-groups {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  min-width: 0;
+}
+
+.todo-deps-sublabel {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+}
+
+.todo-deps-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.todo-dep-item {
+  align-items: center;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-main) !important;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem 0.6rem;
+  max-width: 100%;
+  min-width: 0;
+  padding: 0.6rem 0.85rem;
+  text-decoration: none !important;
+  transition: border-color 0.15s ease, transform 0.15s ease;
+}
+
+.todo-dep-item:hover {
+  border-color: var(--primary);
+  transform: translateX(2px);
+}
+
+.todo-dep-item.is-done .todo-dep-name {
+  color: var(--text-muted);
+  text-decoration: line-through;
+}
+
+.todo-dep-item.is-overdue {
+  border-left: 3px solid var(--danger);
+}
+
+.todo-dep-status {
+  color: var(--success);
+  font-weight: 800;
+}
+
+.todo-dep-role {
+  background: var(--primary-subtle);
+  border-radius: 4px;
+  color: var(--primary);
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.1rem 0.4rem;
+  text-transform: uppercase;
+}
+
+.todo-dep-id {
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.todo-dep-name {
+  flex: 1 1 200px;
+  font-size: 0.92rem;
+  font-weight: 600;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.todo-dep-project {
+  background: var(--surface-subtle);
+  border: 1px solid var(--border);
+  border-radius: 9999px;
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  padding: 0.1rem 0.5rem;
+}
+
+.todo-dep-overdue {
+  background: var(--danger-bg);
+  border-radius: 4px;
+  color: var(--danger);
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.1rem 0.45rem;
+}
+
+.todo-dep-due {
+  color: var(--text-muted);
+  font-size: 0.75rem;
+}
+
+.todo-deps-empty {
+  color: var(--text-muted);
+  font-size: 0.88rem;
+  margin: 0;
+}
+
+/* Footer & Collapsible System Logs */
+.todo-show-footer {
+  border-top: 1px solid var(--border-subtle);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  min-width: 0;
+  padding-top: 0.9rem;
+}
+
+.todo-timestamps {
+  color: var(--text-muted);
+  display: flex;
+  flex-wrap: wrap;
+  font-size: 0.8rem;
+  gap: 0.35rem;
+}
+
+.todo-timestamps code {
+  background: var(--surface-subtle);
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  padding: 0.05rem 0.35rem;
+}
+
+.todo-sys-notes {
+  background: var(--surface-subtle);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  min-width: 0;
+  padding: 0.55rem 0.85rem;
+}
+
+.todo-sys-notes summary {
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 0.78rem;
+  font-weight: 600;
+  user-select: none;
+}
+
+.todo-sys-notes summary:hover {
+  color: var(--text-main);
+}
+
+.todo-sys-notes-pre {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  line-height: 1.5;
+  margin: 0.65rem 0 0;
+  max-height: 240px;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  overflow-y: auto;
+  padding: 0.75rem;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
